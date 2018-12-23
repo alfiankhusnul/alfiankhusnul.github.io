@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Metode Penelitian</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+
+  <!-- Favicons -->
+  <link href="img/favicon.ico" rel="icon">
+  <link href="img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Poppins:300,400,500,700" rel="stylesheet">
+
+  <!-- Bootstrap CSS File -->
+  <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Libraries CSS Files -->
+  <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <link href="lib/animate/animate.min.css" rel="stylesheet">
+
+  <!-- Main Stylesheet File -->
+  <link href="css/style.css" rel="stylesheet">
+   <!-- gapminder -->
+  <script src="https://d3js.org/d3.v4.js"></script>
+    <link href="libs/vizabi.css" rel="stylesheet" type="text/css" >
+    <link href="libs/bubblechart.css" rel="stylesheet" type="text/css">
+    <link href="libs/bubblemap.css" rel="stylesheet" type="text/css">
+    <link href="libs/mountainchart.css" rel="stylesheet" type="text/css">
+    <link href="libs/barrankchart.css" rel="stylesheet" type="text/css">
+    <link href="libs/linechart.css" rel="stylesheet" type="text/css">
+
+    <script src="libs/vizabi.js"></script>
+    <script src="libs/bubblechart.js"></script>
+    <script src="libs/bubblemap.js"></script>
+    <script src="libs/mountainchart.js"></script>
+    <script src="libs/barrankchart.js"></script>
+    <script src="libs/linechart.js"></script>
+    <script src="libs/vizabi-ddfcsv-reader.js"></script>
+    <script src="libs/vizabi-csv-reader.js"></script>
+    <script src="libs/vizabi-excel-reader.js"></script>
+
+  <!-- =======================================================
+    Theme Name: Regna
+    Theme URL: https://bootstrapmade.com/regna-bootstrap-onepage-template/
+    Author: BootstrapMade.com
+    License: https://bootstrapmade.com/license/
+  ======================================================= -->
+</head>
+
+<body>
+
+  <!--==========================
+  Header
+  ============================-->
+  <header id="header">
+    <div class="container">
+
+      <div id="logo" class="pull-left">
+        <a href="#hero"><img src="img/logo1.png" alt="" title="" /></img></a>
+        <!-- Uncomment below if you prefer to use a text logo -->
+        <!--<h1><a href="#hero">Regna</a></h1>-->
+      </div>
+
+      <nav id="nav-menu-container">
+        <ul class="nav-menu">
+          <li class="menu-active"><a href="#hero">Home</a></li>
+          <li><a href="#visual">BubbleChart</a></li>
+          <li><a target="_blank" href="https://public.tableau.com/profile/ahmad.irfansyah#!/vizhome/Metpen/IndonesianPopulation">MapChart</a></li>
+          <li><a href="#team">Team</a></li>
+        </ul>
+      </nav><!-- #nav-menu-container -->
+    </div>
+  </header><!-- #header -->
+
+  <!--==========================
+    Hero Section
+  ============================-->
+  <section id="hero">
+    <div class="hero-container">
+      <h1>Visualisasi Data BPS</h1>
+      <h2>Tugas Mata Kuliah Metode Penelitian KS</h2>
+      <a href="#placeholder" class="btn-get-started">Mulai</a>
+    </div>
+  </section><!-- #hero -->
+
+  <main id="main">
+
+    <!--==========================
+      About Us Section
+    ============================-->
+    <section id="about">
+      
+      <center><h1 id="visual">Bubble Chart</h1></center>
+      
+        <div style="background-color:lightblue ; width: 70%; max-width: 900px; height: 100%; margin: 0 auto; font-family: 'Arial';">  
+          <div id="placeholder" style="width: 100%; height: 600px;"></div>
+        
+            <script src="config.js"></script>
+            <script>
+        
+              var ddfcsvReader = new DDFCsvReader.getDDFCsvReaderObject();
+              Vizabi.Reader.extend("ddf", ddfcsvReader);
+              Vizabi.Reader.extend("ext-csv", CsvReader.csvReaderObject);
+              Vizabi.Reader.extend("excel", ExcelReader.excelReaderObject);
+        
+              var viz = Vizabi('BubbleChart', document.getElementById('placeholder'), CONFIG);
+            </script>            
+          </div>
+
+      
+    </section><!-- #about -->
+
+    <!--==========================
+      Facts Section
+    ============================-->
+    <section id="team">
+      <div class="container wow fadeIn">
+        
+          <div class="section-header">
+              <h3 class="section-title">Team</h3>
+              <p class="section-description">Kami adalah mahasiswa dari kelompok 5 Metpen kelas 3KS3</p>
+            </div>
+            <div class="row">
+              <div class="col-lg-3 col-md-6">
+                <div class="member">
+                  <div class="pic"><img src="img/team-1.jpg" alt=""></div>
+                  <h4>Ahmad Irfansyah  </h4>
+                  <span>(16.8977)</span>
+                </div>
+              </div>
+    
+              <div class="col-lg-3 col-md-6">
+                <div class="member">
+                  <div class="pic"><img src="img/team-2.jpg" alt=""></div>
+                  <h4>Alfian Khusnul</h4>
+                  <span>(16.8990)</span>
+                </div>
+              </div>
+    
+              <div class="col-lg-3 col-md-6">
+                <div class="member">
+                  <div class="pic"><img src="img/team-3.jpg" alt=""></div>
+                  <h4>Monanta Alfiareza</h4>
+                  <span>(16.9280)</span>
+                </div>
+              </div>
+    
+              <div class="col-lg-3 col-md-6">
+                <div class="member">
+                  <div class="pic"><img src="img/team-4.jpg" alt=""></div>
+                  <h4>Rizki Adriansah</h4>
+                  <span>(16.9395)</span>
+                 
+                </div>
+              </div>
+            </div>
+
+  			</div>
+
+      </div>
+    </section><!-- #facts -->
+
+  </main>
+
+  <!--==========================
+    Footer
+  ============================-->
+  <footer id="footer">
+    <div class="footer-top">
+      <div class="container">
+
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright 2018. <strong>By Kelompok kami</strong>.
+      </div>
+      <div class="credits">
+        <!--
+          All the links in the footer should remain intact.
+          You can delete the links only if you purchased the pro version.
+          Licensing information: https://bootstrapmade.com/license/
+          Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=Regna
+        -->
+        <!-- Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> -->
+      </div>
+    </div>
+  </footer><!-- #footer -->
+
+  <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+
+  <!-- JavaScript Libraries -->
+  <script src="lib/jquery/jquery.min.js"></script>
+  <script src="lib/jquery/jquery-migrate.min.js"></script>
+  <script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="lib/easing/easing.min.js"></script>
+  <script src="lib/wow/wow.min.js"></script>
+  <script src="lib/waypoints/waypoints.min.js"></script>
+  <script src="lib/counterup/counterup.min.js"></script>
+  <script src="lib/superfish/hoverIntent.js"></script>
+  <script src="lib/superfish/superfish.min.js"></script>
+
+  <!-- Contact Form JavaScript File -->
+  <script src="contactform/contactform.js"></script>
+
+  <!-- Template Main Javascript File -->
+  <script src="js/main.js"></script>
+
+</body>
+</html>
