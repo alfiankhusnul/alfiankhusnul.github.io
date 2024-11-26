@@ -289,6 +289,9 @@ a:active {
 </tbody>
 </table>
 
+<pre class="syntax">    <br>    EXPORT<br>  /OUTFILE='output_hasil_pspp'</pre>
+<p>C:\Users\alfia\Documents\# KANTOR\2024\PODES\PUBLIKASI\Syntax Publikasi Podes 2024 [7202].sps:62.9-62.11: error: EXPORT: Syntax error expecting COMM or TAPE.<br>   62 |   /TYPE=CSV<br>      |         ^~~</p>
+<pre class="syntax">  /TYPE=CSV</pre>
 <pre class="syntax"><br>* Tabel 1.2.<br>RECODE r301 (1=1) (2=2) (3=1) (4=1) INTO Status_Pemerintahan.</pre>
 <pre class="syntax">VARIABLE LABELS  Status_Pemerintahan 'Status Pemerintahan Desa'.</pre>
 <pre class="syntax">VALUE LABELS Status_Pemerintahan 1 'Desa' 2 'Kelurahan'.</pre>
@@ -5470,7 +5473,7 @@ a:active {
 <pre class="syntax">EXECUTE.</pre>
 <pre class="syntax">RECODE pospaud1 tkra1 sdmi1 smpmts1 smama1 smk1 akademi1 sdlb1 smplb1 smalb1 ponpes1 diniyah1 seminari1 (MISSING=0).</pre>
 <pre class="syntax">EXECUTE.</pre>
-<pre class="syntax"><br>* Custom Tables. <br>CTABLES <br>  /VLABELS VARIABLES=idkec pospaud1 tkra1 sdmi1 smpmts1 smama1 smk1 akademi1 sdlb1 smplb1 smalb1 ponpes1 diniyah1 seminari1 <br>    DISPLAY=LABEL <br>  /TABLE idkec [C] BY pospaud1 [S][SUM] + tkra1 [S][SUM] + sdmi1 [S][SUM] + smpmts1 [S][SUM] + smama1 [S][SUM] + smk1 [S][SUM] + akademi1 [S][SUM] + <br>sdlb1 [S][SUM] + smplb1 [S][SUM] + smalb1 [S][SUM] + ponpes1 [S][SUM] + diniyah1 [S][SUM] + seminari1 [S][SUM] <br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER <br>  /TITLES <br>    TITLE='Tabel 4.1'.</pre>
+<pre class="syntax"><br>* Custom Tables. <br>CTABLES <br>  /VLABELS VARIABLES=idkec pospaud1 tkra1 sdmi1 smpmts1 smama1 smk1 akademi1 sdlb1 smplb1 smalb1 ponpes1 diniyah1 seminari1 <br>    DISPLAY=LABEL <br>  /TABLE idkec [C] BY pospaud1 [S][SUM] + tkra1 [S][SUM] + sdmi1 [S][SUM] + smpmts1 [S][SUM] + smama1 [S][SUM] + smk1 [S][SUM] + akademi1 [S][SUM] + <br>sdlb1 [S][SUM] + smplb1 [S][SUM] + smalb1 [S][SUM] + ponpes1 [S][SUM] + diniyah1 [S][SUM] + seminari1 [S][SUM] <br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /TITLES <br>    TITLE='Tabel 4.1'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 4.1</caption>
 <tbody>
@@ -5894,7 +5897,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>.00</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>285.00</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>222.00</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>294.00</td>
@@ -5930,7 +5933,7 @@ a:active {
 <pre class="syntax">EXECUTE.</pre>
 <pre class="syntax"><br>IF  (pdk_keterampilanA = 0 <br>&amp; pdk_keterampilanB = 0<br>&amp; pdk_keterampilanC = 0<br>&amp; pdk_keterampilanD = 0<br>&amp; pdk_keterampilanE = 0<br>&amp; pdk_keterampilanF = 0<br>&amp; pdk_keterampilanG = 0) tanpa_pdk_ket=1.</pre>
 <pre class="syntax">EXECUTE.</pre>
-<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec pdk_keterampilanA pdk_keterampilanB pdk_keterampilanC pdk_keterampilanD <br>    pdk_keterampilanE pdk_keterampilanF pdk_keterampilanG tanpa_pdk_ket <br>    DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY pdk_keterampilanA [C] + pdk_keterampilanB [C] + pdk_keterampilanC <br>    [C] + pdk_keterampilanD [C] + pdk_keterampilanE [C] + pdk_keterampilanF [C] + pdk_keterampilanG [C] <br>    + tanpa_pdk_ket<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br>  /CATEGORIES VARIABLES=pdk_keterampilanA [1] EMPTY=INCLUDE <br>  /CATEGORIES VARIABLES=pdk_keterampilanB [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=pdk_keterampilanC [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=pdk_keterampilanD [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=pdk_keterampilanE [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=pdk_keterampilanF [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=pdk_keterampilanG [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=tanpa_pdk_ket ORDER=A KEY=VALUE EMPTY=INCLUDE<br>    /TITLES <br>     TITLE='Tabel 4.2'.</pre>
+<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec pdk_keterampilanA pdk_keterampilanB pdk_keterampilanC pdk_keterampilanD <br>    pdk_keterampilanE pdk_keterampilanF pdk_keterampilanG tanpa_pdk_ket <br>    DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY pdk_keterampilanA [C] + pdk_keterampilanB [C] + pdk_keterampilanC <br>    [C] + pdk_keterampilanD [C] + pdk_keterampilanE [C] + pdk_keterampilanF [C] + pdk_keterampilanG [C] <br>    + tanpa_pdk_ket<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=pdk_keterampilanA [1] EMPTY=INCLUDE <br>  /CATEGORIES VARIABLES=pdk_keterampilanB [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=pdk_keterampilanC [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=pdk_keterampilanD [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=pdk_keterampilanE [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=pdk_keterampilanF [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=pdk_keterampilanG [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=tanpa_pdk_ket ORDER=A KEY=VALUE EMPTY=INCLUDE<br>    /TITLES <br>     TITLE='Tabel 4.2'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 4.2</caption>
 <tbody>
@@ -6236,7 +6239,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>9</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>4</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>11</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>28</td>
@@ -6249,7 +6252,7 @@ a:active {
 </tbody>
 </table>
 
-<pre class="syntax"><br>*Tabel 4.3.<br>*==============================================================================.<br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec r702a r702b r702c  <br>    DISPLAY=BOTH<br>  /TABLE idkec [COUNT F40.0] BY r702a + r702b + r702c <br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br>  /CATEGORIES VARIABLES=r702a [1] EMPTY=INCLUDE <br>  /CATEGORIES VARIABLES=r702b [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r702c [1] EMPTY=INCLUDE<br> /TITLES <br>     TITLE='Tabel 4.3'.</pre>
+<pre class="syntax"><br>*Tabel 4.3.<br>*==============================================================================.<br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec r702a r702b r702c  <br>    DISPLAY=BOTH<br>  /TABLE idkec [COUNT F40.0] BY r702a + r702b + r702c <br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=r702a [1] EMPTY=INCLUDE <br>  /CATEGORIES VARIABLES=r702b [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r702c [1] EMPTY=INCLUDE<br> /TITLES <br>     TITLE='Tabel 4.3'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 4.3</caption>
 <tbody>
@@ -6420,7 +6423,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>0</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>3</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>35</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid; border-right: thick solid'>24</td>
@@ -6443,7 +6446,7 @@ a:active {
 <pre class="syntax">EXECUTE.</pre>
 <pre class="syntax">RECODE rs rsb puskesmas pustu poliklinik praktikdokter rb praktikbidan poskesdes polindes apotek tokoobat (MISSING=0).</pre>
 <pre class="syntax">EXECUTE.</pre>
-<pre class="syntax">* Custom Tables. <br>CTABLES <br>  /VLABELS VARIABLES=idkec rs rsb puskesmas pustu poliklinik praktikdokter rb praktikbidan poskesdes polindes apotek tokoobat <br>    DISPLAY=LABEL <br>  /TABLE idkec BY rs [S][SUM] + rsb [S][SUM] + puskesmas [S][SUM] + pustu [S][SUM] + poliklinik [S][SUM] + praktikdokter [S][SUM] + rb [S][SUM] + praktikbidan [S][SUM] + poskesdes [S][SUM] + polindes [S][SUM] + apotek [S][SUM] + tokoobat [S][SUM] <br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER <br>  /TITLES <br>    TITLE='Tabel 4.4'.</pre>
+<pre class="syntax">* Custom Tables. <br>CTABLES <br>  /VLABELS VARIABLES=idkec rs rsb puskesmas pustu poliklinik praktikdokter rb praktikbidan poskesdes polindes apotek tokoobat <br>    DISPLAY=LABEL <br>  /TABLE idkec BY rs [S][SUM] + rsb [S][SUM] + puskesmas [S][SUM] + pustu [S][SUM] + poliklinik [S][SUM] + praktikdokter [S][SUM] + rb [S][SUM] + praktikbidan [S][SUM] + poskesdes [S][SUM] + polindes [S][SUM] + apotek [S][SUM] + tokoobat [S][SUM] <br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /TITLES <br>    TITLE='Tabel 4.4'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 4.4</caption>
 <tbody>
@@ -6841,7 +6844,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>.00</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>3.00</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>1.00</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>27.00</td>
@@ -6864,7 +6867,7 @@ a:active {
 <pre class="syntax"> EXECUTE.</pre>
 <pre class="syntax">IF  (r705d &gt; 0) posbindu=1.</pre>
 <pre class="syntax"> EXECUTE.</pre>
-<pre class="syntax">* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec posyandu1 posyandu2 posbindu DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY posyandu1 + posyandu2 + posbindu<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br>  /CATEGORIES VARIABLES=posyandu1 posyandu2 posbindu ORDER=A KEY=VALUE EMPTY=INCLUDE<br> /TITLES <br>     TITLE='Tabel 4.5'.</pre>
+<pre class="syntax">* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec posyandu1 posyandu2 posbindu DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY posyandu1 + posyandu2 + posbindu<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=posyandu1 posyandu2 posbindu ORDER=A KEY=VALUE EMPTY=INCLUDE<br> /TITLES <br>     TITLE='Tabel 4.5'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 4.5</caption>
 <tbody>
@@ -7035,7 +7038,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>10</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>336</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>41</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid; border-right: thick solid'>198</td>
@@ -7341,7 +7344,7 @@ a:active {
 <pre class="syntax">RECODE agama_3 (MISSING=2).</pre>
 <pre class="syntax">EXECUTE.</pre>
 <pre class="syntax">VALUE LABELS agama_3 1 'multi agama' 2 'satu agama'.</pre>
-<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec agama_3 r804a1 r804b1 DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY agama_3 + r804a1 + r804b1<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br>  /CATEGORIES VARIABLES=agama_3 r804a1 r804b1 ORDER=D KEY=VALUE EMPTY=INCLUDE<br> /TITLES <br>     TITLE='Tabel 5.1'.</pre>
+<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec agama_3 r804a1 r804b1 DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY agama_3 + r804a1 + r804b1<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=agama_3 r804a1 r804b1 ORDER=D KEY=VALUE EMPTY=INCLUDE<br> /TITLES <br>     TITLE='Tabel 5.1'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 5.1</caption>
 <tbody>
@@ -7590,7 +7593,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>3</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>64</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>273</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>16</td>
@@ -7627,7 +7630,7 @@ a:active {
 <pre class="syntax">EXECUTE.</pre>
 <pre class="syntax">IF  (tempat_ibadah = 0) no_tempat_ibadah=1.</pre>
 <pre class="syntax">EXECUTE.</pre>
-<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec Masjid Langgar Gereja_kristen Gereja_katolik Kapel Pura Wihara Kelenteng Balai_basarah Ibadah_lainnya no_tempat_ibadah <br>    DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY Masjid + Langgar + Gereja_kristen + Gereja_katolik + Kapel + Pura + Wihara + Kelenteng + Balai_basarah + Ibadah_lainnya + <br>    no_tempat_ibadah<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br>  /CATEGORIES VARIABLES=Masjid [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Langgar [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Gereja_kristen [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Gereja_katolik [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Kapel [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Pura [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Wihara [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Kelenteng [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Balai_basarah [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Ibadah_lainnya [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=no_tempat_ibadah ORDER=A KEY=VALUE EMPTY=INCLUDE<br>    /TITLES <br>     TITLE='Tabel 5.2'.</pre>
+<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec Masjid Langgar Gereja_kristen Gereja_katolik Kapel Pura Wihara Kelenteng Balai_basarah Ibadah_lainnya no_tempat_ibadah <br>    DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY Masjid + Langgar + Gereja_kristen + Gereja_katolik + Kapel + Pura + Wihara + Kelenteng + Balai_basarah + Ibadah_lainnya + <br>    no_tempat_ibadah<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=Masjid [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Langgar [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Gereja_kristen [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Gereja_katolik [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Kapel [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Pura [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Wihara [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Kelenteng [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Balai_basarah [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=Ibadah_lainnya [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=no_tempat_ibadah ORDER=A KEY=VALUE EMPTY=INCLUDE<br>    /TITLES <br>     TITLE='Tabel 5.2'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 5.2</caption>
 <tbody>
@@ -8014,7 +8017,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>0</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>281</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>145</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>162</td>
@@ -11084,7 +11087,7 @@ a:active {
 <pre class="syntax">EXECUTE.</pre>
 <pre class="syntax">RECODE minimarket restoran warungmakan tokokelontong hotel penginapan (MISSING=0).</pre>
 <pre class="syntax">EXECUTE.</pre>
-<pre class="syntax">* Custom Tables. <br>CTABLES <br>  /VLABELS VARIABLES=idkec minimarket restoran warungmakan tokokelontong hotel penginapan <br>    DISPLAY=LABEL <br>  /TABLE idkec [C] BY minimarket [S][SUM] + restoran [S][SUM] + warungmakan [S][SUM] + tokokelontong [S][SUM] + hotel [S][SUM] + penginapan [S][SUM] <br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER <br>  /TITLES <br>    TITLE='Tabel 9.1'.</pre>
+<pre class="syntax">* Custom Tables. <br>CTABLES <br>  /VLABELS VARIABLES=idkec minimarket restoran warungmakan tokokelontong hotel penginapan <br>    DISPLAY=LABEL <br>  /TABLE idkec [C] BY minimarket [S][SUM] + restoran [S][SUM] + warungmakan [S][SUM] + tokokelontong [S][SUM] + hotel [S][SUM] + penginapan [S][SUM] <br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /TITLES <br>    TITLE='Tabel 9.1'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 9.1</caption>
 <tbody>
@@ -11326,7 +11329,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>2.00</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>26.00</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>26.00</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>249.00</td>
@@ -11345,7 +11348,7 @@ a:active {
 <pre class="syntax">EXECUTE.</pre>
 <pre class="syntax">RECODE kelompoktoko pasarpermanen pasarsemi pasartanpabangunan nopsrtoko (MISSING=0).</pre>
 <pre class="syntax">EXECUTE.</pre>
-<pre class="syntax">* Custom Tables. <br>CTABLES <br>  /VLABELS VARIABLES=idkec kelompoktoko pasarpermanen pasarsemi pasartanpabangunan nopsrtoko r1206b1 r1206b2 r1206b3 <br>    DISPLAY=LABEL <br>  /TABLE idkec BY kelompoktoko [S][SUM] + pasarpermanen [S][SUM] + pasarsemi [S][SUM] + pasartanpabangunan [S][SUM] + nopsrtoko [S][SUM] + r1206b1 [COUNT F40.0] + r1206b2 [COUNT F40.0] + r1206b3 [COUNT F40.0] <br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER <br>  /CATEGORIES VARIABLES=r1206b1 r1206b2 r1206b3 [1.00] EMPTY=INCLUDE <br>  /TITLES <br>    TITLE='Tabel 9.2'.</pre>
+<pre class="syntax">* Custom Tables. <br>CTABLES <br>  /VLABELS VARIABLES=idkec kelompoktoko pasarpermanen pasarsemi pasartanpabangunan nopsrtoko r1206b1 r1206b2 r1206b3 <br>    DISPLAY=LABEL <br>  /TABLE idkec BY kelompoktoko [S][SUM] + pasarpermanen [S][SUM] + pasarsemi [S][SUM] + pasartanpabangunan [S][SUM] + nopsrtoko [S][SUM] + r1206b1 [COUNT F40.0] + r1206b2 [COUNT F40.0] + r1206b3 [COUNT F40.0] <br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=r1206b1 r1206b2 r1206b3 [1.00] EMPTY=INCLUDE <br>  /TITLES <br>    TITLE='Tabel 9.2'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 9.2</caption>
 <tbody>
@@ -11646,7 +11649,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>3</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>7.00</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>18.00</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>19.00</td>
@@ -11666,7 +11669,7 @@ a:active {
 <pre class="syntax">EXECUTE.</pre>
 <pre class="syntax">RECODE bankpemerintah bankswasta bpr nobank (MISSING=0).</pre>
 <pre class="syntax">EXECUTE.</pre>
-<pre class="syntax">* Custom Tables. <br>CTABLES <br>  /VLABELS VARIABLES=idkec bankpemerintah bankswasta bpr nobank DISPLAY=LABEL <br>  /TABLE idkec [C] BY bankpemerintah [S][SUM] + bankswasta [S][SUM] + bpr [S][SUM] + nobank [S][SUM] <br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER <br>  /TITLES <br>    TITLE='Tabel 9.3'.</pre>
+<pre class="syntax">* Custom Tables. <br>CTABLES <br>  /VLABELS VARIABLES=idkec bankpemerintah bankswasta bpr nobank DISPLAY=LABEL <br>  /TABLE idkec [C] BY bankpemerintah [S][SUM] + bankswasta [S][SUM] + bpr [S][SUM] + nobank [S][SUM] <br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /TITLES <br>    TITLE='Tabel 9.3'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 9.3</caption>
 <tbody>
@@ -11856,7 +11859,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>10.00</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>11.00</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>4.00</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>7.00</td>
@@ -17822,7 +17825,7 @@ a:active {
 </tbody>
 </table>
 
-<pre class="syntax"><br>*BAB 15.<br>*Tabel 15.1 BANYAKNYA DESA/KELURAHAN MENURUT UPAYA ANTISIPASI/MITIGASI BENCANA ALAM.<br>*==============================================================================.<br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec r604a r604b r604c r604d r604e DISPLAY=BOTH<br>  /TABLE idkec [COUNT F40.0] BY r604a + r604b + r604c + r604d + r604e<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br>  /CATEGORIES VARIABLES=r604a [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r604b [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r604c [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r604d [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r604e [1] EMPTY=INCLUDE<br>   /TITLES<br>    TITLE='Tabel 15.1'.</pre>
+<pre class="syntax"><br>*BAB 15.<br>*Tabel 15.1 BANYAKNYA DESA/KELURAHAN MENURUT UPAYA ANTISIPASI/MITIGASI BENCANA ALAM.<br>*==============================================================================.<br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec r604a r604b r604c r604d r604e DISPLAY=BOTH<br>  /TABLE idkec [COUNT F40.0] BY r604a + r604b + r604c + r604d + r604e<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=r604a [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r604b [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r604c [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r604d [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r604e [1] EMPTY=INCLUDE<br>   /TITLES<br>    TITLE='Tabel 15.1'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 15.1</caption>
 <tbody>
@@ -18047,7 +18050,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>0</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>9</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>4</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>19</td>
@@ -18062,7 +18065,7 @@ a:active {
 <pre class="syntax">RECODE tanpa_bencana (MISSING=0).</pre>
 <pre class="syntax">EXECUTE.</pre>
 <pre class="syntax">VALUE LABELS tanpa_bencana 1 &quot;Tidak ada bencana&quot; 0 &quot;Ada bencana&quot;.</pre>
-<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec r601ak2 r601bk2 r601ck2 r601dk2 r601ek2 r601fk2 r601gk2 r601hk2 r601ik2 <br>    r601jk2 r601kk2 tanpa_bencana <br>    DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY r601ak2 + r601bk2 + r601ck2 + r601dk2 + r601ek2 + r601fk2 + <br>    r601gk2 + r601hk2 + r601ik2 + r601jk2 + r601kk2 + tanpa_bencana<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br>  /CATEGORIES VARIABLES=r601ak2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601bk2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601ck2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601dk2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601ek2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601fk2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601gk2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601hk2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601ik2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601jk2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601kk2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=tanpa_bencana [1] EMPTY=INCLUDE <br>   /TITLES<br>    TITLE='Tabel 15.2'.</pre>
+<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec r601ak2 r601bk2 r601ck2 r601dk2 r601ek2 r601fk2 r601gk2 r601hk2 r601ik2 <br>    r601jk2 r601kk2 tanpa_bencana <br>    DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY r601ak2 + r601bk2 + r601ck2 + r601dk2 + r601ek2 + r601fk2 + <br>    r601gk2 + r601hk2 + r601ik2 + r601jk2 + r601kk2 + tanpa_bencana<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=r601ak2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601bk2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601ck2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601dk2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601ek2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601fk2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601gk2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601hk2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601ik2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601jk2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r601kk2 [1] EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=tanpa_bencana [1] EMPTY=INCLUDE <br>   /TITLES<br>    TITLE='Tabel 15.2'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 15.2</caption>
 <tbody>
@@ -18476,7 +18479,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>10</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>3</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>37</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>1</td>
@@ -18495,7 +18498,7 @@ a:active {
 
 <pre class="syntax"><br>*Tabel 16.1.<br><br>*==============================================================================.<br>IF  (r711ak2 = 2 &amp; <br>r711bk2 = 2 &amp; <br>r711ck2 = 2 &amp; <br>r711dk2 = 2 &amp; <br>r711ek2 = 2 &amp; <br>r711fk2 = 2 &amp; <br>r711gk2 = 2 &amp; <br>r711hk2 = 2  &amp; <br>r711ik2 = 2) tanpa_wabah=1.</pre>
 <pre class="syntax">EXECUTE.</pre>
-<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec r711ak2 r711bk2 r711ck2 r711dk2 r711ek2 r711fk2 r711gk2 r711hk2 r711ik2<br>    tanpa_wabah <br>    DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY r711ak2 + r711bk2 + r711ck2 + r711dk2 + r711ek2 + r711fk2 + <br>    r711gk2 + r711hk2 + r711ik2 + tanpa_wabah<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br>  /CATEGORIES VARIABLES=r711ak2 r711bk2 r711ck2 r711dk2 r711ek2 r711fk2 r711gk2 r711hk2 r711ik2  tanpa_wabah <br>    [1] EMPTY=INCLUDE<br>     /TITLES<br>    TITLE='Tabel 16.1'.</pre>
+<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec r711ak2 r711bk2 r711ck2 r711dk2 r711ek2 r711fk2 r711gk2 r711hk2 r711ik2<br>    tanpa_wabah <br>    DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY r711ak2 + r711bk2 + r711ck2 + r711dk2 + r711ek2 + r711fk2 + <br>    r711gk2 + r711hk2 + r711ik2 + tanpa_wabah<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=r711ak2 r711bk2 r711ck2 r711dk2 r711ek2 r711fk2 r711gk2 r711hk2 r711ik2  tanpa_wabah <br>    [1] EMPTY=INCLUDE<br>     /TITLES<br>    TITLE='Tabel 16.1'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 16.1</caption>
 <tbody>
@@ -18855,7 +18858,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>10</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>13</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>6</td>
 <td style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'></td>
@@ -18874,7 +18877,7 @@ a:active {
 <pre class="syntax"> EXECUTE.</pre>
 <pre class="syntax">IF  (r806 &gt; 0) pasung=1.</pre>
 <pre class="syntax"> EXECUTE.</pre>
-<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec gizi_buruk pasung DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY gizi_buruk + pasung<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br>  /CATEGORIES VARIABLES=gizi_buruk pasung ORDER=A KEY=VALUE EMPTY=INCLUDE<br>   /TITLES<br>    TITLE='Tabel 16.2'.</pre>
+<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec gizi_buruk pasung DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY gizi_buruk + pasung<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=gizi_buruk pasung ORDER=A KEY=VALUE EMPTY=INCLUDE<br>   /TITLES<br>    TITLE='Tabel 16.2'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 16.2</caption>
 <tbody>
@@ -19018,7 +19021,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>0</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>71</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid; border-right: thick solid'>12</td>
 </tr>
@@ -19045,7 +19048,7 @@ a:active {
 <pre class="syntax">EXECUTE.</pre>
 <pre class="syntax">IF  (r805i &gt; 0) ganda=1.</pre>
 <pre class="syntax">EXECUTE.</pre>
-<pre class="syntax"><br><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec ada_cacat netra rungu wicara rungu_wicara daksa grahita laras kusta ganda <br>    DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY ada_cacat + netra + rungu + wicara + rungu_wicara + daksa + grahita + laras + kusta + ganda<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br>  /CATEGORIES VARIABLES=ada_cacat netra rungu wicara rungu_wicara daksa grahita laras kusta ganda <br>    ORDER=A KEY=VALUE EMPTY=INCLUDE<br> /TITLES <br>    TITLE='Tabel 16.3'.</pre>
+<pre class="syntax"><br><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec ada_cacat netra rungu wicara rungu_wicara daksa grahita laras kusta ganda <br>    DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY ada_cacat + netra + rungu + wicara + rungu_wicara + daksa + grahita + laras + kusta + ganda<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=ada_cacat netra rungu wicara rungu_wicara daksa grahita laras kusta ganda <br>    ORDER=A KEY=VALUE EMPTY=INCLUDE<br> /TITLES <br>    TITLE='Tabel 16.3'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 16.3</caption>
 <tbody>
@@ -19405,7 +19408,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>5</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>302</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>108</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>125</td>
@@ -19422,7 +19425,7 @@ a:active {
 
 <pre class="syntax"><br>*Tabel 17.1.<br>*==============================================================================.<br><br>IF  (r710 &gt; 0) SKTM=1.</pre>
 <pre class="syntax"> EXECUTE.</pre>
-<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec SKTM DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY SKTM<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br>  /CATEGORIES VARIABLES=SKTM ORDER=A KEY=VALUE EMPTY=INCLUDE<br> /TITLES <br>    TITLE='Tabel 17.1'.</pre>
+<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec SKTM DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY SKTM<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=SKTM ORDER=A KEY=VALUE EMPTY=INCLUDE<br> /TITLES <br>    TITLE='Tabel 17.1'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 17.1</caption>
 <tbody>
@@ -19539,7 +19542,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-right: thick solid'>10</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid; border-right: thick solid'>333</td>
 </tr>
 </tbody>
@@ -19547,7 +19550,7 @@ a:active {
 
 <pre class="syntax"><br><br>*Tabel 17.2.<br>*==============================================================================.<br>IF  (R1307ak2 &gt; 0 | R1307ak3 &gt; 0) bunuh_diri=1.</pre>
 <pre class="syntax">EXECUTE.</pre>
-<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec bunuh_diri r1308a r1308b r1309 DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY bunuh_diri + r1308a + r1308b + r1309<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br>  /CATEGORIES VARIABLES=bunuh_diri  ORDER=A KEY=VALUE EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1308a r1308b r1309 [1] EMPTY=INCLUDE<br> /TITLES <br>    TITLE='Tabel 17.2'.</pre>
+<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec bunuh_diri r1308a r1308b r1309 DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY bunuh_diri + r1308a + r1308b + r1309<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=bunuh_diri  ORDER=A KEY=VALUE EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1308a r1308b r1309 [1] EMPTY=INCLUDE<br> /TITLES <br>    TITLE='Tabel 17.2'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 17.2</caption>
 <tbody>
@@ -19745,7 +19748,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>0</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>11</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>3</td>
 <td style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'></td>
@@ -19768,7 +19771,7 @@ a:active {
 <pre class="syntax">EXECUTE.</pre>
 <pre class="syntax">IF  (r1301b7k2 &gt; 0) Perkelahian_Lainnya=1.</pre>
 <pre class="syntax">EXECUTE.</pre>
-<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec Kelmasy Kelmasy_antardesa Kelmasy_keamanan Kelmasy_pemerintah Pelajar Suku Perkelahian_Lainnya <br>    DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY Kelmasy + Kelmasy_antardesa + Kelmasy_keamanan + Kelmasy_pemerintah + Pelajar + Suku + Perkelahian_Lainnya    <br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br>  /CATEGORIES VARIABLES=Kelmasy Kelmasy_antardesa Kelmasy_keamanan Kelmasy_pemerintah Pelajar Suku Perkelahian_Lainnya ORDER=A KEY=VALUE <br>    EMPTY=INCLUDE <br>    /TITLES <br>    TITLE='Tabel 18.1'.</pre>
+<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec Kelmasy Kelmasy_antardesa Kelmasy_keamanan Kelmasy_pemerintah Pelajar Suku Perkelahian_Lainnya <br>    DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY Kelmasy + Kelmasy_antardesa + Kelmasy_keamanan + Kelmasy_pemerintah + Pelajar + Suku + Perkelahian_Lainnya    <br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=Kelmasy Kelmasy_antardesa Kelmasy_keamanan Kelmasy_pemerintah Pelajar Suku Perkelahian_Lainnya ORDER=A KEY=VALUE <br>    EMPTY=INCLUDE <br>    /TITLES <br>    TITLE='Tabel 18.1'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 18.1</caption>
 <tbody>
@@ -19912,7 +19915,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>0</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>3</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid; border-right: thick solid'>1</td>
 </tr>
@@ -19929,7 +19932,7 @@ a:active {
 <pre class="syntax">EXECUTE.</pre>
 <pre class="syntax"><br>IF  (r1301b1k4 = 1 | <br>r1301b2k4 = 1 | <br>r1301b3k4 = 1 | <br>r1301b4k4 = 1 | <br>r1301b5k4 = 1 | <br>r1301b6k4 = 1 | <br>r1301b7k4 = 1) perkelahian_luka_luka=1.</pre>
 <pre class="syntax">EXECUTE.</pre>
-<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec massal_1 perkelahian_meninggal perkelahian_luka_luka DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY massal_1 + perkelahian_meninggal + perkelahian_luka_luka<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br>  /CATEGORIES VARIABLES=massal_1 perkelahian_meninggal perkelahian_luka_luka ORDER=A KEY=VALUE EMPTY=INCLUDE<br>  /TITLES <br>    TITLE='Tabel 18.2'.</pre>
+<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec massal_1 perkelahian_meninggal perkelahian_luka_luka DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY massal_1 + perkelahian_meninggal + perkelahian_luka_luka<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=massal_1 perkelahian_meninggal perkelahian_luka_luka ORDER=A KEY=VALUE EMPTY=INCLUDE<br>  /TITLES <br>    TITLE='Tabel 18.2'.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 18.2</caption>
 <tbody>
@@ -20073,7 +20076,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>0</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>4</td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid; border-right: thick solid'>2</td>
 </tr>
@@ -20352,7 +20355,7 @@ a:active {
 
 <pre class="syntax"><br>*Tabel 18.4.<br>*==============================================================================.<br>IF  (r1303a1k3 = 2 &amp; <br>r1303a2k3 = 2 &amp; <br>r1303a3k3 = 2 &amp; <br>r1303a4k3 = 2 &amp; <br>r1303a5k3 = 2 &amp; <br>r1303a6k3 = 2 &amp; <br>r1303a7k3 = 2 &amp; <br>r1303a8k3 = 2 &amp; <br>r1303a9k3 = 2 &amp; <br>r1303a10k3 = 2 &amp; <br>r1303a11k3 = 2) no_kejahatan=1.</pre>
 <pre class="syntax">EXECUTE.</pre>
-<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec r1303a1k3 r1303a2k3 r1303a3k3 r1303a4k3 r1303a5k3 r1303a6k3 <br>    r1303a7k3 r1303a8k3 r1303a9k3 r1303a10k3 r1303a11k3 no_kejahatan <br>    DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY r1303a1k3 [C] + r1303a2k3 [C] + r1303a3k3 [C] + r1303a4k3 [C] <br>    + r1303a5k3 [C] + r1303a6k3 [C] + r1303a7k3 [C] + r1303a8k3 [C] + r1303a9k3 [C] + r1303a10k3 <br>    [C] + r1303a11k3 [C] + no_kejahatan<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br>  /CATEGORIES VARIABLES=no_kejahatan ORDER=A KEY=VALUE EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a1k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a2k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a3k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a4k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a5k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a6k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a7k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a8k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a9k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a10k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a11k3 [1]  EMPTY=INCLUDE<br> /TITLES <br>    TITLE='Tabel 18.4. '.</pre>
+<pre class="syntax"><br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec r1303a1k3 r1303a2k3 r1303a3k3 r1303a4k3 r1303a5k3 r1303a6k3 <br>    r1303a7k3 r1303a8k3 r1303a9k3 r1303a10k3 r1303a11k3 no_kejahatan <br>    DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY r1303a1k3 [C] + r1303a2k3 [C] + r1303a3k3 [C] + r1303a4k3 [C] <br>    + r1303a5k3 [C] + r1303a6k3 [C] + r1303a7k3 [C] + r1303a8k3 [C] + r1303a9k3 [C] + r1303a10k3 <br>    [C] + r1303a11k3 [C] + no_kejahatan<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=no_kejahatan ORDER=A KEY=VALUE EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a1k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a2k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a3k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a4k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a5k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a6k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a7k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a8k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a9k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a10k3 [1]  EMPTY=INCLUDE<br>  /CATEGORIES VARIABLES=r1303a11k3 [1]  EMPTY=INCLUDE<br> /TITLES <br>    TITLE='Tabel 18.4. '.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 18.4. </caption>
 <tbody>
@@ -20766,7 +20769,7 @@ a:active {
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'>10</td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>41</td>
 <td style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'></td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>4</td>
@@ -20783,7 +20786,7 @@ a:active {
 </tbody>
 </table>
 
-<pre class="syntax"><br>*Tabel 18.5.<br>*==============================================================================.<br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec r1303b DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY r1303b<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br>  /CATEGORIES VARIABLES=r1303b ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br> /TITLES <br>    TITLE='Tabel 18.5. '.</pre>
+<pre class="syntax"><br>*Tabel 18.5.<br>*==============================================================================.<br>* Custom Tables.<br>CTABLES<br>  /VLABELS VARIABLES=idkec r1303b DISPLAY=BOTH<br>  /TABLE idkec [C][COUNT F40.0] BY r1303b<br>  /CATEGORIES VARIABLES=idkec ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES LABEL='NAMA_KABUPATEN' POSITION=AFTER<br>  /CATEGORIES VARIABLES=r1303b ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=AFTER<br> /TITLES <br>    TITLE='Tabel 18.5. '.</pre>
 <table>
 <caption style='text-align: center; vertical-align: middle; font-family: "Sans Serif", sans-serif; font-weight: bold; font-size: 9pt'>Tabel 18.5. </caption>
 <tbody>
@@ -21186,7 +21189,7 @@ a:active {
 <td style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-right: thick solid'></td>
 </tr>
 <tr>
-<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>Total</th>
+<th style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-bottom: thick solid'>NAMA_KABUPATEN</th>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: thick solid; border-bottom: thick solid'>38</td>
 <td style='font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'></td>
 <td style='text-align: right; font-family: "Sans Serif", sans-serif; font-size: 9pt; border-left: solid; border-bottom: thick solid'>2</td>
