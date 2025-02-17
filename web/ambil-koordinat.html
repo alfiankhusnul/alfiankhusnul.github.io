@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta dengan Satu Marker</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        h3 {
+            color: #333;
+            margin: 10px 0;
+        }
+        #map {
+            flex: 1;
+            height: 70vh;
+            width: 90%;
+            max-width: 1200px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        #coordinates {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 1200px;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .column {
+            flex: 1;
+            text-align: left;
+            padding: 10px;
+        }
+        .column strong {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <h3>Klik pada peta untuk menambahkan marker</h3>
+    <div id="map"></div>
+    <div id="coordinates">
+        <div class="column">
+            <strong>Format DMS:</strong>
+            <p id="latDMS">Latitude (Lintang): -</p>
+            <p id="lngDMS">Longitude (Bujur): -</p>
+        </div>
+        <div class="column">
+            <strong>Format Derajat:</strong>
+            <p id="latDeg">Latitude (Lintang): -</p>
+            <p id="lngDeg">Longitude (Bujur): -</p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([-6.1754, 106.8272], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        
+        var marker;
+        function toDMS(coordinate, isLat) {
+            var absolute = Math.abs(coordinate);
+            var degrees = Math.floor(absolute);
+            var minutes = Math.floor((absolute - degrees) * 60);
+            var seconds = ((absolute - degrees - minutes / 60) * 3600).toFixed(2);
+            var direction = isLat ? (coordinate >= 0 ? 'N' : 'S') : (coordinate >= 0 ? 'E' : 'W');
+            return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
+        }
+        
+        map.on('click', function(e) {
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker(e.latlng).addTo(map);
+
+            var latDMS = toDMS(e.latlng.lat, true);
+            var lngDMS = toDMS(e.latlng.lng, false);
+            var latDeg = e.latlng.lat.toFixed(6);
+            var lngDeg = e.latlng.lng.toFixed(6);
+
+            document.getElementById('latDMS').innerText = `Latitude (Lintang): ${latDMS}`;
+            document.getElementById('lngDMS').innerText = `Longitude (Bujur): ${lngDMS}`;
+            document.getElementById('latDeg').innerText = `Latitude (Lintang): ${latDeg}°`;
+            document.getElementById('lngDeg').innerText = `Longitude (Bujur): ${lngDeg}°`;
+        });
+    </script>
+</body>
+</html>
