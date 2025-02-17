@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Konversi Koordinat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px; /* Menyesuaikan ukuran maksimal container */
+            width: 100%;
+        }
+        h2 {
+            color: #333333;
+            text-align: center;
+        }
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+            width: 150px; /* Memperbesar lebar label */
+            text-align: right;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        button {
+            width: 48%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        button.reset {
+            background-color: #f44336;
+        }
+        p#result {
+            margin-top: 20px;
+            color: #333333;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+        }
+    </style>
+    <script>
+        function toDMS(deg, type) {
+            var d = Math.floor(Math.abs(deg));
+            var minfloat = (Math.abs(deg) - d) * 60;
+            var m = Math.floor(minfloat);
+            var secfloat = (minfloat - m) * 60;
+            var s = Math.round(secfloat);
+            // Adjust round seconds
+            if (s == 60) {
+                m++;
+                s = 0;
+            }
+            if (m == 60) {
+                d++;
+                m = 0;
+            }
+            var direction = "";
+            if (type === "lat") {
+                direction = deg >= 0 ? "LU" : "LS";
+            } else if (type === "lon") {
+                direction = deg >= 0 ? "BT" : "BB";
+            }
+            return d + "° " + m + "' " + s + "\" " + direction;
+        }
+
+        function convert() {
+            var lat = parseFloat(document.getElementById("latitude").value);
+            var lon = parseFloat(document.getElementById("longitude").value);
+            if (!isNaN(lat) && !isNaN(lon)) {
+                document.getElementById("result").innerHTML = 
+                    "Latitude (Lintang): " + toDMS(lat, "lat") + "<br>" +
+                    "Longitude (Bujur): " + toDMS(lon, "lon");
+            } else {
+                document.getElementById("result").innerHTML = "Please enter valid numbers.";
+            }
+        }
+
+        function resetFields() {
+            document.getElementById("latitude").value = "";
+            document.getElementById("longitude").value = "";
+            document.getElementById("result").innerHTML = "";
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Konversi Koordinat</h2>
+        <div class="form-group">
+            <label for="latitude">Latitude (Lintang):</label>
+            <input type="text" id="latitude" name="latitude">
+        </div>
+        <div class="form-group">
+            <label for="longitude">Longitude (Bujur):</label>
+            <input type="text" id="longitude" name="longitude">
+        </div>
+        <div class="button-container">
+            <button onclick="convert()">Konversi</button>
+            <button class="reset" onclick="resetFields()">Reset</button>
+        </div>
+        <p id="result"></p>
+    </div>
+</body>
+</html>
