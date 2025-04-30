@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Text Case Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    textarea {
+      width: 100%;
+      max-width: 800px;
+      height: 200px;
+      padding: 10px;
+      font-size: 16px;
+      resize: vertical;
+      margin-bottom: 15px;
+    }
+
+    .button-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    button {
+      padding: 10px 15px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      background-color: #eee;
+      border-radius: 5px;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #ccc;
+    }
+
+    @media (max-width: 600px) {
+      button {
+        flex: 1 1 45%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <textarea id="textInput" placeholder="Type or paste your content here"></textarea>
+
+  <div class="button-container">
+    <button onclick="changeText('sentence')">Sentence case</button>
+    <button onclick="changeText('lower')">lower case</button>
+    <button onclick="changeText('upper')">UPPER CASE</button>
+    <button onclick="changeText('capitalize')">Capitalized Case</button>
+    <button onclick="changeText('alternate')">aLtErNaTiNg cAsE</button>
+    <button onclick="changeText('title')">Title Case</button>
+    <button onclick="changeText('inverse')">InVeRsE CaSe</button>
+    <button onclick="downloadText()">Download Text</button>
+    <button onclick="copyToClipboard()">Copy to Clipboard</button>
+    <button onclick="clearText()">Clear</button>
+  </div>
+
+  <script>
+    const textarea = document.getElementById('textInput');
+
+    function changeText(type) {
+      let text = textarea.value;
+
+      switch(type) {
+        case 'lower':
+          text = text.toLowerCase();
+          break;
+        case 'upper':
+          text = text.toUpperCase();
+          break;
+        case 'sentence':
+          text = text.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g, c => c.toUpperCase());
+          break;
+        case 'capitalize':
+          text = text.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+          break;
+        case 'alternate':
+          text = text.split('').map((c, i) => i % 2 === 0 ? c.toLowerCase() : c.toUpperCase()).join('');
+          break;
+        case 'title':
+          text = text.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+          break;
+        case 'inverse':
+          text = text.split('').map(c => c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()).join('');
+          break;
+      }
+
+      textarea.value = text;
+    }
+
+    function downloadText() {
+      const blob = new Blob([textarea.value], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.download = 'text.txt';
+      link.href = URL.createObjectURL(blob);
+      link.click();
+    }
+
+    function copyToClipboard() {
+      textarea.select();
+      document.execCommand('copy');
+    }
+
+    function clearText() {
+      textarea.value = '';
+    }
+  </script>
+</body>
+</html>
