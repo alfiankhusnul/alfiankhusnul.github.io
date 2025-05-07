@@ -13,18 +13,11 @@
   <div class="max-w-3xl mx-auto bg-white p-4 rounded-xl shadow-md">
     <h1 class="text-xl sm:text-2xl font-bold mb-4 text-center">Scanner QR / Barcode</h1>
 
-    <!-- Tombol Ganti Kamera -->
-    <div class="mb-3 flex justify-center">
-      <button id="switchCameraBtn" onclick="switchCamera()" class="bg-blue-500 text-white px-3 py-2 text-sm rounded hover:bg-blue-600">
-        🔄 Ganti Kamera
-      </button>
-    </div>
-
     <!-- Area Kamera -->
     <div id="reader" class="mb-4 rounded overflow-hidden" style="max-width: 100%;"></div>
 
     <!-- Action Buttons -->
-    <div class="flex flex-col sm:flex-row sm:justify-between gap-2 sm:gap-4 mb-4">
+    <div class="flex justify-between mb-4">
       <button onclick="clearData()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
         Bersihkan Data
       </button>
@@ -51,9 +44,7 @@
 
   <script>
     const scanKey = 'scanResults';
-    let html5QrCode;
-    let currentCameraId = null;
-    let cameraList = [];
+    var html5QrcodeScanner;
 
     function loadScans() {
       const data = JSON.parse(localStorage.getItem(scanKey)) || [];
@@ -73,11 +64,12 @@
       });
     }
 
-    function addScan(text) {
+    function onScanSuccess(decodedText, decodedResult) {
       const time = new Date().toLocaleString();
       const data = JSON.parse(localStorage.getItem(scanKey)) || [];
-      data.push({ text, time });
+      data.push({ decodedText, time });
       localStorage.setItem(scanKey, JSON.stringify(data));
+      console.log(`Scan result ${decodedText}`, decodedResult);
       loadScans();
       alert("✅ Scan berhasil!\n\n" + text);
     }
@@ -114,43 +106,12 @@
       link.click();
     }
 
-    function startScanner(cameraId) {
-      const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-      html5QrCode?.stop().then(() => {
-        html5QrCode.clear();
-        html5QrCode.start(
-          cameraId,
-          config,
-          qrCodeMessage => addScan(qrCodeMessage),
-          errorMessage => {
-            // console.warn("Scan error", errorMessage);
-          }
-        );
-      }).catch(() => { /* pass */ });
-    }
-
-    function switchCamera() {
-      if (cameraList.length < 2) return alert("Tidak ada kamera lain untuk diganti.");
-      const index = cameraList.findIndex(c => c.id === currentCameraId);
-      const nextIndex = (index + 1) % cameraList.length;
-      currentCameraId = cameraList[nextIndex].id;
-      startScanner(currentCameraId);
-    }
-
     window.onload = () => {
-      html5QrCode = new Html5Qrcode("reader");
-      Html5Qrcode.getCameras().then(devices => {
-        if (devices && devices.length) {
-          cameraList = devices;
-          currentCameraId = devices.find(c => !/front|depan/i.test(c.label))?.id || devices[0].id;
-          startScanner(currentCameraId);
-        } else {
-          alert("Kamera tidak tersedia.");
-        }
-      }).catch(err => {
-        alert("Gagal mendapatkan daftar kamera.");
-        console.error(err);
+      html5QrcodeScanner = new Html5QrcodeScanner("reader", {
+        fps: 10,
+        qrbox: 250
       });
+      html5QrcodeScanner.render(onScanSuccess);
       loadScans();
     };
   </script>
