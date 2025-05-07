@@ -64,12 +64,12 @@
       });
     }
 
-    function onScanSuccess(decodedText, decodedResult) {
+    function onScanSuccess(text, result) {
       const time = new Date().toLocaleString();
       const data = JSON.parse(localStorage.getItem(scanKey)) || [];
-      data.push({ decodedText, time });
+      data.push({ text, time });
       localStorage.setItem(scanKey, JSON.stringify(data));
-      console.log(`Scan result ${decodedText}`, decodedResult);
+      console.log(`Scan result ${text}`, result);
       loadScans();
       alert("✅ Scan berhasil!\n\n" + text);
     }
