@@ -10,31 +10,36 @@
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body class="bg-gray-100 min-h-screen p-4">
-  <div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md">
-    <h1 class="text-2xl font-bold mb-4 text-center">Scanner QR / Barcode</h1>
+  <div class="max-w-3xl mx-auto bg-white p-4 sm:p-6 rounded-xl shadow-md">
+    <h1 class="text-xl sm:text-2xl font-bold mb-4 text-center">Scanner QR / Barcode</h1>
 
-    <div id="reader" class="mb-4"></div>
+    <!-- Scanner Area -->
+    <div id="reader" class="mb-4 rounded overflow-hidden" style="max-width: 100%;"></div>
 
-    <div class="flex justify-between mb-4">
-      <button onclick="clearData()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
-        Bersihkan Data
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row sm:justify-between gap-2 sm:gap-4 mb-4">
+      <button onclick="clearData()" class="bg-red-500 text-white w-full sm:w-auto px-4 py-3 rounded-lg text-base hover:bg-red-600">
+        🗑 Bersihkan Data
       </button>
-      <button onclick="downloadCSV()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-        Unduh CSV
+      <button onclick="downloadCSV()" class="bg-green-500 text-white w-full sm:w-auto px-4 py-3 rounded-lg text-base hover:bg-green-600">
+        💾 Unduh CSV
       </button>
     </div>
 
-    <table class="w-full table-auto border border-gray-300">
-      <thead class="bg-gray-200">
-        <tr>
-          <th class="border px-2 py-1">#</th>
-          <th class="border px-2 py-1">Hasil Scan</th>
-          <th class="border px-2 py-1">Waktu</th>
-          <th class="border px-2 py-1">Aksi</th>
-        </tr>
-      </thead>
-      <tbody id="scanTableBody"></tbody>
-    </table>
+    <!-- Tabel Hasil Scan -->
+    <div class="overflow-x-auto">
+      <table class="w-full table-auto border border-gray-300 text-sm">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="border px-2 py-1">#</th>
+            <th class="border px-2 py-1">Hasil</th>
+            <th class="border px-2 py-1">Waktu</th>
+            <th class="border px-2 py-1">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="scanTableBody"></tbody>
+      </table>
+    </div>
   </div>
 
   <script>
@@ -49,9 +54,9 @@
         tr.innerHTML = `
           <td class="border px-2 py-1 text-center">${index + 1}</td>
           <td class="border px-2 py-1 break-words">${item.text}</td>
-          <td class="border px-2 py-1 text-sm">${item.time}</td>
+          <td class="border px-2 py-1 text-xs">${item.time}</td>
           <td class="border px-2 py-1 text-center">
-            <button onclick="deleteRow(${index})" class="text-red-500 hover:underline">Hapus</button>
+            <button onclick="deleteRow(${index})" class="text-red-500 hover:underline text-sm">Hapus</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -98,8 +103,9 @@
       link.click();
     }
 
+    // Mulai Scanner
     const html5QrCode = new Html5Qrcode("reader");
-    const config = { fps: 10, qrbox: 250 };
+    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
     Html5Qrcode.getCameras().then(devices => {
       if (devices && devices.length) {
@@ -110,11 +116,13 @@
             addScan(qrCodeMessage);
           },
           errorMessage => {
-            // Optional: console.warn(errorMessage);
+            // console.warn(errorMessage);
           }
         ).catch(err => {
           console.error("Gagal memulai kamera:", err);
         });
+      } else {
+        alert("Kamera tidak tersedia");
       }
     });
 
