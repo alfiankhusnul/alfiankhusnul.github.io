@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scan QR/Barcode</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- html5-qrcode CDN -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-4">
+  <div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md">
+    <h1 class="text-2xl font-bold mb-4 text-center">Scanner QR / Barcode</h1>
+
+    <div id="reader" class="mb-4"></div>
+
+    <div class="flex justify-between mb-4">
+      <button onclick="clearData()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+        Bersihkan Data
+      </button>
+      <button onclick="downloadCSV()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+        Unduh CSV
+      </button>
+    </div>
+
+    <table class="w-full table-auto border border-gray-300">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="border px-2 py-1">#</th>
+          <th class="border px-2 py-1">Hasil Scan</th>
+          <th class="border px-2 py-1">Waktu</th>
+          <th class="border px-2 py-1">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="scanTableBody"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const scanKey = 'scanResults';
+
+    function loadScans() {
+      const data = JSON.parse(localStorage.getItem(scanKey)) || [];
+      const tbody = document.getElementById("scanTableBody");
+      tbody.innerHTML = "";
+      data.forEach((item, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="border px-2 py-1 text-center">${index + 1}</td>
+          <td class="border px-2 py-1 break-words">${item.text}</td>
+          <td class="border px-2 py-1 text-sm">${item.time}</td>
+          <td class="border px-2 py-1 text-center">
+            <button onclick="deleteRow(${index})" class="text-red-500 hover:underline">Hapus</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function addScan(text) {
+      const time = new Date().toLocaleString();
+      const data = JSON.parse(localStorage.getItem(scanKey)) || [];
+      data.push({ text, time });
+      localStorage.setItem(scanKey, JSON.stringify(data));
+      loadScans();
+    }
+
+    function deleteRow(index) {
+      const data = JSON.parse(localStorage.getItem(scanKey)) || [];
+      data.splice(index, 1);
+      localStorage.setItem(scanKey, JSON.stringify(data));
+      loadScans();
+    }
+
+    function clearData() {
+      if (confirm("Apakah kamu yakin ingin menghapus semua data scan?")) {
+        localStorage.removeItem(scanKey);
+        loadScans();
+      }
+    }
+
+    function downloadCSV() {
+      const data = JSON.parse(localStorage.getItem(scanKey)) || [];
+      if (data.length === 0) {
+        alert("Belum ada data untuk diunduh.");
+        return;
+      }
+      const rows = [["No", "Hasil Scan", "Waktu"]];
+      data.forEach((item, index) => {
+        rows.push([index + 1, item.text, item.time]);
+      });
+      const csvContent = rows.map(r => r.map(cell => `"${cell}"`).join(",")).join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "hasil_scan.csv";
+      link.click();
+    }
+
+    const html5QrCode = new Html5Qrcode("reader");
+    const config = { fps: 10, qrbox: 250 };
+
+    Html5Qrcode.getCameras().then(devices => {
+      if (devices && devices.length) {
+        html5QrCode.start(
+          devices[0].id,
+          config,
+          qrCodeMessage => {
+            addScan(qrCodeMessage);
+          },
+          errorMessage => {
+            // Optional: console.warn(errorMessage);
+          }
+        ).catch(err => {
+          console.error("Gagal memulai kamera:", err);
+        });
+      }
+    });
+
+    window.onload = loadScans;
+  </script>
+</body>
+</html>
