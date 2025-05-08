@@ -62,7 +62,8 @@
 
   <script>
     const scanKey = 'scanResults';
-    var html5Qrcode;
+    let html5Qrcode;
+    let isProcessing = false;
 
     function permissionPressed() {
       Html5Qrcode.getCameras().then(devices => {
@@ -174,6 +175,8 @@
     }
 
     function onScanSuccess(text, result) {
+      if (isProcessing) return;
+      isProcessing = true;
       const time = getTime();
       const data = JSON.parse(localStorage.getItem(scanKey)) || [];
       data.push({ text, time });
@@ -181,6 +184,9 @@
       console.log([getTime(), `Scan result: `+text]);
       loadScans();
       showToast(`Berhasil: ${text}`);
+      setTimeout(() => {
+        isProcessing = false;
+      }, 1500);
     }
 
     function deleteRow(index) {
@@ -188,12 +194,14 @@
       data.splice(index, 1);
       localStorage.setItem(scanKey, JSON.stringify(data));
       loadScans();
+      console.log([getTime(), `Data ke-${index+1} dihapus.`])
     }
 
     function clearData() {
       if (confirm("Apakah kamu yakin ingin menghapus semua data scan?")) {
         localStorage.removeItem(scanKey);
         loadScans();
+        console.log([getTime(), `Semua data dihapus.`])
       }
     }
 
