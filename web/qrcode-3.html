@@ -86,7 +86,7 @@
       const idCamera = getSelected('selectCamera');
       const config = { fps: 10, qrbox: 250 };
       if (idCamera) {
-        Html5Qrcode.start({ deviceId: { exact: idCamera} }, config, onScanSuccess).catch((err) => {console.error([getTime(), "Error start camera:"+err])});
+        html5QrCode.start({ deviceId: { exact: idCamera} }, config, onScanSuccess).catch((err) => {console.error([getTime(), "Error start camera:"+err])});
         showHTML('startBtn', !1);
         showHTML('stopBtn', !0);
         disableHTML('selectCamera', !0);
