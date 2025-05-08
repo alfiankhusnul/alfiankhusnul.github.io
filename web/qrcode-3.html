@@ -26,7 +26,7 @@
       </button>
       <select id="selectCamera" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded focus:ring-blue-500 focus:border-blue-500 px-4 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
       </select>
-      <button id="startBtn" onclick="startPressed()" class="bg-green-500 text-sm text-white px-4 py-1 rounded hover:bg-green-600">
+      <button id="startBtn" onclick="startPressed()" class="bg-blue-500 text-sm text-white px-4 py-1 rounded hover:bg-blue-600">
         Start Scan
       </button>
       <button id="stopBtn" onclick="stopPressed()" class="bg-red-500 text-sm text-white px-4 py-1 rounded hover:bg-red-600">
@@ -91,7 +91,7 @@
       const idCamera = getSelected('selectCamera');
       const config = { fps: 10, qrbox: 250 };
       if (idCamera) {
-        html5QrCode.start({ deviceId: { exact: idCamera} }, config, onScanSuccess).catch((err) => {console.error([getTime(), "Error start camera:"+err])});
+        html5Qrcode.start({ deviceId: { exact: idCamera} }, config, onScanSuccess).catch((err) => {console.error([getTime(), "Error start camera:"+err])});
         showHTML('startBtn', !1);
         showHTML('stopBtn', !0);
         disableHTML('selectCamera', !0);
@@ -102,7 +102,7 @@
     }
 
     function stopPressed() {
-      html5QrCode.stop().then((ignore) => {
+      html5Qrcode.stop().then((ignore) => {
         showHTML('startBtn', !0);
         showHTML('stopBtn', !1);
         disableHTML('selectCamera', !1);
@@ -160,7 +160,7 @@
     function getTime() {
       return new Date().toLocaleString();
     }
-    
+
     function getFileSafeTimestamp() {
       const now = new Date();
       const year = now.getFullYear();
@@ -172,7 +172,7 @@
 
       return `${year}-${month}-${day}_${hour}-${minute}-${second}`;
     }
-    
+
     function onScanSuccess(text, result) {
       const time = getTime();
       const data = JSON.parse(localStorage.getItem(scanKey)) || [];
