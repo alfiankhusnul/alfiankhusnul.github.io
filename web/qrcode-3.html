@@ -10,16 +10,21 @@
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body class="bg-gray-100 min-h-screen p-4">
+  <!-- Elemen Toast -->
+  <div id="toast"
+       class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-black text-sm text-white px-4 py-1 rounded shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none">
+    Ini pesan notifikasi!
+  </div>
   <div class="max-w-3xl mx-auto bg-white p-4 rounded-xl shadow-md">
     <h1 class="text-xl sm:text-2xl font-bold mb-4 text-center">Scanner QR / Barcode</h1>
 
     <!-- Area Kamera -->
     <div id="reader" class="mb-4 rounded overflow-hidden" style="max-width: 100%;"></div>
-    <div class="flex justify mb-4">
+    <div class="flex justify-center space-x-2 mb-4">
       <button id="permissionBtn" onclick="permissionPressed()" class="bg-blue-500 text-sm text-white px-4 py-1 rounded hover:bg-blue-600">
         Minta izin kamera
       </button>
-      <select id="selectCamera" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded focus:ring-blue-500 focus:border-blue-500 px-4 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+      <select id="selectCamera" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded focus:ring-blue-500 focus:border-blue-500 px-4 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
       </select>
       <button id="startBtn" onclick="startPressed()" class="bg-green-500 text-sm text-white px-4 py-1 rounded hover:bg-green-600">
         Start Scan
@@ -57,7 +62,6 @@
 
   <script>
     const scanKey = 'scanResults';
-    //var html5QrcodeScanner;
     var html5Qrcode;
 
     function permissionPressed() {
@@ -76,6 +80,7 @@
           showHTML('permissionBtn', !1);
           showHTML('selectCamera', !0);
           showHTML('startBtn', !0);
+          console.log([getTime(), 'Izin camera diberikan.']);
         }
       }).catch( err => {
         console.error([getTime(), "Gagal memulai kamera:"+err]);
@@ -86,22 +91,22 @@
       const idCamera = getSelected('selectCamera');
       const config = { fps: 10, qrbox: 250 };
       if (idCamera) {
-        html5Qrcode.start({ deviceId: { exact: idCamera} }, config, onScanSuccess).catch((err) => {console.error([getTime(), "Error start camera:"+err])});
+        html5QrCode.start({ deviceId: { exact: idCamera} }, config, onScanSuccess).catch((err) => {console.error([getTime(), "Error start camera:"+err])});
         showHTML('startBtn', !1);
         showHTML('stopBtn', !0);
         disableHTML('selectCamera', !0);
-        console.log([getTime(), 'Berhasil start camera.']);
+        console.log([getTime(), 'Camera start.']);
       }else {
         console.error([getTime(), "Pilih kamera terlebih dahulu."]);
       }
     }
 
     function stopPressed() {
-      html5Qrcode.stop().then((ignore) => {
+      html5QrCode.stop().then((ignore) => {
         showHTML('startBtn', !0);
         showHTML('stopBtn', !1);
         disableHTML('selectCamera', !1);
-        console.log([getTime(), "Berhasil stop camera."])
+        console.log([getTime(), "Camera stop."])
       }).catch((err) => {
         console.error([getTime(), "Gagal stop camera. Reload Page. "+err]);
       });
@@ -114,15 +119,6 @@
       } else {
         return null;
       }
-    }
-
-    function logObjectsPretty(array) {
-      array.forEach((obj, index) => {
-        console.log(`Object #${index + 1}:`);
-        for (let key in obj) {
-          console.log(`  ${key}: ${obj[key]}`);
-        }
-      });
     }
 
     function showHTML(idElement, bool) {
@@ -164,15 +160,27 @@
     function getTime() {
       return new Date().toLocaleString();
     }
+    
+    function getFileSafeTimestamp() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hour = String(now.getHours()).padStart(2, '0');
+      const minute = String(now.getMinutes()).padStart(2, '0');
+      const second = String(now.getSeconds()).padStart(2, '0');
 
+      return `${year}-${month}-${day}_${hour}-${minute}-${second}`;
+    }
+    
     function onScanSuccess(text, result) {
       const time = getTime();
       const data = JSON.parse(localStorage.getItem(scanKey)) || [];
       data.push({ text, time });
       localStorage.setItem(scanKey, JSON.stringify(data));
-      console.log([getTime(), `Scan result: `+result]);
+      console.log([getTime(), `Scan result: `+text]);
       loadScans();
-      alert("✅ Scan berhasil!\n\n" + text);
+      showToast(`Berhasil: ${text}`);
     }
 
     function deleteRow(index) {
@@ -203,17 +211,25 @@
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `hasil_scan.csv`;
+      const filename = getFileSafeTimestamp();
+      link.download = `hasil_scan_${filename}.csv`;
+      console.log([getTime(), `File downloaded: ${filename}`]);
       link.click();
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 1000);
     }
 
     window.onload = () => {
       html5Qrcode = new Html5Qrcode("reader");
-      // html5QrcodeScanner = new Html5QrcodeScanner("reader", {
-      //   fps: 10,
-      //   qrbox: 250
-      // });
-      // html5QrcodeScanner.render(onScanSuccess);
       showHTML("selectCamera", !1);
       showHTML("startBtn", !1);
       showHTML("stopBtn", !1);
