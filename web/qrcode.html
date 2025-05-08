@@ -63,7 +63,7 @@
   <script>
     const scanKey = 'hasilScan';
     let html5Qrcode;
-    let isProcessing = false;
+    let isProcessing = !1;
 
     function permissionPressed() {
       Html5Qrcode.getCameras().then(devices => {
@@ -176,7 +176,7 @@
 
     function onScanSuccess(text, result) {
       if (isProcessing) return;
-      isProcessing = true;
+      isProcessing = !0;
       const time = getTime();
       const data = JSON.parse(localStorage.getItem(scanKey)) || [];
       data.push({ text, time });
@@ -185,7 +185,7 @@
       loadScans();
       showToast(`Berhasil: ${text}`);
       setTimeout(() => {
-        isProcessing = false;
+        isProcessing = !1;
       }, 1500);
     }
 
