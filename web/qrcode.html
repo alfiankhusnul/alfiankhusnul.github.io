@@ -13,7 +13,7 @@
   <!-- Elemen Toast -->
   <div id="toast"
        class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-black text-sm text-white px-4 py-1 rounded shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none">
-    Area Notifikasi Ala-Ala!
+    Area notifikasi ala-ala!
   </div>
   <div class="max-w-3xl mx-auto bg-white p-4 rounded-xl shadow-md">
     <h1 class="text-xl sm:text-2xl font-bold mb-2 text-center">Scanner QR / Barcode</h1>
@@ -81,7 +81,7 @@
           showHTML('permissionBtn', !1);
           showHTML('selectCamera', !0);
           showHTML('startBtn', !0);
-          console.log([getTime(), 'Izin camera diberikan.']);
+          console.log([getTime(), 'Izin kamera diberikan.']);
         }
       }).catch( err => {
         console.error([getTime(), "Gagal memulai kamera:"+err]);
@@ -96,7 +96,7 @@
         showHTML('startBtn', !1);
         showHTML('stopBtn', !0);
         disableHTML('selectCamera', !0);
-        console.log([getTime(), 'Camera start.']);
+        console.log([getTime(), 'Kamera start.']);
       }else {
         console.error([getTime(), "Pilih kamera terlebih dahulu."]);
       }
@@ -107,9 +107,9 @@
         showHTML('startBtn', !0);
         showHTML('stopBtn', !1);
         disableHTML('selectCamera', !1);
-        console.log([getTime(), "Camera stop."])
+        console.log([getTime(), "Kamera stop."])
       }).catch((err) => {
-        console.error([getTime(), "Gagal stop camera. Reload Page. "+err]);
+        console.error([getTime(), "Gagal stop kamera. Reload Page. "+err]);
       });
     }
 
