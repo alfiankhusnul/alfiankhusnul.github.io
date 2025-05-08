@@ -1,28 +1,224 @@
-<html>
-  <head>
-    <title>Html-Qrcode Demo</title>
-    <script src="https://unpkg.com/html5-qrcode"></script>
-  </head>
-  <body>
-    <div id="qr-reader" style="width:500px"></div>
-    <div id="qr-reader-results"></div>
-    <script>
-      var resultContainer = document.getElementById('qr-reader-results');
-      var lastResult, countResults = 0;
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scan QR/Barcode</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- html5-qrcode CDN -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-4">
+  <div class="max-w-3xl mx-auto bg-white p-4 rounded-xl shadow-md">
+    <h1 class="text-xl sm:text-2xl font-bold mb-4 text-center">Scanner QR / Barcode</h1>
 
-      function onScanSuccess(decodedText, decodedResult) {
-        if (decodedText !== lastResult) {
-          ++countResults;
-          lastResult = decodedText;
-          // Handle on success condition with the decoded message.
-          console.log(`Scan result ${decodedText}`, decodedResult);
+    <!-- Area Kamera -->
+    <div id="reader" class="mb-4 rounded overflow-hidden" style="max-width: 100%;"></div>
+    <div class="flex justify mb-4">
+      <button id="permissionBtn" onclick="permissionPressed()" class="bg-blue-500 text-sm text-white px-4 py-1 rounded hover:bg-blue-600">
+        Minta izin kamera
+      </button>
+      <select id="selectCamera" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded focus:ring-blue-500 focus:border-blue-500 px-4 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+      </select>
+      <button id="startBtn" onclick="startPressed()" class="bg-green-500 text-sm text-white px-4 py-1 rounded hover:bg-green-600">
+        Start Scan
+      </button>
+      <button id="stopBtn" onclick="stopPressed()" class="bg-red-500 text-sm text-white px-4 py-1 rounded hover:bg-red-600">
+        Stop Scan
+      </button>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-between mb-4">
+      <button onclick="clearData()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+        Bersihkan Data
+      </button>
+      <button onclick="downloadCSV()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+        Unduh CSV
+      </button>
+    </div>
+
+    <!-- Tabel Hasil -->
+    <div class="overflow-x-auto">
+      <table class="w-full table-auto border border-gray-300 text-sm">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="border px-2 py-1">#</th>
+            <th class="border px-2 py-1">Hasil</th>
+            <th class="border px-2 py-1">Waktu</th>
+            <th class="border px-2 py-1">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="scanTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const scanKey = 'scanResults';
+    //var html5QrcodeScanner;
+    var html5Qrcode;
+
+    function permissionPressed() {
+      Html5Qrcode.getCameras().then(devices => {
+        const validDevices = devices.filter(device => device && device.id && device.label);
+        if (validDevices.length === 0) {
+          console.error([getTime(),"Tidak ada kamera valid tersedia. Periksa HTTPS."]);
+        }else {
+          const selectElement = document.getElementById('selectCamera');
+          validDevices.forEach(device => {
+            const option = document.createElement('option');
+            option.value = device.id;
+            option.textContent = device.label;
+            selectElement.appendChild(option);
+          });
+          showHTML('permissionBtn', !1);
+          showHTML('selectCamera', !0);
+          showHTML('startBtn', !0);
         }
-      }
-      var html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", {
-        fps: 10,
-        qrbox: 250
+      }).catch( err => {
+        console.error([getTime(), "Gagal memulai kamera:"+err]);
       });
-      html5QrcodeScanner.render(onScanSuccess);
-    </script>
-  </body>
+    }
+
+    function startPressed() {
+      const idCamera = getSelected('selectCamera');
+      const config = { fps: 10, qrbox: 250 };
+      if (idCamera) {
+        Html5Qrcode.start({ deviceId: { exact: idCamera} }, config, onScanSuccess).catch((err) => {console.error([getTime(), "Error start camera:"+err])});
+        showHTML('startBtn', !1);
+        showHTML('stopBtn', !0);
+        disableHTML('selectCamera', !0);
+        console.log([getTime(), 'Berhasil start camera.']);
+      }else {
+        console.error([getTime(), "Pilih kamera terlebih dahulu."]);
+      }
+    }
+
+    function stopPressed() {
+      html5QrCode.stop().then((ignore) => {
+        showHTML('startBtn', !0);
+        showHTML('stopBtn', !1);
+        disableHTML('selectCamera', !1);
+        console.log([getTime(), "Berhasil stop camera."])
+      }).catch((err) => {
+        console.error([getTime(), "Gagal stop camera. Reload Page. "+err]);
+      });
+    }
+
+    function getSelected(idElement) {
+      const selectEl = document.getElementById(idElement);
+      if (selectEl && selectEl.tagName === 'SELECT') {
+        return selectEl.value;
+      } else {
+        return null;
+      }
+    }
+
+    function logObjectsPretty(array) {
+      array.forEach((obj, index) => {
+        console.log(`Object #${index + 1}:`);
+        for (let key in obj) {
+          console.log(`  ${key}: ${obj[key]}`);
+        }
+      });
+    }
+
+    function showHTML(idElement, bool) {
+      var element = document.getElementById(idElement);
+      if (!element) {
+        console.warn(`Elemen dengan ID '${idElement}' tidak ditemukan.`);
+        return;
+      }
+      element.style.display = bool ? 'block' : 'none';
+    }
+
+    function disableHTML(idElement, bool) {
+      const el = document.getElementById(idElement);
+      if (el) {
+        el.disabled = !!bool;
+      } else {
+        console.warn([getTime(),`Element id "${idElement}" tidak ditemukan.`]);
+      }
+    }
+
+    function loadScans() {
+      const data = JSON.parse(localStorage.getItem(scanKey)) || [];
+      const tbody = document.getElementById("scanTableBody");
+      tbody.innerHTML = "";
+      data.forEach((item, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="border px-2 py-1 text-center">${index + 1}</td>
+          <td class="border px-2 py-1 break-words">${item.text}</td>
+          <td class="border px-2 py-1 text-xs">${item.time}</td>
+          <td class="border px-2 py-1 text-center">
+            <button onclick="deleteRow(${index})" class="text-red-500 hover:underline text-sm">Hapus</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function getTime() {
+      return new Date().toLocaleString();
+    }
+
+    function onScanSuccess(text, result) {
+      const time = getTime();
+      const data = JSON.parse(localStorage.getItem(scanKey)) || [];
+      data.push({ text, time });
+      localStorage.setItem(scanKey, JSON.stringify(data));
+      console.log([getTime(), `Scan result: `+result]);
+      loadScans();
+      alert("✅ Scan berhasil!\n\n" + text);
+    }
+
+    function deleteRow(index) {
+      const data = JSON.parse(localStorage.getItem(scanKey)) || [];
+      data.splice(index, 1);
+      localStorage.setItem(scanKey, JSON.stringify(data));
+      loadScans();
+    }
+
+    function clearData() {
+      if (confirm("Apakah kamu yakin ingin menghapus semua data scan?")) {
+        localStorage.removeItem(scanKey);
+        loadScans();
+      }
+    }
+
+    function downloadCSV() {
+      const data = JSON.parse(localStorage.getItem(scanKey)) || [];
+      if (data.length === 0) {
+        alert("Belum ada data untuk diunduh.");
+        return;
+      }
+      const rows = [["No", "Hasil Scan", "Waktu"]];
+      data.forEach((item, index) => {
+        rows.push([index + 1, item.text, item.time]);
+      });
+      const csvContent = rows.map(r => r.map(cell => `"${cell}"`).join(",")).join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `hasil_scan.csv`;
+      link.click();
+    }
+
+    window.onload = () => {
+      html5Qrcode = new Html5Qrcode("reader");
+      // html5QrcodeScanner = new Html5QrcodeScanner("reader", {
+      //   fps: 10,
+      //   qrbox: 250
+      // });
+      // html5QrcodeScanner.render(onScanSuccess);
+      showHTML("selectCamera", !1);
+      showHTML("startBtn", !1);
+      showHTML("stopBtn", !1);
+      loadScans();
+    };
+  </script>
+</body>
 </html>
