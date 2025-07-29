@@ -37,7 +37,14 @@
         .timezone-label {
             font-size: clamp(1rem, 3vw, 2rem);
             color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+        
+        .ntp-info {
+            font-size: clamp(0.8rem, 1.5vw, 1rem);
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 2rem;
             font-weight: 300;
         }
         
@@ -135,6 +142,7 @@
         <div class="date-display" id="dateDisplay"></div>
         <div class="digital-clock" id="digitalClock">00:00:00</div>
         <div class="timezone-label">Waktu Indonesia Tengah (WITA)</div>
+        <div class="ntp-info" id="ntpInfo">NTP: WorldTimeAPI</div>
     </div>
     
     <div class="control-buttons">
@@ -142,7 +150,10 @@
             <i class="bi bi-arrow-clockwise"></i> Refresh
         </button>
         <button class="btn btn-glass btn-sm" id="syncBtn" title="Sinkron Server">
-            <i class="bi bi-cloud-arrow-down"></i> Sync Server
+            <i class="bi bi-cloud-arrow-down"></i> Sync NTP
+        </button>
+        <button class="btn btn-glass btn-sm" id="ntpBtn" title="Ganti NTP Server">
+            <i class="bi bi-server"></i> NTP
         </button>
     </div>
     
@@ -155,21 +166,53 @@
         let clockInterval;
         let isFullscreen = false;
         let serverTimeOffset = 0;
+        let currentNTPServer = 'worldtimeapi';
+        let lastSyncTime = null;
+        
+        // Available NTP/Time API servers
+        const ntpServers = {
+            worldtimeapi: {
+                name: 'WorldTimeAPI',
+                url: 'https://worldtimeapi.org/api/timezone/Asia/Makassar',
+                parse: (data) => new Date(data.datetime)
+            },
+            timeapi: {
+                name: 'TimeAPI.io',
+                url: 'https://timeapi.io/api/Time/current/zone?timeZone=Asia/Makassar',
+                parse: (data) => new Date(data.dateTime)
+            },
+            local: {
+                name: 'Browser Local',
+                url: null,
+                parse: () => new Date()
+            }
+        };
         
         // Initialize clock
         function initClock() {
             updateClock();
             clockInterval = setInterval(updateClock, 1000);
+            // Auto sync every 5 minutes
+            setInterval(autoSyncTime, 5 * 60 * 1000);
         }
         
         // Update clock display
         function updateClock() {
-            const now = new Date();
-            const witaTime = new Date(now.getTime() + (8 * 60 * 60 * 1000) + serverTimeOffset);
+            let now;
+            if (lastSyncTime && serverTimeOffset !== 0) {
+                // Use synced time with offset
+                const timeSinceSync = Date.now() - lastSyncTime;
+                now = new Date(lastSyncTime + serverTimeOffset + timeSinceSync);
+            } else {
+                // Use local time converted to WITA
+                now = new Date();
+                const witaTime = new Date(now.getTime() + (8 * 60 * 60 * 1000) - (now.getTimezoneOffset() * 60 * 1000));
+                now = witaTime;
+            }
             
-            const hours = String(witaTime.getUTCHours()).padStart(2, '0');
-            const minutes = String(witaTime.getUTCMinutes()).padStart(2, '0');
-            const seconds = String(witaTime.getUTCSeconds()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
             
             document.getElementById('digitalClock').textContent = `${hours}:${minutes}:${seconds}`;
             
@@ -182,7 +225,84 @@
                 timeZone: 'Asia/Makassar'
             };
             document.getElementById('dateDisplay').textContent = 
-                witaTime.toLocaleDateString('id-ID', options);
+                now.toLocaleDateString('id-ID', options);
+        }
+        
+        // Sync with NTP server
+        async function syncServerTime() {
+            const clock = document.getElementById('digitalClock');
+            const syncBtn = document.getElementById('syncBtn');
+            const server = ntpServers[currentNTPServer];
+            
+            clock.classList.add('loading');
+            syncBtn.innerHTML = '<i class="bi bi-cloud-arrow-down"></i> <span class="spinner-border spinner-border-sm" role="status"></span>';
+            
+            try {
+                if (server.url) {
+                    const response = await fetch(server.url);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    
+                    const data = await response.json();
+                    const serverTime = server.parse(data);
+                    const localTime = new Date();
+                    
+                    // Calculate offset
+                    serverTimeOffset = serverTime.getTime() - localTime.getTime();
+                    lastSyncTime = Date.now();
+                    
+                    showStatus(`Sinkronisasi ${server.name} berhasil`, 'success');
+                } else {
+                    // Local time
+                    serverTimeOffset = 0;
+                    lastSyncTime = Date.now();
+                    showStatus('Menggunakan waktu browser lokal', 'success');
+                }
+                
+                updateClock();
+            } catch (error) {
+                console.error('Sync failed:', error);
+                showStatus('Sinkronisasi gagal, menggunakan waktu lokal', 'error');
+                serverTimeOffset = 0;
+                lastSyncTime = null;
+            }
+            
+            clock.classList.remove('loading');
+            syncBtn.innerHTML = '<i class="bi bi-cloud-arrow-down"></i> Sync NTP';
+        }
+        
+        // Auto sync (silent)
+        async function autoSyncTime() {
+            try {
+                const server = ntpServers[currentNTPServer];
+                if (server.url) {
+                    const response = await fetch(server.url);
+                    if (response.ok) {
+                        const data = await response.json();
+                        const serverTime = server.parse(data);
+                        const localTime = new Date();
+                        serverTimeOffset = serverTime.getTime() - localTime.getTime();
+                        lastSyncTime = Date.now();
+                    }
+                }
+            } catch (error) {
+                console.error('Auto sync failed:', error);
+            }
+        }
+        
+        // Change NTP server
+        function changeNTPServer() {
+            const servers = Object.keys(ntpServers);
+            const currentIndex = servers.indexOf(currentNTPServer);
+            const nextIndex = (currentIndex + 1) % servers.length;
+            
+            currentNTPServer = servers[nextIndex];
+            const serverName = ntpServers[currentNTPServer].name;
+            
+            document.getElementById('ntpInfo').textContent = `NTP: ${serverName}`;
+            showStatus(`Beralih ke ${serverName}`, 'success');
+            
+            // Auto sync with new server
+            setTimeout(syncServerTime, 500);
         }
         
         // Refresh time
@@ -194,31 +314,11 @@
             refreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> <span class="spinner-border spinner-border-sm" role="status"></span>';
             
             setTimeout(() => {
-                serverTimeOffset = 0;
                 updateClock();
                 clock.classList.remove('loading');
                 refreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Refresh';
                 showStatus('Waktu diperbarui', 'success');
-            }, 500);
-        }
-        
-        // Sync with server time (simulated)
-        function syncServerTime() {
-            const clock = document.getElementById('digitalClock');
-            const syncBtn = document.getElementById('syncBtn');
-            
-            clock.classList.add('loading');
-            syncBtn.innerHTML = '<i class="bi bi-cloud-arrow-down"></i> <span class="spinner-border spinner-border-sm" role="status"></span>';
-            
-            // Simulate server sync delay
-            setTimeout(() => {
-                // Simulate minor time adjustment (random between -2 to +2 seconds)
-                serverTimeOffset = (Math.random() - 0.5) * 4000;
-                updateClock();
-                clock.classList.remove('loading');
-                syncBtn.innerHTML = '<i class="bi bi-cloud-arrow-down"></i> Sync Server';
-                showStatus('Sinkronisasi berhasil', 'success');
-            }, 1000);
+            }, 300);
         }
         
         // Toggle fullscreen
@@ -254,6 +354,11 @@
                 indicator.style.background = 'rgba(0, 255, 0, 0.2)';
                 indicator.style.borderColor = 'rgba(0, 255, 0, 0.5)';
                 indicator.style.color = '#00ff00';
+            } else if (type === 'error') {
+                indicator.innerHTML = `<i class="bi bi-exclamation-triangle"></i> ${message}`;
+                indicator.style.background = 'rgba(255, 0, 0, 0.2)';
+                indicator.style.borderColor = 'rgba(255, 0, 0, 0.5)';
+                indicator.style.color = '#ff0000';
             }
             
             setTimeout(() => {
@@ -261,12 +366,13 @@
                 indicator.style.background = 'rgba(0, 255, 0, 0.2)';
                 indicator.style.borderColor = 'rgba(0, 255, 0, 0.5)';
                 indicator.style.color = '#00ff00';
-            }, 2000);
+            }, 3000);
         }
         
         // Event listeners
         document.getElementById('refreshBtn').addEventListener('click', refreshTime);
         document.getElementById('syncBtn').addEventListener('click', syncServerTime);
+        document.getElementById('ntpBtn').addEventListener('click', changeNTPServer);
         document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
         
         // Fullscreen change event
@@ -291,11 +397,17 @@
                 refreshTime();
             } else if (e.key === 's' || e.key === 'S') {
                 syncServerTime();
+            } else if (e.key === 'n' || e.key === 'N') {
+                changeNTPServer();
             }
         });
         
         // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', initClock);
+        document.addEventListener('DOMContentLoaded', () => {
+            initClock();
+            // Initial sync after 1 second
+            setTimeout(syncServerTime, 1000);
+        });
         
         // Handle page visibility change
         document.addEventListener('visibilitychange', () => {
