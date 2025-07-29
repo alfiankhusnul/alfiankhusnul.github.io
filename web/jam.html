@@ -184,7 +184,12 @@
             local: {
                 name: 'Browser Local',
                 url: null,
-                parse: () => new Date()
+                parse: () => {
+                    // Return local time converted to WITA
+                    const localTime = new Date();
+                    const utcTime = localTime.getTime() + (localTime.getTimezoneOffset() * 60000);
+                    return new Date(utcTime + (8 * 3600000)); // UTC+8 for WITA
+                }
             }
         };
         
@@ -198,25 +203,26 @@
         
         // Update clock display
         function updateClock() {
-            let now;
-            if (lastSyncTime && serverTimeOffset !== 0) {
-                // Use synced time with offset
+            let witaTime;
+            
+            if (lastSyncTime && currentNTPServer !== 'local') {
+                // Use synced time with offset (already in WITA from API)
                 const timeSinceSync = Date.now() - lastSyncTime;
-                now = new Date(lastSyncTime + serverTimeOffset + timeSinceSync);
+                witaTime = new Date(lastSyncTime + serverTimeOffset + timeSinceSync);
             } else {
-                // Use local time converted to WITA
-                now = new Date();
-                const witaTime = new Date(now.getTime() + (8 * 60 * 60 * 1000) - (now.getTimezoneOffset() * 60 * 1000));
-                now = witaTime;
+                // Convert local browser time to WITA (UTC+8)
+                const localTime = new Date();
+                const utcTime = localTime.getTime() + (localTime.getTimezoneOffset() * 60000);
+                witaTime = new Date(utcTime + (8 * 3600000)); // UTC+8 for WITA
             }
             
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const hours = String(witaTime.getHours()).padStart(2, '0');
+            const minutes = String(witaTime.getMinutes()).padStart(2, '0');
+            const seconds = String(witaTime.getSeconds()).padStart(2, '0');
             
             document.getElementById('digitalClock').textContent = `${hours}:${minutes}:${seconds}`;
             
-            // Update date
+            // Update date - always show WITA date
             const options = { 
                 weekday: 'long', 
                 year: 'numeric', 
@@ -225,7 +231,7 @@
                 timeZone: 'Asia/Makassar'
             };
             document.getElementById('dateDisplay').textContent = 
-                now.toLocaleDateString('id-ID', options);
+                witaTime.toLocaleDateString('id-ID', options);
         }
         
         // Sync with NTP server
@@ -252,10 +258,14 @@
                     
                     showStatus(`Sinkronisasi ${server.name} berhasil`, 'success');
                 } else {
-                    // Local time
-                    serverTimeOffset = 0;
+                    // Local time - convert to WITA
+                    const localTime = new Date();
+                    const utcTime = localTime.getTime() + (localTime.getTimezoneOffset() * 60000);
+                    const witaTime = new Date(utcTime + (8 * 3600000)); // UTC+8 for WITA
+                    
+                    serverTimeOffset = witaTime.getTime() - localTime.getTime();
                     lastSyncTime = Date.now();
-                    showStatus('Menggunakan waktu browser lokal', 'success');
+                    showStatus('Menggunakan waktu browser (dikonversi ke WITA)', 'success');
                 }
                 
                 updateClock();
