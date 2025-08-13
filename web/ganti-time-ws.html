@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Batch Update Timestamp project.csv di ZIP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+  <div class="max-w-4xl mx-auto p-6">
+    <header class="mb-6">
+      <h1 class="text-2xl font-bold">Batch Update <code>created_at</code> di <code>project.csv</code> dalam ZIP</h1>
+      <p class="text-sm text-slate-600 mt-2">Mengganti tanggal pada kolom <code>created_at</code> (epoch ms) menjadi tanggal input, sambil mempertahankan jam:menit:detik dari nilai lama. File lain di dalam ZIP tetap utuh.</p>
+    </header>
+
+    <section class="grid gap-4 sm:grid-cols-2 bg-white rounded-2xl shadow p-4">
+      <div>
+        <label class="block text-sm font-medium mb-1">Tanggal baru (YYYY-MM-DD)</label>
+        <input id="dateInput" type="date" class="w-full rounded-xl border border-slate-300 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">Zona waktu untuk mempertahankan jam-menit-detik</label>
+        <select id="tzSelect" class="w-full rounded-xl border border-slate-300 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <option value="420">UTC+07:00 (WIB)</option>
+          <option value="480" selected>UTC+08:00 (WITA)</option>
+          <option value="540">UTC+09:00 (WIT)</option>
+          <option value="0">UTC±00:00</option>
+        </select>
+        <p class="text-xs text-slate-500 mt-1">Contoh: jika timestamp lama menunjukkan 15:03:23 di WITA, maka hasil akan menjadi <em>tanggal input</em> + <code>15:03:23</code> (WITA) lalu dikonversi kembali ke epoch (ms).</p>
+      </div>
+      <div class="sm:col-span-2">
+        <label class="block text-sm font-medium mb-1">Pilih file ZIP (bisa banyak)</label>
+        <input id="zipInput" type="file" accept=".zip" multiple class="w-full rounded-xl border border-slate-300 p-2" />
+      </div>
+      <div class="sm:col-span-2 flex gap-3">
+        <button id="btnProcess" class="px-4 py-2 rounded-2xl bg-indigo-600 text-white font-medium shadow hover:bg-indigo-700 disabled:opacity-50">Proses & Unduh Hasil</button>
+        <button id="btnClear" class="px-4 py-2 rounded-2xl bg-slate-200 text-slate-800 font-medium shadow hover:bg-slate-300">Bersihkan</button>
+      </div>
+    </section>
+
+    <section class="mt-6">
+      <h2 class="font-semibold mb-2">Progress</h2>
+      <div id="log" class="text-sm bg-white rounded-2xl shadow p-3 h-56 overflow-auto whitespace-pre-wrap"></div>
+    </section>
+
+    <section class="mt-6">
+      <h2 class="font-semibold mb-2">Unduhan</h2>
+      <div id="downloads" class="grid gap-2"></div>
+    </section>
+  </div>
+
+<script>
+  const logEl = document.getElementById('log');
+  const downloadsEl = document.getElementById('downloads');
+  const btnProcess = document.getElementById('btnProcess');
+  const btnClear = document.getElementById('btnClear');
+
+  function log(msg) {
+    const time = new Date().toLocaleTimeString();
+    logEl.textContent += `[${time}] ${msg}\n`;
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  // Ambil komponen jam-menit-detik lama pada zona waktu offset tertentu (dalam menit, contoh 480 untuk UTC+8)
+  function extractHMSFromEpochMs(epochMs, tzOffsetMinutes) {
+    const shifted = new Date(epochMs + tzOffsetMinutes * 60000); // geser ke "waktu lokal" yg diinginkan
+    return {
+      h: shifted.getUTCHours(),
+      m: shifted.getUTCMinutes(),
+      s: shifted.getUTCSeconds(),
+      ms: shifted.getUTCMilliseconds(),
+    };
+  }
+
+  // Bangun epoch ms dari (tanggal Y-M-D) + (h:m:s.ms) pada zona waktu offset tertentu
+  function buildEpochMsFromLocalYMDHMS(year, month, day, h, m, s, ms, tzOffsetMinutes) {
+    const utcMs = Date.UTC(year, month - 1, day, h, m, s, ms);
+    // Kurangi offset untuk kembali ke UTC epoch
+    return utcMs - tzOffsetMinutes * 60000;
+  }
+
+  async function processZipFile(file, dateStr, tzOffsetMinutes) {
+    log(`Memuat ZIP: ${file.name}`);
+    const zip = await JSZip.loadAsync(file);
+
+    // Cari project.csv (di root atau subfolder)
+    const candidates = Object.values(zip.files).filter(f => /(^|\/)project\.csv$/i.test(f.name));
+    if (candidates.length === 0) {
+      log(`  ➜ project.csv tidak ditemukan di ${file.name} (dilewati)`);
+      return null;
+    }
+
+    const projectEntry = candidates[0];
+    const csvText = await projectEntry.async('text');
+
+    // Parse CSV dengan header
+    const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+    if (parsed.errors && parsed.errors.length) {
+      log(`  ⚠️ Peringatan parse CSV: ${parsed.errors[0].message}`);
+    }
+
+    const rows = parsed.data;
+    const fields = (parsed.meta && parsed.meta.fields && parsed.meta.fields.length)
+      ? parsed.meta.fields
+      : (rows.length ? Object.keys(rows[0]) : []);
+
+    if (!fields.includes('created_at')) {
+      log('  ➜ Kolom created_at tidak ditemukan (dilewati).');
+      return null;
+    }
+
+    // Ambil Y-M-D dari input date
+    const [Y, M, D] = dateStr.split('-').map(n => parseInt(n, 10));
+
+    let changed = 0;
+    rows.forEach((row, idx) => {
+      const raw = row['created_at'];
+      if (raw == null || raw === '') return;
+      let oldMs = Number(raw);
+      if (!Number.isFinite(oldMs)) return;
+
+      // Ekstrak waktu lama sesuai zona waktu pilihan
+      const { h, m, s, ms } = extractHMSFromEpochMs(oldMs, tzOffsetMinutes);
+
+      // Bangun epoch baru: tanggal input + waktu lama (di zona waktu pilihan)
+      const newMs = buildEpochMsFromLocalYMDHMS(Y, M, D, h, m, s, ms, tzOffsetMinutes);
+      row['created_at'] = String(newMs);
+      changed++;
+    });
+
+    // Serialize kembali ke CSV, menjaga urutan kolom
+    const dataMatrix = rows.map(r => fields.map(f => r[f] ?? ''));
+    const newCsv = Papa.unparse({ fields, data: dataMatrix });
+
+    // Tulis balik ke ZIP (replace)
+    zip.file(projectEntry.name, newCsv);
+
+    // Generate ZIP baru
+    const outBlob = await zip.generateAsync({ type: 'blob' });
+
+    log(`  ✔️ Selesai: ${file.name} — ${changed} baris diubah.`);
+
+    // Buat link unduhan
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(outBlob);
+    a.download = file.name.replace(/\.zip$/i, '') + '_updated.zip';
+    a.textContent = `Unduh ${a.download}`;
+    a.className = 'inline-block px-3 py-2 rounded-xl bg-emerald-600 text-white text-sm shadow hover:bg-emerald-700';
+
+    const wrap = document.createElement('div');
+    wrap.appendChild(a);
+    downloadsEl.appendChild(wrap);
+  }
+
+  btnProcess.addEventListener('click', async () => {
+    const dateStr = document.getElementById('dateInput').value;
+    const tzOffsetMinutes = parseInt(document.getElementById('tzSelect').value, 10);
+    const input = document.getElementById('zipInput');
+    const files = Array.from(input.files || []);
+
+    downloadsEl.innerHTML = '';
+
+    if (!dateStr) { log('Masukkan tanggal terlebih dahulu.'); return; }
+    if (!files.length) { log('Pilih minimal satu file ZIP.'); return; }
+
+    btnProcess.disabled = true;
+    log(`Memulai proses untuk ${files.length} file...`);
+    for (const f of files) {
+      try {
+        await processZipFile(f, dateStr, tzOffsetMinutes);
+      } catch (err) {
+        console.error(err);
+        log(`  ❌ Error pada ${f.name}: ${err.message || err}`);
+      }
+    }
+    log('Semua proses selesai. Silakan unduh file hasil.');
+    btnProcess.disabled = false;
+  });
+
+  btnClear.addEventListener('click', () => {
+    document.getElementById('zipInput').value = '';
+    document.getElementById('dateInput').value = '';
+    downloadsEl.innerHTML = '';
+    logEl.textContent = '';
+  });
+</script>
+</body>
+</html>
