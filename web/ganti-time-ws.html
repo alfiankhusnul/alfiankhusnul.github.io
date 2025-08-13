@@ -12,7 +12,7 @@
   <div class="max-w-4xl mx-auto p-6">
     <header class="mb-6">
       <h1 class="text-2xl font-bold">Batch Update <code>created_at</code> di <code>project.csv</code> dalam ZIP</h1>
-      <p class="text-sm text-slate-600 mt-2">Mengganti tanggal pada kolom <code>created_at</code> (epoch ms) menjadi tanggal input, sambil mempertahankan jam:menit:detik dari nilai lama. File lain di dalam ZIP tetap utuh.</p>
+      <p class="text-sm text-slate-600 mt-2">Mengganti tanggal pada kolom <code>created_at</code> (epoch ms) menjadi tanggal input, sambil mempertahankan jam:menit:detik dari nilai lama. File lain di dalam ZIP tetap utuh dengan metadata terjaga.</p>
     </header>
 
     <section class="grid gap-4 sm:grid-cols-2 bg-white rounded-2xl shadow p-4">
@@ -83,24 +83,55 @@
     return utcMs - tzOffsetMinutes * 60000;
   }
 
-  async function processZipFile(file, dateStr, tzOffsetMinutes) {
+  // Preserve metadata dengan minimal ZIP recreation
+  async function processZipFileMinimal(file, dateStr, tzOffsetMinutes) {
     log(`Memuat ZIP: ${file.name}`);
-    const zip = await JSZip.loadAsync(file);
+    
+    // Buat ZIP baru dengan copy semua file kecuali project.csv
+    const newZip = new JSZip();
+    const originalZip = await JSZip.loadAsync(file, {
+      createFolders: true,
+      checkCRC32: true // validasi integritas
+    });
 
-    // Cari project.csv (di root atau subfolder)
-    const candidates = Object.values(zip.files).filter(f => /(^|\/)project\.csv$/i.test(f.name));
-    if (candidates.length === 0) {
+    // Copy semua file kecuali project.csv
+    for (let filename in originalZip.files) {
+      const entry = originalZip.files[filename];
+      if (/(^|\/)project\.csv$/i.test(filename)) continue;
+      
+      if (entry.dir) {
+        newZip.folder(filename);
+      } else {
+        const content = await entry.async('uint8array');
+        newZip.file(filename, content, {
+          date: entry.date,
+          dosPermissions: entry.dosPermissions,
+          unixPermissions: entry.unixPermissions,
+          comment: entry.comment
+        });
+      }
+    }
+
+    // Proses project.csv
+    const projectEntry = Object.values(originalZip.files).find(f => /(^|\/)project\.csv$/i.test(f.name));
+    if (!projectEntry) {
       log(`  ➜ project.csv tidak ditemukan di ${file.name} (dilewati)`);
       return null;
     }
 
-    const projectEntry = candidates[0];
     const csvText = await projectEntry.async('text');
+    
+    // Parse CSV dengan settings yang lebih ketat
+    const parsed = Papa.parse(csvText, { 
+      header: true, 
+      skipEmptyLines: true,
+      dynamicTyping: false, // jangan auto-convert tipe data
+      trimHeaders: true, // bersihkan whitespace di header
+      delimiter: ";" // gunakan semicolon sebagai separator
+    });
 
-    // Parse CSV dengan header
-    const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
     if (parsed.errors && parsed.errors.length) {
-      log(`  ⚠️ Peringatan parse CSV: ${parsed.errors[0].message}`);
+      log(` ⚠️ Peringatan parse CSV: ${parsed.errors[0].message}`);
     }
 
     const rows = parsed.data;
@@ -115,8 +146,8 @@
 
     // Ambil Y-M-D dari input date
     const [Y, M, D] = dateStr.split('-').map(n => parseInt(n, 10));
-
     let changed = 0;
+    
     rows.forEach((row, idx) => {
       const raw = row['created_at'];
       if (raw == null || raw === '') return;
@@ -132,31 +163,36 @@
       changed++;
     });
 
-    // Serialize kembali ke CSV, menjaga urutan kolom
+    // Serialize kembali ke CSV dengan settings yang lebih konservatif
     const dataMatrix = rows.map(r => fields.map(f => r[f] ?? ''));
-    const newCsv = Papa.unparse({ fields, data: dataMatrix, delimiter: ";" });
+    const newCsv = Papa.unparse({ 
+      fields, 
+      data: dataMatrix 
+    }, {
+      quotes: false, // hindari quote berlebihan
+      delimiter: ";", // gunakan semicolon sebagai separator
+      header: true,
+      newline: "\r\n" // gunakan CRLF untuk kompatibilitas Windows
+    });
 
-    // Tulis balik ke ZIP (replace)
-    zip.file(projectEntry.name, newCsv);
+    // Tambahkan project.csv yang sudah dimodifikasi dengan metadata asli
+    newZip.file(projectEntry.name, newCsv, {
+      date: projectEntry.date, // gunakan timestamp file asli
+      dosPermissions: projectEntry.dosPermissions,
+      unixPermissions: projectEntry.unixPermissions,
+      comment: projectEntry.comment
+    });
 
-    // Generate ZIP baru
-    const outBlob = await zip.generateAsync({ 
+    // Generate ZIP baru dengan preserve metadata sebanyak mungkin
+    const outBlob = await newZip.generateAsync({ 
       type: 'blob',
       compression: "DEFLATE",
-      compressionOptions: { level: 1 } });
+      compressionOptions: { level: 1 }, // kompresi ringan
+      platform: "DOS" // untuk kompatibilitas Windows
+    });
 
     log(`  ✔️ Selesai: ${file.name} — ${changed} baris diubah.`);
-
-    // Buat link unduhan
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(outBlob);
-    a.download = file.name.replace(/\.zip$/i, '') + '_updated.zip';
-    a.textContent = `Unduh ${a.download}`;
-    a.className = 'inline-block px-3 py-2 rounded-xl bg-emerald-600 text-white text-sm shadow hover:bg-emerald-700';
-
-    const wrap = document.createElement('div');
-    wrap.appendChild(a);
-    downloadsEl.appendChild(wrap);
+    return { blob: outBlob, filename: file.name, changed };
   }
 
   btnProcess.addEventListener('click', async () => {
@@ -174,7 +210,21 @@
     log(`Memulai proses untuk ${files.length} file...`);
     for (const f of files) {
       try {
-        await processZipFile(f, dateStr, tzOffsetMinutes);
+        // Gunakan processZipFileMinimal untuk preserve metadata maksimal
+        const result = await processZipFileMinimal(f, dateStr, tzOffsetMinutes);
+        if (result) {
+          // Buat link unduhan dengan timestamp untuk menghindari caching
+          const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(result.blob);
+          a.download = result.filename.replace(/\.zip$/i, '') + `_updated_${timestamp}.zip`;
+          a.textContent = `Unduh ${a.download}`;
+          a.className = 'inline-block px-3 py-2 rounded-xl bg-emerald-600 text-white text-sm shadow hover:bg-emerald-700';
+
+          const wrap = document.createElement('div');
+          wrap.appendChild(a);
+          downloadsEl.appendChild(wrap);
+        }
       } catch (err) {
         console.error(err);
         log(`  ❌ Error pada ${f.name}: ${err.message || err}`);
@@ -193,5 +243,3 @@
 </script>
 </body>
 </html>
-
-
