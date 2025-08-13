@@ -140,7 +140,10 @@
     zip.file(projectEntry.name, newCsv);
 
     // Generate ZIP baru
-    const outBlob = await zip.generateAsync({ type: 'blob' });
+    const outBlob = await zip.generateAsync({ 
+      type: 'blob',
+      compression: "DEFLATE",
+      compressionOptions: { level: 1 } });
 
     log(`  ✔️ Selesai: ${file.name} — ${changed} baris diubah.`);
 
@@ -190,4 +193,5 @@
 </script>
 </body>
 </html>
+
 
