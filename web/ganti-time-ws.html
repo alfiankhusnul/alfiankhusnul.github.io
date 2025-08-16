@@ -34,6 +34,18 @@
         <label class="block text-sm font-medium mb-1">Pilih file ZIP (bisa banyak)</label>
         <input id="zipInput" type="file" accept=".zip" multiple class="w-full rounded-xl border border-slate-300 p-2" />
       </div>
+      <div class="sm:col-span-2">
+        <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-xl border border-blue-200">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input id="forceNewProject" type="checkbox" class="sr-only peer">
+            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+          </label>
+          <div>
+            <label for="forceNewProject" class="text-sm font-medium text-blue-900 cursor-pointer">Paksa Project Baru</label>
+            <p class="text-xs text-blue-600">Reset server_id dan is_sent pada project.csv & landmark.csv untuk membuat project baru</p>
+          </div>
+        </div>
+      </div>
       <div class="sm:col-span-2 flex gap-3">
         <button id="btnProcess" class="px-4 py-2 rounded-2xl bg-indigo-600 text-white font-medium shadow hover:bg-indigo-700 disabled:opacity-50">Proses & Unduh Hasil</button>
         <button id="btnClear" class="px-4 py-2 rounded-2xl bg-slate-200 text-slate-800 font-medium shadow hover:bg-slate-300">Bersihkan</button>
@@ -83,21 +95,114 @@
     return utcMs - tzOffsetMinutes * 60000;
   }
 
+  // Process CSV dengan opsi reset untuk project baru
+  async function processCsv(csvText, csvType, dateStr, tzOffsetMinutes, forceNewProject) {
+    // Parse CSV dengan settings yang lebih ketat
+    const parsed = Papa.parse(csvText, { 
+      header: true, 
+      skipEmptyLines: true,
+      dynamicTyping: false, // jangan auto-convert tipe data
+      trimHeaders: true, // bersihkan whitespace di header
+      delimiter: ";" // gunakan semicolon sebagai separator
+    });
+
+    if (parsed.errors && parsed.errors.length) {
+      log(`  ⚠️ Peringatan parse ${csvType}: ${parsed.errors[0].message}`);
+    }
+
+    const rows = parsed.data;
+    const fields = (parsed.meta && parsed.meta.fields && parsed.meta.fields.length)
+      ? parsed.meta.fields
+      : (rows.length ? Object.keys(rows[0]) : []);
+
+    let changed = 0;
+
+    if (csvType === 'project.csv') {
+      // Process project.csv
+      if (!fields.includes('created_at')) {
+        log(`  ➜ Kolom created_at tidak ditemukan di ${csvType} (dilewati).`);
+        return null;
+      }
+
+      const [Y, M, D] = dateStr.split('-').map(n => parseInt(n, 10));
+      
+      rows.forEach((row, idx) => {
+        // Update created_at timestamp
+        const raw = row['created_at'];
+        if (raw != null && raw !== '') {
+          let oldMs = Number(raw);
+          if (Number.isFinite(oldMs)) {
+            const { h, m, s, ms } = extractHMSFromEpochMs(oldMs, tzOffsetMinutes);
+            const newMs = buildEpochMsFromLocalYMDHMS(Y, M, D, h, m, s, ms, tzOffsetMinutes);
+            row['created_at'] = String(newMs);
+            changed++;
+          }
+        }
+
+        // Reset untuk project baru jika diminta
+        if (forceNewProject) {
+          if (fields.includes('server_id_project')) {
+            row['server_id_project'] = '0';
+          }
+          if (fields.includes('is_sent')) {
+            row['is_sent'] = 'false';
+          }
+        }
+      });
+
+    } else if (csvType === 'landmark.csv' && forceNewProject) {
+      // Process landmark.csv hanya jika forceNewProject aktif
+      rows.forEach((row, idx) => {
+        if (fields.includes('server_id_landmark')) {
+          row['server_id_landmark'] = '0';
+          changed++;
+        }
+        if (fields.includes('server_id_project')) {
+          row['server_id_project'] = '0';
+          changed++;
+        }
+        if (fields.includes('is_sent')) {
+          row['is_sent'] = 'false';
+          changed++;
+        }
+      });
+    }
+
+    if (changed === 0 && csvType === 'landmark.csv' && !forceNewProject) {
+      return null; // Tidak ada perubahan pada landmark.csv jika tidak force new project
+    }
+
+    // Serialize kembali ke CSV
+    const dataMatrix = rows.map(r => fields.map(f => r[f] ?? ''));
+    const newCsv = Papa.unparse({ 
+      fields, 
+      data: dataMatrix 
+    }, {
+      quotes: false, // hindari quote berlebihan
+      delimiter: ";", // gunakan semicolon sebagai separator
+      header: true,
+      newline: "\r\n" // gunakan CRLF untuk kompatibilitas Windows
+    });
+
+    return { csvContent: newCsv, changed };
+  }
   // Preserve metadata dengan minimal ZIP recreation
-  async function processZipFileMinimal(file, dateStr, tzOffsetMinutes) {
+  async function processZipFileMinimal(file, dateStr, tzOffsetMinutes, forceNewProject) {
     log(`Memuat ZIP: ${file.name}`);
     
-    // Buat ZIP baru dengan copy semua file kecuali project.csv
+    // Buat ZIP baru dengan copy semua file kecuali project.csv dan landmark.csv
     const newZip = new JSZip();
     const originalZip = await JSZip.loadAsync(file, {
       createFolders: true,
       checkCRC32: true // validasi integritas
     });
 
-    // Copy semua file kecuali project.csv
+    // Copy semua file kecuali CSV yang akan diproses
     for (let filename in originalZip.files) {
       const entry = originalZip.files[filename];
-      if (/(^|\/)project\.csv$/i.test(filename)) continue;
+      if (/(^|\/)project\.csv$/i.test(filename) || (forceNewProject && /(^|\/)landmark\.csv$/i.test(filename))) {
+        continue; // Skip CSV yang akan diproses
+      }
       
       if (entry.dir) {
         newZip.folder(filename);
@@ -112,76 +217,52 @@
       }
     }
 
-    // Proses project.csv
+    // Proses project.csv (wajib ada)
     const projectEntry = Object.values(originalZip.files).find(f => /(^|\/)project\.csv$/i.test(f.name));
     if (!projectEntry) {
       log(`  ➜ project.csv tidak ditemukan di ${file.name} (dilewati)`);
       return null;
     }
 
-    const csvText = await projectEntry.async('text');
+    const projectCsvText = await projectEntry.async('text');
+    const projectResult = await processCsv(projectCsvText, 'project.csv', dateStr, tzOffsetMinutes, forceNewProject);
     
-    // Parse CSV dengan settings yang lebih ketat
-    const parsed = Papa.parse(csvText, { 
-      header: true, 
-      skipEmptyLines: true,
-      dynamicTyping: false, // jangan auto-convert tipe data
-      trimHeaders: true, // bersihkan whitespace di header
-      delimiter: ";" // gunakan semicolon sebagai separator
-    });
-
-    if (parsed.errors && parsed.errors.length) {
-      log(` ⚠️ Peringatan parse CSV: ${parsed.errors[0].message}`);
-    }
-
-    const rows = parsed.data;
-    const fields = (parsed.meta && parsed.meta.fields && parsed.meta.fields.length)
-      ? parsed.meta.fields
-      : (rows.length ? Object.keys(rows[0]) : []);
-
-    if (!fields.includes('created_at')) {
-      log('  ➜ Kolom created_at tidak ditemukan (dilewati).');
+    if (!projectResult) {
+      log(`  ➜ Gagal memproses project.csv di ${file.name}`);
       return null;
     }
 
-    // Ambil Y-M-D dari input date
-    const [Y, M, D] = dateStr.split('-').map(n => parseInt(n, 10));
-    let changed = 0;
-    
-    rows.forEach((row, idx) => {
-      const raw = row['created_at'];
-      if (raw == null || raw === '') return;
-      let oldMs = Number(raw);
-      if (!Number.isFinite(oldMs)) return;
-
-      // Ekstrak waktu lama sesuai zona waktu pilihan
-      const { h, m, s, ms } = extractHMSFromEpochMs(oldMs, tzOffsetMinutes);
-
-      // Bangun epoch baru: tanggal input + waktu lama (di zona waktu pilihan)
-      const newMs = buildEpochMsFromLocalYMDHMS(Y, M, D, h, m, s, ms, tzOffsetMinutes);
-      row['created_at'] = String(newMs);
-      changed++;
-    });
-
-    // Serialize kembali ke CSV dengan settings yang lebih konservatif
-    const dataMatrix = rows.map(r => fields.map(f => r[f] ?? ''));
-    const newCsv = Papa.unparse({ 
-      fields, 
-      data: dataMatrix 
-    }, {
-      quotes: false, // hindari quote berlebihan
-      delimiter: ";", // gunakan semicolon sebagai separator
-      header: true,
-      newline: "\r\n" // gunakan CRLF untuk kompatibilitas Windows
-    });
-
-    // Tambahkan project.csv yang sudah dimodifikasi dengan metadata asli
-    newZip.file(projectEntry.name, newCsv, {
-      date: projectEntry.date, // gunakan timestamp file asli
+    // Tambahkan project.csv yang sudah dimodifikasi
+    newZip.file(projectEntry.name, projectResult.csvContent, {
+      date: projectEntry.date,
       dosPermissions: projectEntry.dosPermissions,
       unixPermissions: projectEntry.unixPermissions,
       comment: projectEntry.comment
     });
+
+    let totalChanged = projectResult.changed;
+
+    // Proses landmark.csv jika ada dan forceNewProject aktif
+    if (forceNewProject) {
+      const landmarkEntry = Object.values(originalZip.files).find(f => /(^|\/)landmark\.csv$/i.test(f.name));
+      if (landmarkEntry) {
+        const landmarkCsvText = await landmarkEntry.async('text');
+        const landmarkResult = await processCsv(landmarkCsvText, 'landmark.csv', dateStr, tzOffsetMinutes, forceNewProject);
+        
+        if (landmarkResult) {
+          newZip.file(landmarkEntry.name, landmarkResult.csvContent, {
+            date: landmarkEntry.date,
+            dosPermissions: landmarkEntry.dosPermissions,
+            unixPermissions: landmarkEntry.unixPermissions,
+            comment: landmarkEntry.comment
+          });
+          totalChanged += landmarkResult.changed;
+          log(`  📍 landmark.csv diproses: ${landmarkResult.changed} perubahan`);
+        }
+      } else {
+        log(`  ➜ landmark.csv tidak ditemukan (dilewati)`);
+      }
+    }
 
     // Generate ZIP baru dengan preserve metadata sebanyak mungkin
     const outBlob = await newZip.generateAsync({ 
@@ -191,13 +272,14 @@
       platform: "DOS" // untuk kompatibilitas Windows
     });
 
-    log(`  ✔️ Selesai: ${file.name} — ${changed} baris diubah.`);
-    return { blob: outBlob, filename: file.name, changed };
+    log(`  ✔️ Selesai: ${file.name} — ${totalChanged} total perubahan.`);
+    return { blob: outBlob, filename: file.name, changed: totalChanged };
   }
 
   btnProcess.addEventListener('click', async () => {
     const dateStr = document.getElementById('dateInput').value;
     const tzOffsetMinutes = parseInt(document.getElementById('tzSelect').value, 10);
+    const forceNewProject = document.getElementById('forceNewProject').checked;
     const input = document.getElementById('zipInput');
     const files = Array.from(input.files || []);
 
@@ -208,10 +290,14 @@
 
     btnProcess.disabled = true;
     log(`Memulai proses untuk ${files.length} file...`);
+    if (forceNewProject) {
+      log('🔄 Mode: Paksa Project Baru (reset server_id & is_sent)');
+    }
+    
     for (const f of files) {
       try {
         // Gunakan processZipFileMinimal untuk preserve metadata maksimal
-        const result = await processZipFileMinimal(f, dateStr, tzOffsetMinutes);
+        const result = await processZipFileMinimal(f, dateStr, tzOffsetMinutes, forceNewProject);
         if (result) {
           // Buat link unduhan dengan timestamp untuk menghindari caching
           const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
@@ -237,6 +323,7 @@
   btnClear.addEventListener('click', () => {
     document.getElementById('zipInput').value = '';
     document.getElementById('dateInput').value = '';
+    document.getElementById('forceNewProject').checked = false;
     downloadsEl.innerHTML = '';
     logEl.textContent = '';
   });
