@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landmark Editor - Geotag Adjustment Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        .leaflet-container { height: 600px; }
+        .landmark-marker { background-color: #ef4444; border-radius: 50%; }
+        .landmark-marker.selected { background-color: #22c55e; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">
+            🗺️ Landmark Editor - Geotag Adjustment Tool
+        </h1>
+
+        <!-- Upload Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">📁 Upload Files</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Upload ZIP File (dengan landmark.csv)
+                    </label>
+                    <input type="file" id="zipInput" accept=".zip" 
+                           class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Upload GeoJSON (opsional - untuk referensi poligon)
+                    </label>
+                    <input type="file" id="geojsonInput" accept=".geojson,.json" 
+                           class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+        <!-- Map Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">🗺️ Peta Landmark</h2>
+                <div class="flex gap-2">
+                    <button id="resetView" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition">
+                        Reset View
+                    </button>
+                    <button id="downloadBtn" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition" disabled>
+                        📥 Download ZIP
+                    </button>
+                </div>
+            </div>
+            <div id="map" class="rounded-lg border"></div>
+        </div>
+
+        <!-- Bottom Section -->
+        <div class="grid lg:grid-cols-3 gap-6">
+            <!-- Landmark List Section -->
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4">📍 Daftar Landmark</h2>
+                <div id="landmarkList" class="space-y-2 max-h-96 overflow-y-auto">
+                    <p class="text-gray-500 text-center py-8">Belum ada landmark yang dimuat. Silakan upload file ZIP terlebih dahulu.</p>
+                </div>
+            </div>
+            
+            <!-- Activity Log Section -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">📋 Log Aktivitas</h2>
+                    <button id="clearLogBtn" class="text-sm px-3 py-1 text-gray-600 hover:text-gray-800 border border-gray-300 rounded hover:bg-gray-50 transition">
+                        Clear
+                    </button>
+                </div>
+                <div id="activityLog" class="space-y-2 max-h-96 overflow-y-auto text-sm">
+                    <div class="text-gray-500 text-center py-8 italic">
+                        Aktivitas akan muncul di sini...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let map;
+        let landmarks = [];
+        let originalZipFiles = {};
+        let selectedMarker = null;
+        let polygonLayer = null;
+        let markersLayer = null;
+
+        // Initialize map
+        function initMap() {
+            map = L.map('map').setView([-1.589, 122.198], 13);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            markersLayer = L.layerGroup().addTo(map);
+        }
+
+        // Show toast notification (doesn't affect layout)
+        function showToast(message, type = 'info', duration = 4000) {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let bgColor, borderColor, textColor, icon;
+            switch(type) {
+                case 'success':
+                    bgColor = 'bg-green-50';
+                    borderColor = 'border-green-200';
+                    textColor = 'text-green-800';
+                    icon = '✅';
+                    break;
+                case 'error':
+                    bgColor = 'bg-red-50';
+                    borderColor = 'border-red-200';
+                    textColor = 'text-red-800';
+                    icon = '❌';
+                    break;
+                case 'warning':
+                    bgColor = 'bg-yellow-50';
+                    borderColor = 'border-yellow-200';
+                    textColor = 'text-yellow-800';
+                    icon = '⚠️';
+                    break;
+                default:
+                    bgColor = 'bg-blue-50';
+                    borderColor = 'border-blue-200';
+                    textColor = 'text-blue-800';
+                    icon = 'ℹ️';
+            }
+            
+            toast.className = `${bgColor} ${borderColor} ${textColor} border rounded-lg p-3 shadow-lg max-w-sm transform transition-all duration-300 translate-x-full opacity-0`;
+            toast.innerHTML = `
+                <div class="flex items-start gap-2">
+                    <span class="text-lg">${icon}</span>
+                    <div class="flex-1 text-sm">${message}</div>
+                    <button class="text-gray-400 hover:text-gray-600 ml-2" onclick="this.parentElement.parentElement.remove()">×</button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full', 'opacity-0');
+            }, 10);
+            
+            // Auto remove
+            setTimeout(() => {
+                toast.classList.add('translate-x-full', 'opacity-0');
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 300);
+            }, duration);
+        }
+
+        // Add activity log entry
+        function addActivityLog(message, type = 'info') {
+            const logContainer = document.getElementById('activityLog');
+            const timestamp = new Date().toLocaleTimeString('id-ID');
+            
+            let icon, textColor;
+            switch(type) {
+                case 'success':
+                    icon = '✅';
+                    textColor = 'text-green-600';
+                    break;
+                case 'error':
+                    icon = '❌';
+                    textColor = 'text-red-600';
+                    break;
+                case 'warning':
+                    icon = '⚠️';
+                    textColor = 'text-yellow-600';
+                    break;
+                default:
+                    icon = 'ℹ️';
+                    textColor = 'text-blue-600';
+            }
+            
+            // Remove placeholder if exists
+            const placeholder = logContainer.querySelector('.text-gray-500');
+            if (placeholder) {
+                placeholder.remove();
+            }
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = 'flex items-start gap-2 p-2 hover:bg-gray-50 rounded border-l-2 border-l-gray-200';
+            logEntry.innerHTML = `
+                <span class="text-sm">${icon}</span>
+                <div class="flex-1 min-w-0">
+                    <div class="${textColor} text-xs font-medium">${message}</div>
+                    <div class="text-xs text-gray-500">${timestamp}</div>
+                </div>
+            `;
+            
+            logContainer.insertBefore(logEntry, logContainer.firstChild);
+            
+            // Keep only last 50 entries
+            const entries = logContainer.children;
+            while (entries.length > 50) {
+                logContainer.removeChild(entries[entries.length - 1]);
+            }
+            
+            // Smooth scroll to top
+            logContainer.scrollTop = 0;
+        }
+
+        // Parse CSV data
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            const headers = lines[0].split(';');
+            const data = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(';');
+                const row = {};
+                headers.forEach((header, index) => {
+                    row[header.trim()] = values[index] ? values[index].trim() : '';
+                });
+                data.push(row);
+            }
+            
+            return data;
+        }
+
+        // Convert landmarks back to CSV
+        function landmarksToCSV() {
+            if (landmarks.length === 0) return '';
+            
+            const headers = Object.keys(landmarks[0]);
+            let csv = headers.join(';') + '\n';
+            
+            landmarks.forEach(landmark => {
+                const row = headers.map(header => landmark[header] || '').join(';');
+                csv += row + '\n';
+            });
+            
+            return csv;
+        }
+
+        // Create marker for landmark
+        function createLandmarkMarker(landmark, index) {
+            const lat = parseFloat(landmark.lat);
+            const lng = parseFloat(landmark.long);
+            
+            if (isNaN(lat) || isNaN(lng)) return null;
+            
+            // Create marker with default Leaflet marker (blue)
+            const marker = L.marker([lat, lng], {
+                draggable: true,
+                title: landmark.nama
+            }).addTo(markersLayer);
+            
+            marker.landmarkIndex = index;
+            marker.isSelected = false;
+            
+            // Popup content
+            const popupContent = `
+                <div class="p-2">
+                    <h3 class="font-semibold text-lg">${landmark.nama}</h3>
+                    <p class="text-sm text-gray-600 mb-2">${landmark.deskripsi}</p>
+                    <div class="text-xs text-gray-500">
+                        <p>Lat: ${lat.toFixed(6)}</p>
+                        <p>Lng: ${lng.toFixed(6)}</p>
+                        <p>Tipe: ${landmark.landmark_tipe}</p>
+                    </div>
+                </div>
+            `;
+            marker.bindPopup(popupContent);
+            
+            // Handle drag events
+            marker.on('dragstart', function() {
+                selectedMarker = this;
+                this.isSelected = true;
+            });
+            
+            marker.on('dragend', function() {
+                const newPos = this.getLatLng();
+                const landmarkIndex = this.landmarkIndex;
+                
+                // Update landmark data
+                landmarks[landmarkIndex].lat = newPos.lat.toFixed(7);
+                landmarks[landmarkIndex].long = newPos.lng.toFixed(7);
+                
+                // Update popup
+                const popupContent = `
+                    <div class="p-2">
+                        <h3 class="font-semibold text-lg">${landmarks[landmarkIndex].nama}</h3>
+                        <p class="text-sm text-gray-600 mb-2">${landmarks[landmarkIndex].deskripsi}</p>
+                        <div class="text-xs text-gray-500">
+                            <p>Lat: ${newPos.lat.toFixed(6)}</p>
+                            <p>Lng: ${newPos.lng.toFixed(6)}</p>
+                            <p>Tipe: ${landmarks[landmarkIndex].landmark_tipe}</p>
+                        </div>
+                    </div>
+                `;
+                this.setPopupContent(popupContent);
+                
+                updateLandmarkList();
+                showToast(`Landmark "${landmarks[landmarkIndex].nama}" berhasil dipindahkan`, 'success');
+                addActivityLog(`Landmark "${landmarks[landmarkIndex].nama}" dipindahkan ke ${newPos.lat.toFixed(6)}, ${newPos.lng.toFixed(6)}`, 'success');
+            });
+            
+            marker.on('click', function() {
+                if (selectedMarker && selectedMarker !== this) {
+                    selectedMarker.isSelected = false;
+                }
+                
+                selectedMarker = this;
+                this.isSelected = true;
+                
+                highlightLandmarkInList(index);
+            });
+            
+            return marker;
+        }
+
+        // Display landmarks on map
+        function displayLandmarks() {
+            markersLayer.clearLayers();
+            
+            landmarks.forEach((landmark, index) => {
+                createLandmarkMarker(landmark, index);
+            });
+            
+            if (landmarks.length > 0) {
+                const group = new L.featureGroup(markersLayer.getLayers());
+                map.fitBounds(group.getBounds().pad(0.1));
+                document.getElementById('downloadBtn').disabled = false;
+            }
+        }
+
+        // Update landmark list in UI
+        function updateLandmarkList() {
+            const container = document.getElementById('landmarkList');
+            
+            if (landmarks.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-8">Belum ada landmark yang dimuat.</p>';
+                return;
+            }
+            
+            container.innerHTML = landmarks.map((landmark, index) => `
+                <div class="landmark-item border border-gray-200 rounded p-3 hover:bg-gray-50 cursor-pointer" data-index="${index}">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800">${landmark.nama}</h4>
+                            <p class="text-sm text-gray-600 mb-1">${landmark.deskripsi}</p>
+                            <div class="text-xs text-gray-500">
+                                <span class="inline-block mr-4">📍 ${parseFloat(landmark.lat).toFixed(6)}, ${parseFloat(landmark.long).toFixed(6)}</span>
+                                <span class="inline-block">🏷️ ${landmark.landmark_tipe}</span>
+                            </div>
+                        </div>
+                        <div class="ml-2">
+                            <button class="zoom-to-landmark text-blue-500 hover:text-blue-700 text-sm" data-index="${index}">
+                                Zoom ke Lokasi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add event listeners
+            container.querySelectorAll('.landmark-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const index = parseInt(this.dataset.index);
+                    zoomToLandmark(index);
+                });
+            });
+            
+            container.querySelectorAll('.zoom-to-landmark').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const index = parseInt(this.dataset.index);
+                    zoomToLandmark(index);
+                });
+            });
+        }
+
+        // Zoom to specific landmark
+        function zoomToLandmark(index) {
+            const landmark = landmarks[index];
+            const lat = parseFloat(landmark.lat);
+            const lng = parseFloat(landmark.long);
+            
+            map.setView([lat, lng], 16);
+            
+            // Highlight marker
+            const markers = markersLayer.getLayers();
+            if (markers[index]) {
+                markers[index].openPopup();
+                
+                if (selectedMarker && selectedMarker !== markers[index]) {
+                    selectedMarker.isSelected = false;
+                }
+                
+                selectedMarker = markers[index];
+                selectedMarker.isSelected = true;
+            }
+        }
+
+        // Highlight landmark in list
+        function highlightLandmarkInList(index) {
+            const items = document.querySelectorAll('.landmark-item');
+            items.forEach(item => item.classList.remove('bg-blue-50', 'border-blue-300'));
+            
+            if (items[index]) {
+                items[index].classList.add('bg-blue-50', 'border-blue-300');
+                items[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // Handle ZIP file upload
+        document.getElementById('zipInput').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            try {
+                showToast('Memproses file ZIP...', 'info');
+                addActivityLog('Memproses file ZIP...', 'info');
+                
+                const zip = new JSZip();
+                const contents = await zip.loadAsync(file);
+                
+                // Store all files for later download
+                originalZipFiles = {};
+                for (const [filename, fileObj] of Object.entries(contents.files)) {
+                    if (!fileObj.dir) {
+                        if (filename.toLowerCase().includes('landmark') && filename.endsWith('.csv')) {
+                            const csvContent = await fileObj.async('text');
+                            landmarks = parseCSV(csvContent);
+                            originalZipFiles[filename] = csvContent;
+                        } else {
+                            originalZipFiles[filename] = await fileObj.async('blob');
+                        }
+                    }
+                }
+                
+                if (landmarks.length === 0) {
+                    throw new Error('File landmark.csv tidak ditemukan dalam ZIP atau tidak memiliki data landmark');
+                }
+                
+                displayLandmarks();
+                updateLandmarkList();
+                
+                showToast(`Berhasil memuat ${landmarks.length} landmark`, 'success');
+                addActivityLog(`File ZIP berhasil dimuat dengan ${landmarks.length} landmark`, 'success');
+                
+            } catch (error) {
+                showToast(`Error memproses ZIP: ${error.message}`, 'error');
+                addActivityLog(`Gagal memproses ZIP: ${error.message}`, 'error');
+                console.error(error);
+            }
+        });
+
+        // Handle GeoJSON file upload
+        document.getElementById('geojsonInput').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            try {
+                const text = await file.text();
+                const geojson = JSON.parse(text);
+                
+                // Remove existing polygon layer
+                if (polygonLayer) {
+                    map.removeLayer(polygonLayer);
+                }
+                
+                // Add new polygon layer
+                polygonLayer = L.geoJSON(geojson, {
+                    style: {
+                        color: '#3b82f6',
+                        weight: 2,
+                        opacity: 0.8,
+                        fillColor: '#93c5fd',
+                        fillOpacity: 0.3
+                    }
+                }).addTo(map);
+                
+                // Fit map to polygon bounds
+                if (polygonLayer.getBounds().isValid()) {
+                    map.fitBounds(polygonLayer.getBounds());
+                }
+                
+                showToast('GeoJSON berhasil dimuat', 'success');
+                addActivityLog('File GeoJSON berhasil ditampilkan di peta', 'success');
+                
+            } catch (error) {
+                showToast(`Error memproses GeoJSON: ${error.message}`, 'error');
+                addActivityLog(`Gagal memproses GeoJSON: ${error.message}`, 'error');
+                console.error(error);
+            }
+        });
+
+        // Handle download
+        document.getElementById('downloadBtn').addEventListener('click', async function() {
+            if (landmarks.length === 0) {
+                showToast('Tidak ada data landmark untuk diunduh', 'warning');
+                return;
+            }
+            
+            try {
+                addActivityLog('Mempersiapkan file untuk diunduh...', 'info');
+                
+                const zip = new JSZip();
+                
+                // Add updated landmark.csv
+                const updatedCSV = landmarksToCSV();
+                let landmarkFilename = 'landmark.csv';
+                
+                // Find original landmark filename
+                for (const filename of Object.keys(originalZipFiles)) {
+                    if (filename.toLowerCase().includes('landmark') && filename.endsWith('.csv')) {
+                        landmarkFilename = filename;
+                        break;
+                    }
+                }
+                
+                zip.file(landmarkFilename, updatedCSV);
+                
+                // Add other original files
+                for (const [filename, content] of Object.entries(originalZipFiles)) {
+                    if (!(filename.toLowerCase().includes('landmark') && filename.endsWith('.csv'))) {
+                        zip.file(filename, content);
+                    }
+                }
+                
+                const content = await zip.generateAsync({type: 'blob'});
+                saveAs(content, 'landmark_edited.zip');
+                
+                showToast('File ZIP berhasil diunduh!', 'success');
+                addActivityLog('File ZIP hasil editan berhasil diunduh', 'success');
+                
+            } catch (error) {
+                showToast(`Error saat membuat ZIP: ${error.message}`, 'error');
+                addActivityLog(`Gagal membuat ZIP: ${error.message}`, 'error');
+                console.error(error);
+            }
+        });
+
+        // Clear activity log
+        document.getElementById('clearLogBtn').addEventListener('click', function() {
+            const logContainer = document.getElementById('activityLog');
+            logContainer.innerHTML = `
+                <div class="text-gray-500 text-center py-8 italic">
+                    Aktivitas akan muncul di sini...
+                </div>
+            `;
+            showToast('Log aktivitas berhasil dibersihkan', 'info');
+        });
+
+        // Reset view button
+        document.getElementById('resetView').addEventListener('click', function() {
+            if (landmarks.length > 0) {
+                displayLandmarks();
+            } else if (polygonLayer && polygonLayer.getBounds().isValid()) {
+                map.fitBounds(polygonLayer.getBounds());
+            } else {
+                map.setView([-1.589, 122.198], 13);
+            }
+        });
+
+        // Initialize the application
+        initMap();
+    </script>
+</body>
+</html>
