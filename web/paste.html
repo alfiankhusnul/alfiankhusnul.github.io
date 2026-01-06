@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paste Image Viewer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        #dropArea {
+            min-height: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        #placeholder {
+            color: #6c757d;
+        }
+        #placeholder svg {
+            width: 96px;
+            height: 96px;
+            opacity: 0.3;
+        }
+        #pastedImage {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="text-center mb-4">
+            <p class="text-muted">Tekan <kbd>Ctrl</kbd> + <kbd>V</kbd> untuk paste gambar dari clipboard</p>
+        </div>
+
+        <div id="dropArea" class="card">
+            <div class="card-body d-flex align-items-center justify-content-center">
+                <div id="placeholder" class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <p class="fs-5 mb-3">Paste gambar di sini</p>
+                </div>
+                
+                <div id="imageContainer" class="d-none w-100 text-center">
+                    <img id="pastedImage" class="mb-3" alt="Pasted Image">
+                    <div class="mt-3">
+                        <button id="clearBtn" class="btn btn-danger btn-sm me-2">Hapus Gambar</button>
+                        <button id="downloadBtn" class="btn btn-primary btn-sm">Download</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-info mt-4 py-2 small" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle me-1" viewBox="0 0 16 16" style="vertical-align: text-bottom;">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg>
+            <strong>Cara menggunakan:</strong> Copy atau screenshot gambar, lalu paste di halaman ini dengan Ctrl+V
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const placeholder = document.getElementById('placeholder');
+        const imageContainer = document.getElementById('imageContainer');
+        const pastedImage = document.getElementById('pastedImage');
+        const clearBtn = document.getElementById('clearBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        let currentImageData = null;
+
+        document.addEventListener('paste', (e) => {
+            const items = e.clipboardData.items;
+            
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    const blob = items[i].getAsFile();
+                    const reader = new FileReader();
+                    
+                    reader.onload = (event) => {
+                        currentImageData = event.target.result;
+                        pastedImage.src = currentImageData;
+                        placeholder.classList.add('d-none');
+                        imageContainer.classList.remove('d-none');
+                    };
+                    
+                    reader.readAsDataURL(blob);
+                    break;
+                }
+            }
+        });
+
+        clearBtn.addEventListener('click', () => {
+            pastedImage.src = '';
+            currentImageData = null;
+            placeholder.classList.remove('d-none');
+            imageContainer.classList.add('d-none');
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            if (currentImageData) {
+                const link = document.createElement('a');
+                link.href = currentImageData;
+                link.download = 'pasted-image-' + Date.now() + '.png';
+                link.click();
+            }
+        });
+    </script>
+</body>
+</html>
