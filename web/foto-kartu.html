@@ -3,225 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Photo Capture Tool</title>
+    <title>ID Photo Pro</title>
     <style>
         :root {
-            --bg: #121212;
-            --surface: #1e1e1e;
+            --bg: #0f0f0f;
+            --surface: #1a1a1a;
             --accent: #ffffff;
-            --text-secondary: #999;
+            --border: #333;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
         body {
-            margin: 0;
-            padding: 20px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg);
-            color: var(--accent);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            margin: 0; padding: 20px;
+            font-family: -apple-system, sans-serif;
+            background: var(--bg); color: var(--accent);
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        .container {
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
+        .container { width: 100%; max-width: 400px; text-align: center; }
 
-        h1 { font-size: 1.2rem; font-weight: 500; margin-bottom: 24px; letter-spacing: -0.02em; }
+        h2 { font-size: 1rem; font-weight: 400; color: #888; margin-bottom: 20px; }
 
-        .camera-box {
+        .camera-container {
             position: relative;
             width: 100%;
-            background: var(--surface);
-            border-radius: 12px;
+            aspect-ratio: 4/3;
+            background: #000;
+            border-radius: 16px;
             overflow: hidden;
-            aspect-ratio: 4 / 3;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border: 1px solid var(--border);
         }
 
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        video { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Frame overlay 300x200 sesuai rasio */
-        .frame-overlay {
-            position: absolute;
-            width: 300px;
-            height: 200px;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
+        /* Frame Masking */
+        .overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
             pointer-events: none;
-            border-radius: 4px;
         }
 
-        .controls {
-            margin-top: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        .guide-box {
+            width: 300px; height: 200px;
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 0 5000px rgba(0, 0, 0, 0.6); /* Area gelap diluar frame */
+            border-radius: 2px;
         }
+
+        .controls { width: 100%; margin-top: 25px; display: flex; flex-direction: column; gap: 10px; }
 
         button {
-            background: var(--accent);
-            color: #000;
-            border: none;
-            padding: 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: opacity 0.2s;
+            padding: 16px; border-radius: 12px; border: none;
+            font-weight: 600; font-size: 14px; cursor: pointer;
         }
 
-        button:active { opacity: 0.8; }
+        #captureBtn { background: var(--accent); color: #000; }
+        #downloadBtn { background: transparent; color: #fff; border: 1px solid var(--border); display: none; }
 
-        #downloadBtn {
-            background: transparent;
-            color: var(--accent);
-            border: 1px solid var(--accent);
-            display: none;
+        .preview-box {
+            margin-top: 25px; display: none;
+            padding: 15px; background: var(--surface); border-radius: 12px;
         }
 
-        .preview-container {
-            margin-top: 20px;
-            display: none;
-        }
-
-        canvas { display: none; }
+        #previewImg { width: 100%; max-width: 300px; height: auto; border: 1px solid #444; border-radius: 4px; }
         
-        #previewImg {
-            width: 300px;
-            height: 200px;
-            border-radius: 4px;
-            border: 1px solid #333;
-        }
-
-        .info {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-top: 8px;
-        }
+        .status-text { font-size: 12px; margin-top: 10px; color: #00ff88; }
+        canvas { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Capture ID Photo</h1>
+    <h2>FOTO KARTU IDENTITAS</h2>
 
-    <div class="camera-box">
+    <div class="camera-container">
         <video id="video" autoplay playsinline></video>
-        <div class="frame-overlay"></div>
+        <div class="overlay">
+            <div class="guide-box"></div>
+        </div>
     </div>
 
     <div class="controls">
         <button id="captureBtn">AMBIL FOTO</button>
-        <a id="downloadBtnTag" style="text-decoration: none;">
-            <button id="downloadBtn">DOWNLOAD HASIL (300x200)</button>
+        <a id="downloadLink" style="text-decoration: none;">
+            <button id="downloadBtn">SIMPAN KE HP</button>
         </a>
     </div>
 
-    <div class="preview-container" id="previewArea">
-        <p class="info" style="margin-bottom: 10px;">PREVIEW:</p>
-        <img id="previewImg" src="" alt="Preview">
-        <p class="info" id="fileSizeInfo"></p>
+    <div class="preview-box" id="previewBox">
+        <p style="font-size: 12px; color: #777;">HASIL KOMPRESI:</p>
+        <img id="previewImg">
+        <div id="fileInfo" class="status-text"></div>
     </div>
 </div>
 
-<canvas id="canvas" width="300" height="200"></canvas>
+<canvas id="internalCanvas"></canvas>
 
 <script>
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const captureBtn = document.getElementById('captureBtn');
-const downloadBtn = document.getElementById('downloadBtn');
-const downloadBtnTag = document.getElementById('downloadBtnTag');
-const previewImg = document.getElementById('previewImg');
-const previewArea = document.getElementById('previewArea');
-const fileSizeInfo = document.getElementById('fileSizeInfo');
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('internalCanvas');
+    const captureBtn = document.getElementById('captureBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const downloadLink = document.getElementById('downloadLink');
+    const previewImg = document.getElementById('previewImg');
+    const previewBox = document.getElementById('previewBox');
+    const fileInfo = document.getElementById('fileInfo');
 
-// Gunakan resolusi internal lebih tinggi untuk ketajaman (4x dari 300x200)
-const TARGET_WIDTH = 1200; 
-const TARGET_HEIGHT = 800;
+    // Gunakan resolusi 900x600 (3x dari 300x200) untuk ketajaman tinggi tanpa file kegedean
+    const FINAL_W = 900;
+    const FINAL_H = 600;
 
-async function initCamera() {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: { 
-                facingMode: "environment",
-                width: { ideal: 1920 }, // Minta resolusi Full HD dari sensor
-                height: { ideal: 1080 }
-            },
-            audio: false
-        });
-        video.srcObject = stream;
-    } catch (err) {
-        alert("Akses kamera ditolak atau tidak tersedia.");
-    }
-}
-
-captureBtn.addEventListener('click', () => {
-    // Set ukuran canvas ke resolusi tinggi sebelum render
-    canvas.width = TARGET_WIDTH;
-    canvas.height = TARGET_HEIGHT;
-    
-    const ctx = canvas.getContext('2d');
-    
-    // Aktifkan image smoothing untuk kualitas maksimal
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-
-    const videoWidth = video.videoWidth;
-    const videoHeight = video.videoHeight;
-    
-    // Kalkulasi rasio untuk cropping tengah
-    const videoRatio = videoWidth / videoHeight;
-    const targetRatio = TARGET_WIDTH / TARGET_HEIGHT;
-    
-    let drawWidth, drawHeight, startX, startY;
-
-    if (videoRatio > targetRatio) {
-        drawHeight = videoHeight;
-        drawWidth = videoHeight * targetRatio;
-        startX = (videoWidth - drawWidth) / 2;
-        startY = 0;
-    } else {
-        drawWidth = videoWidth;
-        drawHeight = videoWidth / targetRatio;
-        startX = 0;
-        startY = (videoHeight - drawHeight) / 2;
+    async function startCamera() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } },
+                audio: false
+            });
+            video.srcObject = stream;
+        } catch (e) { alert("Izin kamera diperlukan."); }
     }
 
-    // Gambar ke canvas resolusi tinggi
-    ctx.drawImage(video, startX, startY, drawWidth, drawHeight, 0, 0, TARGET_WIDTH, TARGET_HEIGHT);
+    captureBtn.addEventListener('click', () => {
+        const ctx = canvas.getContext('2d');
+        canvas.width = FINAL_W;
+        canvas.height = FINAL_H;
 
-    // Kompresi dengan kualitas maksimal (1.0) 
-    // Karena target 1200x800, sizenya akan berkisar 100kb - 180kb (Masuk target < 200kb)
-    let quality = 0.95; 
-    let dataUrl = canvas.toDataURL('image/jpeg', quality);
-    
-    // Tampilkan di UI (tetap terlihat kecil 300x200 di CSS agar rapi)
-    previewImg.src = dataUrl;
-    previewArea.style.display = 'block';
-    downloadBtn.style.display = 'block';
-    
-    const sizeInBytes = Math.round((dataUrl.split(',')[1].length * 3 / 4));
-    const sizeInKB = (sizeInBytes / 1024).toFixed(2);
-    
-    fileSizeInfo.innerText = `Ukuran File: ${sizeInKB} KB | Resolusi: ${TARGET_WIDTH}x${TARGET_HEIGHT}`;
-    
-    downloadBtnTag.href = dataUrl;
-    downloadBtnTag.download = `ID_Sharp_${Date.now()}.jpg`;
-});
+        // Mendapatkan ukuran asli video stream
+        const vW = video.videoWidth;
+        const vH = video.videoHeight;
 
-initCamera();
+        // Hitung rasio tampilan video di layar vs resolusi asli
+        // Kita ingin mengambil area yang tertutup oleh .guide-box (300x200)
+        const displayW = video.offsetWidth;
+        const displayH = video.offsetHeight;
+        
+        // Rasio perbandingan (Berapa banyak pixel asli per 1 pixel layar)
+        const scale = vW / displayW;
+
+        // Dimensi pemotongan (crop) di video asli
+        const cropW = 300 * scale;
+        const cropH = 200 * scale;
+        const startX = (vW - cropW) / 2;
+        const startY = (vH - cropH) / 2;
+
+        // Gambar ke canvas resolusi tinggi
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(video, startX, startY, cropW, cropH, 0, 0, FINAL_W, FINAL_H);
+
+        // Fungsi Kompresi Cerdas (Smart Compression Loop)
+        let quality = 0.92;
+        let dataUrl = "";
+        let sizeKB = 0;
+
+        // Loop hingga ukuran di bawah 200KB
+        do {
+            dataUrl = canvas.toDataURL('image/jpeg', quality);
+            const stringLength = dataUrl.split(',')[1].length;
+            sizeKB = (stringLength * 3 / 4) / 1024;
+            quality -= 0.05; // Turunkan kualitas jika masih kegedean
+        } while (sizeKB > 195 && quality > 0.1);
+
+        // Update UI
+        previewImg.src = dataUrl;
+        previewBox.style.display = 'block';
+        downloadBtn.style.display = 'block';
+        downloadLink.href = dataUrl;
+        downloadLink.download = `ID_PHOTO_${Math.floor(Date.now()/1000)}.jpg`;
+        fileInfo.innerText = `Selesai: ${sizeKB.toFixed(1)} KB (High Quality)`;
+        
+        // Scroll ke preview
+        previewBox.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    startCamera();
 </script>
 
 </body>
