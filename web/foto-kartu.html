@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Photo Capture Tool</title>
+    <style>
+        :root {
+            --bg: #121212;
+            --surface: #1e1e1e;
+            --accent: #ffffff;
+            --text-secondary: #999;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--accent);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 { font-size: 1.2rem; font-weight: 500; margin-bottom: 24px; letter-spacing: -0.02em; }
+
+        .camera-box {
+            position: relative;
+            width: 100%;
+            background: var(--surface);
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 4 / 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Frame overlay 300x200 sesuai rasio */
+        .frame-overlay {
+            position: absolute;
+            width: 300px;
+            height: 200px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            border-radius: 4px;
+        }
+
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        button {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:active { opacity: 0.8; }
+
+        #downloadBtn {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            display: none;
+        }
+
+        .preview-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        canvas { display: none; }
+        
+        #previewImg {
+            width: 300px;
+            height: 200px;
+            border-radius: 4px;
+            border: 1px solid #333;
+        }
+
+        .info {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Capture ID Photo</h1>
+
+    <div class="camera-box">
+        <video id="video" autoplay playsinline></video>
+        <div class="frame-overlay"></div>
+    </div>
+
+    <div class="controls">
+        <button id="captureBtn">AMBIL FOTO</button>
+        <a id="downloadBtnTag" style="text-decoration: none;">
+            <button id="downloadBtn">DOWNLOAD HASIL (300x200)</button>
+        </a>
+    </div>
+
+    <div class="preview-container" id="previewArea">
+        <p class="info" style="margin-bottom: 10px;">PREVIEW:</p>
+        <img id="previewImg" src="" alt="Preview">
+        <p class="info" id="fileSizeInfo"></p>
+    </div>
+</div>
+
+<canvas id="canvas" width="300" height="200"></canvas>
+
+<script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const captureBtn = document.getElementById('captureBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const downloadBtnTag = document.getElementById('downloadBtnTag');
+    const previewImg = document.getElementById('previewImg');
+    const previewArea = document.getElementById('previewArea');
+    const fileSizeInfo = document.getElementById('fileSizeInfo');
+
+    // Akses kamera belakang dengan resolusi optimal
+    async function initCamera() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { 
+                    facingMode: "environment",
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                },
+                audio: false
+            });
+            video.srcObject = stream;
+        } catch (err) {
+            alert("Gagal mengakses kamera: " + err.message);
+        }
+    }
+
+    captureBtn.addEventListener('click', () => {
+        const ctx = canvas.getContext('2d');
+        
+        // Kalkulasi crop untuk mengambil bagian di dalam frame overlay
+        const videoWidth = video.videoWidth;
+        const videoHeight = video.videoHeight;
+        
+        // Mencari rasio skala antara video asli dan tampilan di layar
+        const scale = videoWidth / video.offsetWidth;
+        
+        const cropWidth = 300 * scale;
+        const cropHeight = 200 * scale;
+        const startX = (videoWidth - cropWidth) / 2;
+        const startY = (videoHeight - cropHeight) / 2;
+
+        // Gambar ke canvas dengan dimensi target 300x200
+        ctx.drawImage(video, startX, startY, cropWidth, cropHeight, 0, 0, 300, 200);
+
+        // Kompresi: Mulai dari kualitas 0.9 (90%)
+        // Untuk 300x200, 200kb sangatlah besar, jadi kualitas akan tetap sangat terjaga.
+        let quality = 0.9;
+        let dataUrl = canvas.toDataURL('image/jpeg', quality);
+        
+        // Preview dan Setup Download
+        previewImg.src = dataUrl;
+        previewArea.style.display = 'block';
+        downloadBtn.style.display = 'block';
+        
+        // Hitung estimasi ukuran file
+        const sizeInKB = Math.round((dataUrl.split(',')[1].length * 3 / 4) / 1024);
+        fileSizeInfo.innerText = `Ukuran: ${sizeInKB} KB | Resolusi: 300x200`;
+        
+        downloadBtnTag.href = dataUrl;
+        downloadBtnTag.download = `ID_Photo_${Date.now()}.jpg`;
+    });
+
+    initCamera();
+</script>
+
+</body>
+</html>
