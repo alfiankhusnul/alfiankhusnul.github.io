@@ -4,35 +4,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Authenticator Export Converter (Offline)</title>
-    <!-- Kita menggunakan qrcode.js dari CDN, file ini bisa Anda download agar 100% offline -->
+    <!-- Library untuk membuat QR Code -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Library untuk membaca/scan QR Code -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    
     <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; line-height: 1.6; }
-        .card { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; gap: 20px; }
-        textarea { width: 100%; height: 80px; padding: 10px; margin-bottom: 10px; font-family: monospace; }
-        button { padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        button:hover { background: #218838; }
-        .qr-container { padding: 10px; background: white; }
+        .card { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        textarea { width: 100%; height: 80px; padding: 10px; margin-bottom: 10px; font-family: monospace; box-sizing: border-box; }
+        
+        /* Tombol styling */
+        button { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 10px; margin-right: 5px; }
+        .btn-primary { background: #28a745; color: white; }
+        .btn-primary:hover { background: #218838; }
+        .btn-camera { background: #007bff; color: white; }
+        .btn-camera:hover { background: #0069d9; }
+        .btn-file { background: #17a2b8; color: white; }
+        .btn-file:hover { background: #138496; }
+        .btn-danger { background: #dc3545; color: white; display: none; }
+        
+        .qr-container { padding: 10px; background: white; min-width: 130px; }
         .details { word-break: break-all; }
-        .warning { background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 20px; }
+        .warning { background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ffeeba; }
+        #reader { width: 100%; max-width: 500px; margin: 15px auto; display: none; border: 2px dashed #ccc; border-radius: 8px; overflow: hidden; }
     </style>
 </head>
 <body>
 
     <h2>Google Authenticator Export Converter</h2>
     <div class="warning">
-        <strong>Aman & Offline:</strong> Aplikasi ini berjalan 100% di browser Anda (Client-Side). Matikan koneksi internet (Wi-Fi/LAN) Anda sekarang jika ingin memastikan tidak ada data yang bocor keluar.
+        <strong>Aman & Offline:</strong> Aplikasi ini berjalan 100% di browser (Client-Side). Matikan koneksi internet (Wi-Fi/Data) untuk memastikan tidak ada data yang keluar dari perangkat ini.
     </div>
 
-    <p>Pindai QR Code export dari Google Authenticator Anda menggunakan aplikasi pemindai QR biasa (bukan Google Auth), lalu tempel hasilnya (dimulai dengan <code>otpauth-migration://</code>) di bawah ini:</p>
-    
+    <!-- Area Kontrol Scanner -->
+    <div style="margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
+        <p style="margin-top:0;"><strong>Opsi 1:</strong> Scan QR Code Export Google Authenticator</p>
+        <button class="btn-camera" onclick="startCamera()">📷 Scan dari Kamera</button>
+        <button class="btn-file" onclick="document.getElementById('file-input').click()">📁 Scan dari File Gambar</button>
+        <button class="btn-danger" id="btn-stop-camera" onclick="stopCamera()">⏹️ Berhenti Kamera</button>
+        
+        <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="scanFromFile(event)">
+        <div id="reader"></div>
+    </div>
+
+    <!-- Area Manual Input -->
+    <p><strong>Opsi 2:</strong> Atau tempel teks (<code>otpauth-migration://...</code>) secara manual di bawah ini:</p>
     <textarea id="migrationUrl" placeholder="otpauth-migration://offline?data=..."></textarea>
-    <button onclick="processData()">Konversi ke QR Code Standar</button>
+    <button class="btn-primary" onclick="processData()">🔄 Konversi ke QR Code Standar</button>
 
     <div id="results" style="margin-top: 30px;"></div>
 
     <script>
-        // 1. Fungsi base32 encoder (karena standar TOTP menggunakan base32 untuk secret)
+        // --- LOGIKA SCANNER QR CODE ---
+        let html5QrCode;
+
+        function initScanner() {
+            if (!html5QrCode) {
+                html5QrCode = new Html5Qrcode("reader");
+            }
+        }
+
+        function startCamera() {
+            initScanner();
+            document.getElementById('reader').style.display = 'block';
+            document.getElementById('btn-stop-camera').style.display = 'inline-block';
+            
+            // Mencoba menggunakan kamera belakang jika ada
+            html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 250, height: 250 } },
+                (decodedText) => {
+                    // Jika berhasil scan
+                    stopCamera();
+                    document.getElementById('migrationUrl').value = decodedText;
+                    processData(); // Otomatis proses
+                },
+                (errorMessage) => { /* Abaikan error tiap frame yang gagal baca */ }
+            ).catch((err) => {
+                alert("Gagal mengakses kamera. Pastikan browser memiliki izin kamera.\nError: " + err);
+                stopCamera();
+            });
+        }
+
+        function stopCamera() {
+            if (html5QrCode && html5QrCode.isScanning) {
+                html5QrCode.stop().then(() => {
+                    document.getElementById('reader').style.display = 'none';
+                    document.getElementById('btn-stop-camera').style.display = 'none';
+                }).catch(err => console.error(err));
+            } else {
+                document.getElementById('reader').style.display = 'none';
+                document.getElementById('btn-stop-camera').style.display = 'none';
+            }
+        }
+
+        function scanFromFile(event) {
+            initScanner();
+            if (event.target.files.length == 0) return;
+            
+            const imageFile = event.target.files[0];
+            html5QrCode.scanFile(imageFile, true)
+                .then(decodedText => {
+                    document.getElementById('migrationUrl').value = decodedText;
+                    processData(); // Otomatis proses
+                })
+                .catch(err => {
+                    alert("Gagal membaca QR Code dari gambar tersebut. Pastikan gambar jelas dan tidak terpotong.");
+                });
+            
+            // Reset input file agar bisa memilih file yang sama lagi jika perlu
+            event.target.value = '';
+        }
+
+        // --- LOGIKA KONVERSI (Protobuf & Base32) ---
         function base32Encode(buffer) {
             const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
             let bits = 0, value = 0, output = '';
@@ -48,7 +133,6 @@
             return output;
         }
 
-        // 2. Decoder Base64
         function base64ToUint8Array(base64) {
             const binary = atob(base64.replace(/-/g, '+').replace(/_/g, '/'));
             const bytes = new Uint8Array(binary.length);
@@ -56,7 +140,6 @@
             return bytes;
         }
 
-        // 3. Mini Protobuf Decoder (khusus untuk skema otpauth-migration)
         function decodeVarint(buffer, offset) {
             let result = 0, shift = 0;
             while (true) {
@@ -84,12 +167,12 @@
                     let len = lenInfo.value;
                     offset = lenInfo.length;
                     
-                    if (fieldNum === 1) { // otp_parameters
+                    if (fieldNum === 1) { 
                         accounts.push(parseOtpParameters(buffer.slice(offset, offset + len)));
                     }
                     offset += len;
                 } 
-                else { break; } // Abaikan field lain
+                else { break; }
             }
             return accounts;
         }
@@ -121,11 +204,15 @@
             return account;
         }
 
-        // 4. Proses Eksekusi Utama
         function processData() {
             const urlInput = document.getElementById('migrationUrl').value.trim();
             const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = ''; // Bersihkan hasil lama
+            resultsDiv.innerHTML = ''; 
+
+            if(!urlInput) {
+                alert("Silakan scan QR code atau masukkan URL otpauth-migration terlebih dahulu.");
+                return;
+            }
 
             try {
                 const url = new URL(urlInput);
@@ -139,41 +226,41 @@
 
                 accounts.forEach((acc, index) => {
                     const secretStr = base32Encode(acc.secret);
-                    const issuer = acc.issuer || "Unknown Issuer";
-                    const name = acc.name || "Unknown Account";
+                    const issuer = acc.issuer || "Unknown";
+                    const name = acc.name || "Account";
                     
-                    // Standarisasi OTP URI
                     const issuerParam = encodeURIComponent(issuer);
                     const nameParam = encodeURIComponent(`${issuer}:${name}`);
                     const otpUri = `otpauth://totp/${nameParam}?secret=${secretStr}&issuer=${issuerParam}`;
 
-                    // Buat elemen visual
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.innerHTML = `
                         <div class="qr-container" id="qr-${index}"></div>
                         <div class="details">
-                            <h3 style="margin-top:0;">${issuer}</h3>
-                            <p><strong>Akun:</strong> ${name}</p>
-                            <p><strong>Secret Key:</strong> <code>${secretStr}</code></p>
-                            <p style="font-size:12px; color:#555;">URI: <code>${otpUri}</code></p>
+                            <h3 style="margin-top:0; color:#333;">${issuer}</h3>
+                            <p style="margin:5px 0;"><strong>Akun:</strong> ${name}</p>
+                            <p style="margin:5px 0;"><strong>Secret:</strong> <code style="background:#eee; padding:2px 5px; border-radius:3px;">${secretStr}</code></p>
+                            <p style="font-size:11px; color:#777; margin-top:10px; word-break:break-all;">URI: ${otpUri}</p>
                         </div>
                     `;
                     resultsDiv.appendChild(card);
 
-                    // Buat QR Code
                     new QRCode(document.getElementById(`qr-${index}`), {
                         text: otpUri,
-                        width: 128,
-                        height: 128,
+                        width: 150,
+                        height: 150,
                         colorDark : "#000000",
                         colorLight : "#ffffff",
-                        correctLevel : QRCode.CorrectLevel.L
+                        correctLevel : QRCode.CorrectLevel.M
                     });
                 });
 
+                // Scroll layar otomatis ke arah hasil
+                resultsDiv.scrollIntoView({ behavior: 'smooth' });
+
             } catch (error) {
-                alert("Gagal mengonversi data. Pastikan format URL benar.\nError: " + error.message);
+                alert("Gagal mengonversi data. Pastikan format QR Google Authenticator benar.\nError: " + error.message);
             }
         }
     </script>
