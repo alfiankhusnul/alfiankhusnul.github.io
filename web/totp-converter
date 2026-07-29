@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Authenticator Export Converter (Offline)</title>
+    <!-- Kita menggunakan qrcode.js dari CDN, file ini bisa Anda download agar 100% offline -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; line-height: 1.6; }
+        .card { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; gap: 20px; }
+        textarea { width: 100%; height: 80px; padding: 10px; margin-bottom: 10px; font-family: monospace; }
+        button { padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #218838; }
+        .qr-container { padding: 10px; background: white; }
+        .details { word-break: break-all; }
+        .warning { background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <h2>Google Authenticator Export Converter</h2>
+    <div class="warning">
+        <strong>Aman & Offline:</strong> Aplikasi ini berjalan 100% di browser Anda (Client-Side). Matikan koneksi internet (Wi-Fi/LAN) Anda sekarang jika ingin memastikan tidak ada data yang bocor keluar.
+    </div>
+
+    <p>Pindai QR Code export dari Google Authenticator Anda menggunakan aplikasi pemindai QR biasa (bukan Google Auth), lalu tempel hasilnya (dimulai dengan <code>otpauth-migration://</code>) di bawah ini:</p>
+    
+    <textarea id="migrationUrl" placeholder="otpauth-migration://offline?data=..."></textarea>
+    <button onclick="processData()">Konversi ke QR Code Standar</button>
+
+    <div id="results" style="margin-top: 30px;"></div>
+
+    <script>
+        // 1. Fungsi base32 encoder (karena standar TOTP menggunakan base32 untuk secret)
+        function base32Encode(buffer) {
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+            let bits = 0, value = 0, output = '';
+            for (let i = 0; i < buffer.length; i++) {
+                value = (value << 8) | buffer[i];
+                bits += 8;
+                while (bits >= 5) {
+                    output += alphabet[(value >>> (bits - 5)) & 31];
+                    bits -= 5;
+                }
+            }
+            if (bits > 0) output += alphabet[(value << (5 - bits)) & 31];
+            return output;
+        }
+
+        // 2. Decoder Base64
+        function base64ToUint8Array(base64) {
+            const binary = atob(base64.replace(/-/g, '+').replace(/_/g, '/'));
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+            return bytes;
+        }
+
+        // 3. Mini Protobuf Decoder (khusus untuk skema otpauth-migration)
+        function decodeVarint(buffer, offset) {
+            let result = 0, shift = 0;
+            while (true) {
+                let byte = buffer[offset++];
+                result |= (byte & 0x7F) << shift;
+                if ((byte & 0x80) === 0) break;
+                shift += 7;
+            }
+            return { value: result, length: offset };
+        }
+
+        function parseProtobuf(buffer) {
+            let offset = 0;
+            let accounts = [];
+            while (offset < buffer.length) {
+                let tagInfo = decodeVarint(buffer, offset);
+                let tag = tagInfo.value;
+                offset = tagInfo.length;
+                let fieldNum = tag >>> 3;
+                let wireType = tag & 7;
+                
+                if (wireType === 0) { offset = decodeVarint(buffer, offset).length; } 
+                else if (wireType === 2) {
+                    let lenInfo = decodeVarint(buffer, offset);
+                    let len = lenInfo.value;
+                    offset = lenInfo.length;
+                    
+                    if (fieldNum === 1) { // otp_parameters
+                        accounts.push(parseOtpParameters(buffer.slice(offset, offset + len)));
+                    }
+                    offset += len;
+                } 
+                else { break; } // Abaikan field lain
+            }
+            return accounts;
+        }
+
+        function parseOtpParameters(buffer) {
+            let offset = 0, account = {};
+            const dec = new TextDecoder();
+            while (offset < buffer.length) {
+                let tagInfo = decodeVarint(buffer, offset);
+                let tag = tagInfo.value;
+                offset = tagInfo.length;
+                let fieldNum = tag >>> 3, wireType = tag & 7;
+                
+                if (wireType === 0) {
+                    let valInfo = decodeVarint(buffer, offset);
+                    offset = valInfo.length;
+                    if (fieldNum === 4) account.algorithm = valInfo.value;
+                    if (fieldNum === 6) account.type = valInfo.value;
+                } else if (wireType === 2) {
+                    let lenInfo = decodeVarint(buffer, offset);
+                    let data = buffer.slice(lenInfo.length, lenInfo.length + lenInfo.value);
+                    offset = lenInfo.length + lenInfo.value;
+                    
+                    if (fieldNum === 1) account.secret = data;
+                    if (fieldNum === 2) account.name = dec.decode(data);
+                    if (fieldNum === 3) account.issuer = dec.decode(data);
+                }
+            }
+            return account;
+        }
+
+        // 4. Proses Eksekusi Utama
+        function processData() {
+            const urlInput = document.getElementById('migrationUrl').value.trim();
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = ''; // Bersihkan hasil lama
+
+            try {
+                const url = new URL(urlInput);
+                const dataParam = url.searchParams.get('data');
+                if (!dataParam) throw new Error("Data base64 tidak ditemukan dalam URL.");
+
+                const buffer = base64ToUint8Array(decodeURIComponent(dataParam));
+                const accounts = parseProtobuf(buffer);
+
+                if (accounts.length === 0) throw new Error("Tidak ada akun ditemukan.");
+
+                accounts.forEach((acc, index) => {
+                    const secretStr = base32Encode(acc.secret);
+                    const issuer = acc.issuer || "Unknown Issuer";
+                    const name = acc.name || "Unknown Account";
+                    
+                    // Standarisasi OTP URI
+                    const issuerParam = encodeURIComponent(issuer);
+                    const nameParam = encodeURIComponent(`${issuer}:${name}`);
+                    const otpUri = `otpauth://totp/${nameParam}?secret=${secretStr}&issuer=${issuerParam}`;
+
+                    // Buat elemen visual
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <div class="qr-container" id="qr-${index}"></div>
+                        <div class="details">
+                            <h3 style="margin-top:0;">${issuer}</h3>
+                            <p><strong>Akun:</strong> ${name}</p>
+                            <p><strong>Secret Key:</strong> <code>${secretStr}</code></p>
+                            <p style="font-size:12px; color:#555;">URI: <code>${otpUri}</code></p>
+                        </div>
+                    `;
+                    resultsDiv.appendChild(card);
+
+                    // Buat QR Code
+                    new QRCode(document.getElementById(`qr-${index}`), {
+                        text: otpUri,
+                        width: 128,
+                        height: 128,
+                        colorDark : "#000000",
+                        colorLight : "#ffffff",
+                        correctLevel : QRCode.CorrectLevel.L
+                    });
+                });
+
+            } catch (error) {
+                alert("Gagal mengonversi data. Pastikan format URL benar.\nError: " + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
