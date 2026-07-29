@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline QR Code Scanner</title>
+    
+    <!-- PENTING: Untuk penggunaan FULL OFFLINE, lihat instruksi di bawah kode ini -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --background: #F9FAFB;
+            --text: #111827;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        /* Modifikasi UI bawaan Library agar lebih modern */
+        #reader {
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #E5E7EB !important;
+        }
+
+        #reader button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        #reader button:hover {
+            opacity: 0.9;
+        }
+
+        #reader select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #D1D5DB;
+            margin: 5px;
+            width: calc(100% - 10px);
+            max-width: 300px;
+        }
+
+        .result-box {
+            margin-top: 24px;
+            padding: 16px;
+            background-color: #EEF2FF;
+            border-radius: 8px;
+            border: 1px solid #C7D2FE;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        .result-box h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #3730A3;
+        }
+
+        #scanned-result {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        /* Responsiveness tambahan */
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <h1>QR Code Scanner</h1>
+        
+        <!-- Wadah untuk Scanner -->
+        <div id="reader"></div>
+
+        <!-- Wadah untuk Hasil -->
+        <div class="result-box" id="result-container" style="display: none;">
+            <h3>Hasil Scan:</h3>
+            <p id="scanned-result">-</p>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi yang dipanggil ketika QR Code berhasil dibaca
+        function onScanSuccess(decodedText, decodedResult) {
+            const resultContainer = document.getElementById('result-container');
+            const scannedResult = document.getElementById('scanned-result');
+            
+            // Tampilkan hasil
+            resultContainer.style.display = 'block';
+            scannedResult.innerHTML = `<a href="${decodedText}" target="_blank">${decodedText}</a>`;
+            
+            // Haptic feedback (getar) jika perangkat mendukung
+            if (navigator.vibrate) {
+                navigator.vibrate(200);
+            }
+        }
+
+        // Fungsi yang dipanggil jika gagal/sedang mencari QR
+        function onScanFailure(error) {
+            // Kita abaikan saja pesan error ini agar tidak spam di console,
+            // karena fungsi ini akan terus dipanggil selama QR belum ditemukan di frame kamera.
+        }
+
+        // Konfigurasi Scanner
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", 
+            { 
+                fps: 10, // Frame per second
+                qrbox: { width: 250, height: 250 }, // Ukuran kotak scan
+                supportedScanTypes: [
+                    Html5QrcodeScanType.SCAN_TYPE_CAMERA, // Opsi Kamera
+                    Html5QrcodeScanType.SCAN_TYPE_FILE    // Opsi Upload Gambar
+                ]
+            }, 
+            /* verbose= */ false
+        );
+
+        // Render Scanner ke dalam div id="reader"
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    </script>
+</body>
+</html>
