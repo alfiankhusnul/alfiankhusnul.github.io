@@ -1119,6 +1119,9 @@
             if (bits > 0) {
                 output += alphabet[(value << (5 - bits)) & 31];
             }
+            while (output.length % 8 !== 0) {
+                output += '=';
+            }
             return output;
         }
 
@@ -1380,7 +1383,7 @@
                     throw new Error("Parameter 'data' (base64) tidak ditemukan dalam URL.");
                 }
 
-                const buffer = base64ToUint8Array(decodeURIComponent(dataParam));
+                const buffer = base64ToUint8Array(dataParam);
                 const { accounts, batchInfo } = parseProtobuf(buffer);
 
                 if (accounts.length === 0) {
