@@ -22,6 +22,13 @@
             referrerpolicy="no-referrer"></script>
 
     <!--
+        Library: jsQR v1.4.0 (Robust Native Resolution QR Scanner for Files)
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"></script>
+
+    <!--
         Library: html5-qrcode v2.3.8 (QR Code Scanner)
         Best Practice: Pin versi eksplisit (bukan unpkg tanpa versi),
                        gunakan CDN yang lebih reliable (cdnjs)
@@ -1042,7 +1049,6 @@
         }
 
         function scanFromFile(event) {
-            initScanner();
             if (!event.target.files || event.target.files.length === 0) return;
 
             const imageFile = event.target.files[0];
@@ -1054,22 +1060,90 @@
                 return;
             }
 
-            html5QrCode.scanFile(imageFile, /* showImage= */ true)
-                .then(decodedText => {
-                    document.getElementById('migrationUrl').value = decodedText;
-                    processData();
-                })
-                .catch(err => {
-                    showStatusMessage('error',
-                        'Gagal membaca QR Code dari gambar. Pastikan:<br>' +
-                        '• Gambar jelas dan tidak terpotong<br>' +
-                        '• QR code memiliki quiet zone (area putih) di sekelilingnya<br>' +
-                        '• Kontras cukup antara QR code dan background'
-                    );
-                });
+            const fileReader = new FileReader();
+            fileReader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    // Gunakan Canvas untuk mendapatkan raw ImageData (tanpa downscaling lossy)
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                    
+                    // Untuk gambar yang sangat besar, limit max dimensi agar memori tidak crash
+                    // tapi tetap cukup besar untuk scan QR padat (misal 2048x2048)
+                    let width = img.width;
+                    let height = img.height;
+                    const MAX_DIM = 2048;
+                    
+                    if (width > MAX_DIM || height > MAX_DIM) {
+                        const ratio = Math.min(MAX_DIM / width, MAX_DIM / height);
+                        width = Math.round(width * ratio);
+                        height = Math.round(height * ratio);
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    // Matikan image smoothing agar batas pixel QR tetap tegas
+                    ctx.imageSmoothingEnabled = false;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    const imageData = ctx.getImageData(0, 0, width, height);
+                    
+                    const processResult = (decodedText) => {
+                        document.getElementById('migrationUrl').value = decodedText;
+                        processData();
+                        event.target.value = ''; // Reset input file
+                    };
+                    
+                    const processError = () => {
+                        showStatusMessage('error',
+                            'Gagal membaca QR Code dari gambar. Pastikan:<br>' +
+                            '• Gambar jelas dan tidak terpotong<br>' +
+                            '• QR code memiliki quiet zone (area putih) di sekelilingnya<br>' +
+                            '• Kontras cukup antara QR code dan background'
+                        );
+                        event.target.value = ''; // Reset input file
+                    };
 
-            // Reset input file agar bisa memilih file yang sama lagi
-            event.target.value = '';
+                    // Coba native BarcodeDetector API lebih dulu (sangat cepat jika didukung)
+                    if ('BarcodeDetector' in window) {
+                        const detector = new BarcodeDetector({ formats: ['qr_code'] });
+                        detector.detect(imageData)
+                            .then(barcodes => {
+                                if (barcodes.length > 0) {
+                                    processResult(barcodes[0].rawValue);
+                                } else {
+                                    // Fallback ke jsQR jika native gagal
+                                    fallbackJsQR();
+                                }
+                            })
+                            .catch(() => fallbackJsQR());
+                    } else {
+                        fallbackJsQR();
+                    }
+
+                    function fallbackJsQR() {
+                        if (typeof jsQR !== 'undefined') {
+                            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                                inversionAttempts: "dontInvert",
+                            });
+                            if (code) {
+                                processResult(code.data);
+                            } else {
+                                processError();
+                            }
+                        } else {
+                            processError();
+                        }
+                    }
+                };
+                img.onerror = () => {
+                    showStatusMessage('error', 'Gagal memuat gambar. File mungkin rusak atau tidak didukung.');
+                    event.target.value = '';
+                };
+                img.src = e.target.result;
+            };
+            fileReader.readAsDataURL(imageFile);
         }
 
         // ===================================================================
