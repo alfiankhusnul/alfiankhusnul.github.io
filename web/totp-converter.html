@@ -39,832 +39,306 @@
 
     <style>
         /* ===== CSS RESET & VARIABLES ===== */
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --bg-primary: #0f1117;
-            --bg-secondary: #1a1d27;
-            --bg-card: #222633;
-            --bg-card-hover: #2a2f3f;
-            --bg-input: #181b24;
-            --border-color: #2e3348;
-            --border-focus: #6366f1;
-            --text-primary: #e8eaed;
-            --text-secondary: #9ca3af;
-            --text-muted: #6b7280;
-            --accent-primary: #6366f1;
-            --accent-primary-hover: #818cf8;
+            /* Professional Dark Theme (Vercel/Linear style) */
+            --bg-primary: #09090b;
+            --bg-secondary: #18181b;
+            --bg-card: #09090b;
+            --bg-input: #09090b;
+            --border-color: #27272a;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            
+            --accent-primary: #fafafa;
+            --accent-primary-hover: #e4e4e7;
+            --accent-primary-text: #09090b;
+            
             --accent-success: #10b981;
-            --accent-success-hover: #34d399;
-            --accent-info: #3b82f6;
-            --accent-info-hover: #60a5fa;
             --accent-warning: #f59e0b;
             --accent-danger: #ef4444;
-            --accent-danger-hover: #f87171;
-            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
-            --gradient-success: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-            --gradient-info: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
-            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
-            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-            --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.35);
-            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.4);
-            --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --radius-xl: 20px;
+            
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
             --transition-fast: 0.15s ease;
-            --transition-base: 0.25s ease;
-            --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* ===== BASE ===== */
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            line-height: 1.7;
+            line-height: 1.6;
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        /* Animated background pattern */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background:
-                radial-gradient(ellipse 600px 400px at 15% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 70%),
-                radial-gradient(ellipse 500px 350px at 85% 60%, rgba(139, 92, 246, 0.06) 0%, transparent 70%),
-                radial-gradient(ellipse 400px 300px at 50% 90%, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
         }
 
         .container {
-            max-width: 860px;
+            max-width: 720px;
             margin: 0 auto;
-            padding: 40px 24px 60px;
-            position: relative;
-            z-index: 1;
+            padding: 64px 24px 80px;
         }
 
         /* ===== HEADER ===== */
-        .header {
-            text-align: center;
-            margin-bottom: 36px;
-        }
-
+        .header { margin-bottom: 48px; }
         .header__badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 6px 14px;
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.25);
-            border-radius: 100px;
+            padding: 4px 10px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
             font-size: 12px;
-            font-weight: 600;
-            color: var(--accent-success);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            font-weight: 500;
+            color: var(--text-secondary);
             margin-bottom: 16px;
         }
-
-        .header__badge::before {
-            content: '';
-            width: 7px;
-            height: 7px;
-            background: var(--accent-success);
-            border-radius: 50%;
-            animation: pulse-dot 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
-        }
-
         .header h1 {
-            font-size: clamp(1.6rem, 4vw, 2.2rem);
-            font-weight: 700;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.3;
-            margin-bottom: 10px;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
         }
-
-        .header__subtitle {
-            font-size: 15px;
-            color: var(--text-secondary);
-            max-width: 520px;
-            margin: 0 auto;
-        }
-
+        .header__subtitle { font-size: 14px; color: var(--text-secondary); max-width: 600px; }
         .header__subtitle code {
-            background: rgba(99, 102, 241, 0.15);
-            padding: 2px 7px;
+            background: var(--bg-secondary);
+            padding: 2px 6px;
             border-radius: 4px;
+            border: 1px solid var(--border-color);
             font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            color: var(--accent-primary-hover);
+            font-size: 12px;
         }
 
         /* ===== WARNING BANNER ===== */
         .warning-banner {
             display: flex;
             align-items: flex-start;
-            gap: 14px;
-            padding: 16px 20px;
-            background: rgba(245, 158, 11, 0.08);
+            gap: 12px;
+            padding: 16px;
+            background: rgba(245, 158, 11, 0.05);
             border: 1px solid rgba(245, 158, 11, 0.2);
             border-radius: var(--radius-md);
-            margin-bottom: 28px;
-            animation: fadeSlideIn 0.5s var(--transition-slow) both;
-            animation-delay: 0.1s;
+            margin-bottom: 32px;
         }
+        .warning-banner svg { color: var(--accent-warning); flex-shrink: 0; margin-top: 2px; }
+        .warning-banner__text { font-size: 13px; color: var(--text-secondary); }
+        .warning-banner__text strong { color: var(--text-primary); font-weight: 500; }
 
-        .warning-banner__icon {
-            font-size: 20px;
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
-
-        .warning-banner__text {
-            font-size: 13.5px;
-            color: #fbbf24;
-            line-height: 1.6;
-        }
-
-        .warning-banner__text strong {
-            color: #fcd34d;
-        }
-
-        /* ===== SECTION PANELS ===== */
+        /* ===== PANELS ===== */
         .panel {
-            background: var(--bg-secondary);
+            background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-md);
             padding: 24px;
-            margin-bottom: 20px;
-            transition: border-color var(--transition-base), box-shadow var(--transition-base);
-            animation: fadeSlideIn 0.5s var(--transition-slow) both;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
         }
-
-        .panel:nth-child(3) { animation-delay: 0.15s; }
-        .panel:nth-child(4) { animation-delay: 0.25s; }
-
-        .panel:hover {
-            border-color: rgba(99, 102, 241, 0.2);
-        }
-
-        @keyframes fadeSlideIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .panel__header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 18px;
-        }
-
+        .panel__header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
         .panel__step {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 30px;
-            height: 30px;
-            background: var(--gradient-primary);
-            border-radius: 50%;
-            font-size: 13px;
-            font-weight: 700;
-            color: white;
-            flex-shrink: 0;
-        }
-
-        .panel__title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        /* ===== BUTTONS ===== */
-        .btn-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 11px 20px;
-            border: none;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 14px;
-            font-weight: 600;
-            color: white;
-            transition: all var(--transition-base);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(255, 255, 255, 0);
-            transition: background var(--transition-fast);
-        }
-
-        .btn:hover::after {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .btn:active {
-            transform: scale(0.97);
-        }
-
-        .btn--camera {
-            background: var(--gradient-info);
-            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.25);
-        }
-
-        .btn--camera:hover {
-            box-shadow: 0 4px 18px rgba(59, 130, 246, 0.35);
-        }
-
-        .btn--file {
-            background: var(--gradient-primary);
-            box-shadow: 0 2px 10px rgba(99, 102, 241, 0.25);
-        }
-
-        .btn--file:hover {
-            box-shadow: 0 4px 18px rgba(99, 102, 241, 0.35);
-        }
-
-        .btn--convert {
-            background: var(--gradient-success);
-            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.25);
-            width: 100%;
-            justify-content: center;
-            padding: 14px 20px;
-            font-size: 15px;
-        }
-
-        .btn--convert:hover {
-            box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
-        }
-
-        .btn--stop {
-            background: var(--gradient-danger);
-            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.25);
-            display: none;
-        }
-
-        .btn--stop:hover {
-            box-shadow: 0 4px 18px rgba(239, 68, 68, 0.35);
-        }
-
-        .btn--copy {
-            background: transparent;
+            width: 24px;
+            height: 24px;
+            background: var(--bg-secondary);
             border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 6px 12px;
+            border-radius: 50%;
             font-size: 12px;
             font-weight: 500;
         }
+        .panel__title { font-size: 15px; font-weight: 500; }
 
-        .btn--copy:hover {
-            border-color: var(--accent-primary);
-            color: var(--accent-primary-hover);
-            background: rgba(99, 102, 241, 0.08);
-        }
-
-        .btn--copy.copied {
-            border-color: var(--accent-success);
-            color: var(--accent-success);
-            background: rgba(16, 185, 129, 0.08);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn:disabled::after {
-            display: none;
-        }
-
-        /* ===== TEXTAREA ===== */
-        .textarea-wrapper {
-            position: relative;
-            margin-bottom: 14px;
-        }
-
-        .textarea-wrapper label {
-            display: block;
+        /* ===== BUTTONS ===== */
+        .btn-group { display: flex; flex-wrap: wrap; gap: 12px; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0 16px;
+            height: 40px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
             font-size: 13px;
             font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
         }
+        .btn:hover:not(:disabled) { background: var(--bg-secondary); border-color: #3f3f46; }
+        .btn:active:not(:disabled) { transform: translateY(1px); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .btn--primary { background: var(--accent-primary); color: var(--accent-primary-text); border-color: transparent; }
+        .btn--primary:hover:not(:disabled) { background: var(--accent-primary-hover); border-color: transparent; }
+        .btn--danger { background: var(--accent-danger); color: white; border-color: transparent; display: none; }
+        .btn--danger:hover:not(:disabled) { background: #dc2626; }
+        .btn--convert { width: 100%; }
+        
+        .btn--copy { height: 28px; padding: 0 10px; font-size: 12px; background: var(--bg-secondary); }
+        .btn--copy.copied { border-color: var(--accent-success); color: var(--accent-success); }
+        
+        .btn svg { width: 16px; height: 16px; }
+        .btn--copy svg { width: 14px; height: 14px; }
 
+        /* ===== INPUTS ===== */
+        .textarea-wrapper { margin-bottom: 16px; }
         textarea {
             width: 100%;
-            height: 90px;
-            padding: 14px 16px;
-            background: var(--bg-input);
+            height: 100px;
+            padding: 12px 16px;
+            background: var(--bg-primary);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-sm);
             color: var(--text-primary);
             font-family: 'JetBrains Mono', monospace;
             font-size: 13px;
             resize: vertical;
-            transition: border-color var(--transition-base), box-shadow var(--transition-base);
-            line-height: 1.5;
         }
+        textarea:focus { outline: none; border-color: var(--text-primary); }
 
-        textarea:focus {
-            outline: none;
-            border-color: var(--border-focus);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-        }
-
-        textarea::placeholder {
-            color: var(--text-muted);
-        }
-
-        /* ===== QR READER ===== */
-        #reader-container {
-            display: none;
-            margin-top: 16px;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            border: 2px dashed var(--border-color);
-            background: var(--bg-primary);
-            animation: fadeSlideIn 0.3s ease both;
-        }
-
-        #reader-container.active {
-            display: block;
-        }
-
-        /* Override html5-qrcode internal styles for dark theme */
-        #reader-container #reader {
-            border: none !important;
-        }
-
-        #reader-container #reader video {
-            border-radius: var(--radius-sm);
-        }
-
-        /* ===== BATCH INFO BANNER ===== */
-        .batch-banner {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            background: rgba(59, 130, 246, 0.08);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: var(--radius-sm);
-            margin-bottom: 16px;
-            font-size: 13px;
-            color: var(--accent-info-hover);
-            animation: fadeSlideIn 0.3s ease both;
-        }
-
-        .batch-banner__icon {
-            font-size: 16px;
-            flex-shrink: 0;
-        }
+        #reader-container { display: none; margin-top: 16px; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-color); }
+        #reader-container.active { display: block; }
+        #reader-container #reader { border: none !important; }
 
         /* ===== RESULTS ===== */
-        #results {
-            margin-top: 32px;
-        }
-
-        .results-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .results-header h2 {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .results-header__count {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 26px;
-            height: 26px;
-            padding: 0 8px;
-            background: var(--accent-primary);
-            border-radius: 100px;
-            font-size: 12px;
-            font-weight: 700;
-            color: white;
-        }
+        #results { margin-top: 40px; }
+        .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
+        .results-header h2 { font-size: 16px; font-weight: 500; }
+        .results-header__count { font-size: 13px; color: var(--text-secondary); }
 
         /* ===== ACCOUNT CARD ===== */
         .account-card {
-            background: var(--bg-card);
+            background: var(--bg-primary);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 20px;
+            border-radius: var(--radius-md);
+            padding: 24px;
             margin-bottom: 16px;
             display: flex;
             align-items: flex-start;
             gap: 24px;
-            flex-wrap: wrap;
-            transition: all var(--transition-base);
-            animation: cardAppear 0.4s var(--transition-slow) both;
         }
+        .account-card__qr { flex-shrink: 0; padding: 12px; background: white; border-radius: var(--radius-sm); border: 1px solid var(--border-color); }
+        .account-card__info { flex: 1; min-width: 200px; }
+        
+        .account-card__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .account-card__issuer { font-size: 16px; font-weight: 600; }
+        .account-card__type-badge { display: inline-flex; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-secondary); }
+        
+        .account-card__field { margin-bottom: 12px; }
+        .account-card__field-label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+        .account-card__field-value { font-size: 14px; }
+        
+        .account-card__secret-row, .account-card__uri-row {
+            display: flex; align-items: center; gap: 8px; background: var(--bg-secondary);
+            border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 4px 4px 4px 12px;
+        }
+        .account-card__secret { flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 13px; word-break: break-all; }
+        .account-card__uri { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); }
+        .account-card__uri-text { flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; }
 
-        .account-card:hover {
-            border-color: rgba(99, 102, 241, 0.3);
-            background: var(--bg-card-hover);
-            box-shadow: var(--shadow-glow);
-            transform: translateY(-2px);
-        }
+        .account-card__meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+        .meta-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px; color: var(--text-secondary); }
+        .meta-tag svg { width: 12px; height: 12px; }
 
-        @keyframes cardAppear {
-            from { opacity: 0; transform: translateY(16px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        /* ===== BATCH / STATUS ===== */
+        .status-message, .batch-banner {
+            display: flex; align-items: flex-start; gap: 12px; padding: 16px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 24px; border: 1px solid transparent;
         }
-
-        .account-card__qr {
-            flex-shrink: 0;
-            padding: 12px;
-            background: white;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-        }
-
-        /* Best Practice: Quiet zone — white padding minimal 4 module di sekeliling QR */
-        .account-card__qr img,
-        .account-card__qr canvas {
-            display: block;
-        }
-
-        .account-card__info {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .account-card__issuer {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .account-card__type-badge {
-            display: inline-flex;
-            padding: 2px 8px;
-            border-radius: 100px;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .account-card__type-badge--totp {
-            background: rgba(99, 102, 241, 0.15);
-            color: var(--accent-primary-hover);
-        }
-
-        .account-card__type-badge--hotp {
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--accent-warning);
-        }
-
-        .account-card__field {
-            margin: 6px 0;
-            font-size: 13.5px;
-            color: var(--text-secondary);
-        }
-
-        .account-card__field strong {
-            color: var(--text-primary);
-            font-weight: 500;
-        }
-
-        .account-card__secret-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .account-card__secret {
-            display: inline-block;
-            padding: 4px 10px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12.5px;
-            color: var(--accent-success);
-            word-break: break-all;
-            user-select: all;
-            cursor: text;
-        }
-
-        .account-card__uri {
-            margin-top: 10px;
-            padding: 10px 12px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            color: var(--text-muted);
-            word-break: break-all;
-            line-height: 1.5;
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-        }
-
-        .account-card__uri-text {
-            flex: 1;
-            word-break: break-all;
-        }
-
-        .account-card__uri .btn--copy {
-            flex-shrink: 0;
-            align-self: flex-start;
-        }
-
-        .account-card__meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .meta-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 10px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-color);
-            border-radius: 100px;
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        /* ===== STATUS MESSAGES ===== */
-        .status-message {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 18px;
-            border-radius: var(--radius-md);
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 16px;
-            animation: fadeSlideIn 0.3s ease both;
-        }
-
-        .status-message--error {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.25);
-            color: #fca5a5;
-        }
-
-        .status-message--success {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.25);
-            color: #6ee7b7;
-        }
-
-        .status-message--warning {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.25);
-            color: #fcd34d;
-        }
-
-        /* ===== LOADING SPINNER ===== */
-        .spinner {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2.5px solid rgba(255, 255, 255, 0.2);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        .status-message svg, .batch-banner svg { flex-shrink: 0; width: 18px; height: 18px; }
+        .status-message--error { background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+        .status-message--error svg { color: var(--accent-danger); }
+        .status-message--success { background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
+        .status-message--success svg { color: var(--accent-success); }
+        .status-message--warning, .batch-banner { background: rgba(245, 158, 11, 0.05); border-color: rgba(245, 158, 11, 0.2); color: #fcd34d; }
+        .status-message--warning svg, .batch-banner svg { color: var(--accent-warning); }
 
         /* ===== FOOTER ===== */
-        .footer {
-            text-align: center;
-            margin-top: 48px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border-color);
-            font-size: 12px;
-            color: var(--text-muted);
-            line-height: 1.8;
-        }
+        .footer { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); }
+        .footer__libs { display: flex; gap: 12px; }
+        .footer__lib-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-secondary); }
 
-        .footer__libs {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin-top: 6px;
-        }
-
-        .footer__lib-tag {
-            padding: 2px 10px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-color);
-            border-radius: 100px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-        }
-
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 640px) {
-            .container {
-                padding: 24px 16px 40px;
-            }
-
-            .panel {
-                padding: 18px;
-            }
-
-            .btn-group {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .account-card {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-
-            .account-card__issuer {
-                justify-content: center;
-            }
-
-            .account-card__meta {
-                justify-content: center;
-            }
-
-            .account-card__secret-row {
-                justify-content: center;
-            }
-
-            .account-card__uri {
-                flex-direction: column;
-                align-items: stretch;
-            }
-        }
-
-        /* ===== SCROLLBAR ===== */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-primary);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #3e4460;
-        }
-
-        /* ===== FOCUS VISIBLE (Aksesibilitas Keyboard) ===== */
-        .btn:focus-visible,
-        textarea:focus-visible {
-            outline: 2px solid var(--accent-primary);
-            outline-offset: 2px;
-        }
-
-        /* ===== REDUCED MOTION (Aksesibilitas) ===== */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
+            .account-card { flex-direction: column; }
+            .footer { flex-direction: column; gap: 16px; }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <!-- Header -->
         <header class="header">
             <div class="header__badge">
-                <span>Offline & Aman</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Offline & Secure
             </div>
-            <h1>Google Authenticator Export Converter</h1>
+            <h1>Authenticator Export Converter</h1>
             <p class="header__subtitle">
-                Konversi QR Code export Google Authenticator ke format standar <code>otpauth://</code> yang kompatibel dengan semua aplikasi authenticator.
+                Convert Google Authenticator export QR codes into standard <code>otpauth://</code> URIs.
             </p>
         </header>
 
-        <!-- Warning Banner -->
         <div class="warning-banner" role="alert">
-            <span class="warning-banner__icon" aria-hidden="true">🔒</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             <p class="warning-banner__text">
-                <strong>100% Client-Side:</strong> Semua proses berjalan di browser Anda. Tidak ada data yang dikirim ke server manapun. Untuk keamanan maksimal, matikan koneksi internet (Wi-Fi/Data) sebelum memulai.
+                <strong>100% Client-Side.</strong> All processing happens directly in your browser. No data is sent to any server.
             </p>
         </div>
 
-        <!-- Panel 1: Scanner -->
-        <section class="panel" aria-labelledby="panel-scan-title">
+        <section class="panel">
             <div class="panel__header">
-                <div class="panel__step" aria-hidden="true">1</div>
-                <h2 class="panel__title" id="panel-scan-title">Scan QR Code Export</h2>
+                <div class="panel__step">1</div>
+                <h2 class="panel__title">Provide Export Data</h2>
             </div>
             <div class="btn-group">
-                <button class="btn btn--camera" id="btn-start-camera" type="button" aria-label="Scan QR code dari kamera">
-                    📷 Scan dari Kamera
+                <button class="btn btn--primary" id="btn-start-camera" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                    Scan Camera
                 </button>
-                <button class="btn btn--file" id="btn-scan-file" type="button" aria-label="Scan QR code dari file gambar">
-                    📁 Scan dari File Gambar
+                <button class="btn" id="btn-scan-file" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    Upload Image
                 </button>
-                <button class="btn btn--stop" id="btn-stop-camera" type="button" aria-label="Berhenti kamera">
-                    ⏹️ Berhenti
+                <button class="btn btn--danger" id="btn-stop-camera" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
+                    Stop Camera
                 </button>
             </div>
-            <input type="file" id="file-input" style="display:none;" accept="image/*" aria-hidden="true">
+            <input type="file" id="file-input" style="display:none;" accept="image/*">
             <div id="reader-container">
-                <div id="reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
+                <div id="reader" style="width: 100%; margin: 0 auto;"></div>
             </div>
         </section>
 
-        <!-- Panel 2: Manual Input -->
-        <section class="panel" aria-labelledby="panel-manual-title">
+        <section class="panel">
             <div class="panel__header">
-                <div class="panel__step" aria-hidden="true">2</div>
-                <h2 class="panel__title" id="panel-manual-title">Atau Tempel URL Secara Manual</h2>
+                <div class="panel__step">2</div>
+                <h2 class="panel__title">Or paste URL manually</h2>
             </div>
             <div class="textarea-wrapper">
-                <label for="migrationUrl">URL Migration dari Google Authenticator</label>
-                <textarea id="migrationUrl" placeholder="otpauth-migration://offline?data=CjEKCk..."
-                          spellcheck="false" autocomplete="off"></textarea>
+                <textarea id="migrationUrl" placeholder="otpauth-migration://offline?data=..." spellcheck="false" autocomplete="off"></textarea>
             </div>
-            <button class="btn btn--convert" id="btn-convert" type="button">
-                🔄 Konversi ke QR Code Standar
+            <button class="btn btn--convert btn--primary" id="btn-convert" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 20 8 16"/><line x1="12" y1="12" x2="12" y2="20"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/><polyline points="16 16 12 20 8 16"/></svg>
+                Convert to Standard Format
             </button>
         </section>
 
-        <!-- Results -->
-        <div id="results" role="region" aria-live="polite" aria-label="Hasil konversi"></div>
+        <div id="results" role="region" aria-live="polite"></div>
 
-        <!-- Footer -->
         <footer class="footer">
-            <p>Berjalan 100% di browser. Tidak ada data yang dikirim ke server.</p>
+            <p>100% Client-side.</p>
             <div class="footer__libs">
-                <span class="footer__lib-tag">html5-qrcode v2.3.8</span>
-                <span class="footer__lib-tag">QRCode.js v1.0.0</span>
+                <span class="footer__lib-tag">html5-qrcode</span>
+                <span class="footer__lib-tag">jsQR</span>
+                <span class="footer__lib-tag">QRCode.js</span>
             </div>
         </footer>
     </div>
@@ -887,7 +361,7 @@
             try {
                 await navigator.clipboard.writeText(text);
                 const originalText = buttonEl.textContent;
-                buttonEl.textContent = '✓ Tersalin!';
+                buttonEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied';
                 buttonEl.classList.add('copied');
                 setTimeout(() => {
                     buttonEl.textContent = originalText;
@@ -903,10 +377,10 @@
                 textarea.select();
                 try {
                     document.execCommand('copy');
-                    buttonEl.textContent = '✓ Tersalin!';
+                    buttonEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied';
                     buttonEl.classList.add('copied');
                     setTimeout(() => {
-                        buttonEl.textContent = '📋 Salin';
+                        buttonEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
                         buttonEl.classList.remove('copied');
                     }, 2000);
                 } catch (e) {
@@ -1469,7 +943,7 @@
                     const batchBanner = document.createElement('div');
                     batchBanner.className = 'batch-banner';
                     batchBanner.innerHTML =
-                        '<span class="batch-banner__icon" aria-hidden="true">📦</span>' +
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>' +
                         '<span>QR Code batch <strong>' + (batchInfo.batchIndex + 1) +
                         '</strong> dari <strong>' + batchInfo.batchSize +
                         '</strong>. Scan semua QR code untuk mendapatkan seluruh akun Anda.</span>';
@@ -1516,9 +990,10 @@
                     if (otpType === 'hotp') otpUri += `&counter=${acc.counter || 0}`;
 
                     // Buat card dengan DOM API (bukan innerHTML) untuk mencegah XSS
+                    
+                    // Buat card dengan DOM API
                     const card = document.createElement('div');
                     card.className = 'account-card';
-                    card.style.animationDelay = `${index * 0.08}s`;
 
                     // QR container
                     const qrContainer = document.createElement('div');
@@ -1530,83 +1005,83 @@
                     const info = document.createElement('div');
                     info.className = 'account-card__info';
 
-                    // Issuer + type badge
+                    // Card header
+                    const cardHeader = document.createElement('div');
+                    cardHeader.className = 'account-card__header';
                     const issuerEl = document.createElement('div');
                     issuerEl.className = 'account-card__issuer';
-                    issuerEl.appendChild(document.createTextNode(issuer));
+                    issuerEl.textContent = issuer;
                     const badge = document.createElement('span');
-                    badge.className = `account-card__type-badge account-card__type-badge--${otpType}`;
-                    badge.textContent = otpType.toUpperCase();
-                    issuerEl.appendChild(badge);
-                    info.appendChild(issuerEl);
+                    badge.className = 'account-card__type-badge';
+                    badge.textContent = otpType;
+                    cardHeader.appendChild(issuerEl);
+                    cardHeader.appendChild(badge);
+                    info.appendChild(cardHeader);
 
                     // Account name
-                    const nameField = document.createElement('p');
+                    const nameField = document.createElement('div');
                     nameField.className = 'account-card__field';
-                    const nameLabel = document.createElement('strong');
-                    nameLabel.textContent = 'Akun: ';
-                    nameField.appendChild(nameLabel);
-                    nameField.appendChild(document.createTextNode(name));
+                    nameField.innerHTML = `<span class="account-card__field-label">Account</span><span class="account-card__field-value">${escapeHtml(name)}</span>`;
                     info.appendChild(nameField);
 
-                    // Secret row (dengan tombol copy)
-                    const secretField = document.createElement('p');
+                    // Secret row
+                    const secretField = document.createElement('div');
                     secretField.className = 'account-card__field';
-                    const secretLabel = document.createElement('strong');
-                    secretLabel.textContent = 'Secret: ';
-                    secretField.appendChild(secretLabel);
-                    const secretRow = document.createElement('span');
+                    secretField.innerHTML = `<span class="account-card__field-label">Secret Key</span>`;
+                    const secretRow = document.createElement('div');
                     secretRow.className = 'account-card__secret-row';
                     const secretCode = document.createElement('code');
                     secretCode.className = 'account-card__secret';
                     secretCode.textContent = secretStr;
                     secretRow.appendChild(secretCode);
+                    
                     const copySecretBtn = document.createElement('button');
                     copySecretBtn.className = 'btn btn--copy';
                     copySecretBtn.type = 'button';
-                    copySecretBtn.textContent = '📋 Salin';
-                    copySecretBtn.setAttribute('aria-label', `Salin secret ${issuer}`);
+                    copySecretBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy`;
                     copySecretBtn.addEventListener('click', () => copyToClipboard(secretStr, copySecretBtn));
                     secretRow.appendChild(copySecretBtn);
                     secretField.appendChild(secretRow);
                     info.appendChild(secretField);
 
-                    // Meta tags (algorithm, digits, type-specific info)
+                    // Meta tags
                     const metaDiv = document.createElement('div');
                     metaDiv.className = 'account-card__meta';
-                    const tags = [
-                        `🔐 ${algorithm}`,
-                        `🔢 ${digits} digit`,
-                        otpType === 'hotp' ? `🔄 Counter: ${acc.counter || 0}` : `⏱️ 30s`
-                    ];
-                    tags.forEach(tagText => {
-                        const tagEl = document.createElement('span');
-                        tagEl.className = 'meta-tag';
-                        tagEl.textContent = tagText;
-                        metaDiv.appendChild(tagEl);
-                    });
+                    const iconLock = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`;
+                    const iconHash = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>`;
+                    const iconClock = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+                    
+                    metaDiv.innerHTML = `
+                        <span class="meta-tag">${iconLock} ${algorithm}</span>
+                        <span class="meta-tag">${iconHash} ${digits} digits</span>
+                        <span class="meta-tag">${iconClock} ${otpType === 'hotp' ? 'Counter: ' + (acc.counter || 0) : '30s'}</span>
+                    `;
                     info.appendChild(metaDiv);
 
-                    // URI display (dengan tombol copy)
+                    // URI display
                     const uriDiv = document.createElement('div');
                     uriDiv.className = 'account-card__uri';
+                    uriDiv.innerHTML = `<span class="account-card__field-label">Export URI</span>`;
+                    const uriRow = document.createElement('div');
+                    uriRow.className = 'account-card__uri-row';
                     const uriText = document.createElement('span');
                     uriText.className = 'account-card__uri-text';
                     uriText.textContent = otpUri;
-                    uriDiv.appendChild(uriText);
+                    uriRow.appendChild(uriText);
+                    
                     const copyUriBtn = document.createElement('button');
                     copyUriBtn.className = 'btn btn--copy';
                     copyUriBtn.type = 'button';
-                    copyUriBtn.textContent = '📋 Salin';
-                    copyUriBtn.setAttribute('aria-label', `Salin URI ${issuer}`);
+                    copyUriBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy`;
                     copyUriBtn.addEventListener('click', () => copyToClipboard(otpUri, copyUriBtn));
-                    uriDiv.appendChild(copyUriBtn);
+                    uriRow.appendChild(copyUriBtn);
+                    
+                    uriDiv.appendChild(uriRow);
                     info.appendChild(uriDiv);
 
                     card.appendChild(info);
                     resultsDiv.appendChild(card);
-
-                    // Generate QR Code
+// Generate QR Code
                     // Best Practice dari Context7 (QRCode.js):
                     // - correctLevel: H (High, 30% recovery) — lebih tahan terhadap
                     //   distorsi saat scan dari layar (refleksi, resolusi rendah)
@@ -1640,7 +1115,11 @@
         // ===================================================================
         function showStatusMessage(type, message) {
             const resultsDiv = document.getElementById('results');
-            const icons = { error: '❌', success: '✅', warning: '⚠️' };
+            const icons = { 
+                error: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`, 
+                success: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`, 
+                warning: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>` 
+            };
 
             const existing = resultsDiv.querySelector('.status-message');
             if (existing) existing.remove();
@@ -1649,18 +1128,10 @@
             msgEl.className = `status-message status-message--${type}`;
             msgEl.setAttribute('role', 'alert');
 
-            const iconSpan = document.createElement('span');
-            iconSpan.setAttribute('aria-hidden', 'true');
-            iconSpan.textContent = icons[type] || '';
-            msgEl.appendChild(iconSpan);
-
-            const textSpan = document.createElement('span');
-            textSpan.innerHTML = message; // message dikontrol internal, bukan user input
-            msgEl.appendChild(textSpan);
+            msgEl.innerHTML = icons[type] + `<div>${message}</div>`;
 
             resultsDiv.insertBefore(msgEl, resultsDiv.firstChild);
         }
     </script>
 </body>
-
 </html>
