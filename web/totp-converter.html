@@ -1,124 +1,1111 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Konversi QR Code export Google Authenticator ke format standar otpauth. 100% offline, aman, dan berjalan di browser.">
+    <meta name="robots" content="noindex, nofollow">
     <title>Google Authenticator Export Converter (Offline)</title>
-    <!-- Library untuk membuat QR Code -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <!-- Library untuk membaca/scan QR Code -->
-    <script src="https://unpkg.com/html5-qrcode"></script>
-    
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!--
+        Library: QRCode.js v1.0.0 (QR Code Generator)
+        Best Practice: Pin versi eksplisit, tambahkan crossorigin & referrerpolicy
+    -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"></script>
+
+    <!--
+        Library: html5-qrcode v2.3.8 (QR Code Scanner)
+        Best Practice: Pin versi eksplisit (bukan unpkg tanpa versi),
+                       gunakan CDN yang lebih reliable (cdnjs)
+    -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"></script>
+
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; line-height: 1.6; }
-        .card { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
-        textarea { width: 100%; height: 80px; padding: 10px; margin-bottom: 10px; font-family: monospace; box-sizing: border-box; }
-        
-        /* Tombol styling */
-        button { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 10px; margin-right: 5px; }
-        .btn-primary { background: #28a745; color: white; }
-        .btn-primary:hover { background: #218838; }
-        .btn-camera { background: #007bff; color: white; }
-        .btn-camera:hover { background: #0069d9; }
-        .btn-file { background: #17a2b8; color: white; }
-        .btn-file:hover { background: #138496; }
-        .btn-danger { background: #dc3545; color: white; display: none; }
-        
-        .qr-container { padding: 10px; background: white; min-width: 130px; }
-        .details { word-break: break-all; }
-        .warning { background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ffeeba; }
-        #reader { width: 100%; max-width: 500px; margin: 15px auto; display: none; border: 2px dashed #ccc; border-radius: 8px; overflow: hidden; }
+        /* ===== CSS RESET & VARIABLES ===== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-primary: #0f1117;
+            --bg-secondary: #1a1d27;
+            --bg-card: #222633;
+            --bg-card-hover: #2a2f3f;
+            --bg-input: #181b24;
+            --border-color: #2e3348;
+            --border-focus: #6366f1;
+            --text-primary: #e8eaed;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --accent-primary: #6366f1;
+            --accent-primary-hover: #818cf8;
+            --accent-success: #10b981;
+            --accent-success-hover: #34d399;
+            --accent-info: #3b82f6;
+            --accent-info-hover: #60a5fa;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --accent-danger-hover: #f87171;
+            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            --gradient-info: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.35);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --transition-fast: 0.15s ease;
+            --transition-base: 0.25s ease;
+            --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ===== BASE ===== */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Animated background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse 600px 400px at 15% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 500px 350px at 85% 60%, rgba(139, 92, 246, 0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 400px 300px at 50% 90%, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 24px 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .header__badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent-success);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .header__badge::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            background: var(--accent-success);
+            border-radius: 50%;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .header h1 {
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.3;
+            margin-bottom: 10px;
+        }
+
+        .header__subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .header__subtitle code {
+            background: rgba(99, 102, 241, 0.15);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--accent-primary-hover);
+        }
+
+        /* ===== WARNING BANNER ===== */
+        .warning-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 16px 20px;
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--radius-md);
+            margin-bottom: 28px;
+            animation: fadeSlideIn 0.5s var(--transition-slow) both;
+            animation-delay: 0.1s;
+        }
+
+        .warning-banner__icon {
+            font-size: 20px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .warning-banner__text {
+            font-size: 13.5px;
+            color: #fbbf24;
+            line-height: 1.6;
+        }
+
+        .warning-banner__text strong {
+            color: #fcd34d;
+        }
+
+        /* ===== SECTION PANELS ===== */
+        .panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: border-color var(--transition-base), box-shadow var(--transition-base);
+            animation: fadeSlideIn 0.5s var(--transition-slow) both;
+        }
+
+        .panel:nth-child(3) { animation-delay: 0.15s; }
+        .panel:nth-child(4) { animation-delay: 0.25s; }
+
+        .panel:hover {
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .panel__step {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            font-size: 13px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .panel__title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0);
+            transition: background var(--transition-fast);
+        }
+
+        .btn:hover::after {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn--camera {
+            background: var(--gradient-info);
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.25);
+        }
+
+        .btn--camera:hover {
+            box-shadow: 0 4px 18px rgba(59, 130, 246, 0.35);
+        }
+
+        .btn--file {
+            background: var(--gradient-primary);
+            box-shadow: 0 2px 10px rgba(99, 102, 241, 0.25);
+        }
+
+        .btn--file:hover {
+            box-shadow: 0 4px 18px rgba(99, 102, 241, 0.35);
+        }
+
+        .btn--convert {
+            background: var(--gradient-success);
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.25);
+            width: 100%;
+            justify-content: center;
+            padding: 14px 20px;
+            font-size: 15px;
+        }
+
+        .btn--convert:hover {
+            box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn--stop {
+            background: var(--gradient-danger);
+            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.25);
+            display: none;
+        }
+
+        .btn--stop:hover {
+            box-shadow: 0 4px 18px rgba(239, 68, 68, 0.35);
+        }
+
+        .btn--copy {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .btn--copy:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary-hover);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .btn--copy.copied {
+            border-color: var(--accent-success);
+            color: var(--accent-success);
+            background: rgba(16, 185, 129, 0.08);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn:disabled::after {
+            display: none;
+        }
+
+        /* ===== TEXTAREA ===== */
+        .textarea-wrapper {
+            position: relative;
+            margin-bottom: 14px;
+        }
+
+        .textarea-wrapper label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 90px;
+            padding: 14px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            resize: vertical;
+            transition: border-color var(--transition-base), box-shadow var(--transition-base);
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+
+        textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* ===== QR READER ===== */
+        #reader-container {
+            display: none;
+            margin-top: 16px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 2px dashed var(--border-color);
+            background: var(--bg-primary);
+            animation: fadeSlideIn 0.3s ease both;
+        }
+
+        #reader-container.active {
+            display: block;
+        }
+
+        /* Override html5-qrcode internal styles for dark theme */
+        #reader-container #reader {
+            border: none !important;
+        }
+
+        #reader-container #reader video {
+            border-radius: var(--radius-sm);
+        }
+
+        /* ===== BATCH INFO BANNER ===== */
+        .batch-banner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: var(--radius-sm);
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: var(--accent-info-hover);
+            animation: fadeSlideIn 0.3s ease both;
+        }
+
+        .batch-banner__icon {
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        /* ===== RESULTS ===== */
+        #results {
+            margin-top: 32px;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .results-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .results-header__count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 26px;
+            height: 26px;
+            padding: 0 8px;
+            background: var(--accent-primary);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* ===== ACCOUNT CARD ===== */
+        .account-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 24px;
+            flex-wrap: wrap;
+            transition: all var(--transition-base);
+            animation: cardAppear 0.4s var(--transition-slow) both;
+        }
+
+        .account-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            background: var(--bg-card-hover);
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: translateY(16px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .account-card__qr {
+            flex-shrink: 0;
+            padding: 12px;
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Best Practice: Quiet zone — white padding minimal 4 module di sekeliling QR */
+        .account-card__qr img,
+        .account-card__qr canvas {
+            display: block;
+        }
+
+        .account-card__info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .account-card__issuer {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .account-card__type-badge {
+            display: inline-flex;
+            padding: 2px 8px;
+            border-radius: 100px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .account-card__type-badge--totp {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--accent-primary-hover);
+        }
+
+        .account-card__type-badge--hotp {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-warning);
+        }
+
+        .account-card__field {
+            margin: 6px 0;
+            font-size: 13.5px;
+            color: var(--text-secondary);
+        }
+
+        .account-card__field strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .account-card__secret-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .account-card__secret {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            color: var(--accent-success);
+            word-break: break-all;
+            user-select: all;
+            cursor: text;
+        }
+
+        .account-card__uri {
+            margin-top: 10px;
+            padding: 10px 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            word-break: break-all;
+            line-height: 1.5;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .account-card__uri-text {
+            flex: 1;
+            word-break: break-all;
+        }
+
+        .account-card__uri .btn--copy {
+            flex-shrink: 0;
+            align-self: flex-start;
+        }
+
+        .account-card__meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .meta-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 100px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* ===== STATUS MESSAGES ===== */
+        .status-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            animation: fadeSlideIn 0.3s ease both;
+        }
+
+        .status-message--error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            color: #fca5a5;
+        }
+
+        .status-message--success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: #6ee7b7;
+        }
+
+        .status-message--warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            color: #fcd34d;
+        }
+
+        /* ===== LOADING SPINNER ===== */
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255, 255, 255, 0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+        .footer__libs {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .footer__lib-tag {
+            padding: 2px 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 100px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            .container {
+                padding: 24px 16px 40px;
+            }
+
+            .panel {
+                padding: 18px;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .account-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .account-card__issuer {
+                justify-content: center;
+            }
+
+            .account-card__meta {
+                justify-content: center;
+            }
+
+            .account-card__secret-row {
+                justify-content: center;
+            }
+
+            .account-card__uri {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3e4460;
+        }
+
+        /* ===== FOCUS VISIBLE (Aksesibilitas Keyboard) ===== */
+        .btn:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
+        }
+
+        /* ===== REDUCED MOTION (Aksesibilitas) ===== */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
+
 <body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header__badge">
+                <span>Offline & Aman</span>
+            </div>
+            <h1>Google Authenticator Export Converter</h1>
+            <p class="header__subtitle">
+                Konversi QR Code export Google Authenticator ke format standar <code>otpauth://</code> yang kompatibel dengan semua aplikasi authenticator.
+            </p>
+        </header>
 
-    <h2>Google Authenticator Export Converter</h2>
-    <div class="warning">
-        <strong>Aman & Offline:</strong> Aplikasi ini berjalan 100% di browser (Client-Side). Matikan koneksi internet (Wi-Fi/Data) untuk memastikan tidak ada data yang keluar dari perangkat ini.
+        <!-- Warning Banner -->
+        <div class="warning-banner" role="alert">
+            <span class="warning-banner__icon" aria-hidden="true">🔒</span>
+            <p class="warning-banner__text">
+                <strong>100% Client-Side:</strong> Semua proses berjalan di browser Anda. Tidak ada data yang dikirim ke server manapun. Untuk keamanan maksimal, matikan koneksi internet (Wi-Fi/Data) sebelum memulai.
+            </p>
+        </div>
+
+        <!-- Panel 1: Scanner -->
+        <section class="panel" aria-labelledby="panel-scan-title">
+            <div class="panel__header">
+                <div class="panel__step" aria-hidden="true">1</div>
+                <h2 class="panel__title" id="panel-scan-title">Scan QR Code Export</h2>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn--camera" id="btn-start-camera" type="button" aria-label="Scan QR code dari kamera">
+                    📷 Scan dari Kamera
+                </button>
+                <button class="btn btn--file" id="btn-scan-file" type="button" aria-label="Scan QR code dari file gambar">
+                    📁 Scan dari File Gambar
+                </button>
+                <button class="btn btn--stop" id="btn-stop-camera" type="button" aria-label="Berhenti kamera">
+                    ⏹️ Berhenti
+                </button>
+            </div>
+            <input type="file" id="file-input" style="display:none;" accept="image/*" aria-hidden="true">
+            <div id="reader-container">
+                <div id="reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
+            </div>
+        </section>
+
+        <!-- Panel 2: Manual Input -->
+        <section class="panel" aria-labelledby="panel-manual-title">
+            <div class="panel__header">
+                <div class="panel__step" aria-hidden="true">2</div>
+                <h2 class="panel__title" id="panel-manual-title">Atau Tempel URL Secara Manual</h2>
+            </div>
+            <div class="textarea-wrapper">
+                <label for="migrationUrl">URL Migration dari Google Authenticator</label>
+                <textarea id="migrationUrl" placeholder="otpauth-migration://offline?data=CjEKCk..."
+                          spellcheck="false" autocomplete="off"></textarea>
+            </div>
+            <button class="btn btn--convert" id="btn-convert" type="button">
+                🔄 Konversi ke QR Code Standar
+            </button>
+        </section>
+
+        <!-- Results -->
+        <div id="results" role="region" aria-live="polite" aria-label="Hasil konversi"></div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Berjalan 100% di browser. Tidak ada data yang dikirim ke server.</p>
+            <div class="footer__libs">
+                <span class="footer__lib-tag">html5-qrcode v2.3.8</span>
+                <span class="footer__lib-tag">QRCode.js v1.0.0</span>
+            </div>
+        </footer>
     </div>
-
-    <!-- Area Kontrol Scanner -->
-    <div style="margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
-        <p style="margin-top:0;"><strong>Opsi 1:</strong> Scan QR Code Export Google Authenticator</p>
-        <button class="btn-camera" onclick="startCamera()">📷 Scan dari Kamera</button>
-        <button class="btn-file" onclick="document.getElementById('file-input').click()">📁 Scan dari File Gambar</button>
-        <button class="btn-danger" id="btn-stop-camera" onclick="stopCamera()">⏹️ Berhenti Kamera</button>
-        
-        <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="scanFromFile(event)">
-        <div id="reader"></div>
-    </div>
-
-    <!-- Area Manual Input -->
-    <p><strong>Opsi 2:</strong> Atau tempel teks (<code>otpauth-migration://...</code>) secara manual di bawah ini:</p>
-    <textarea id="migrationUrl" placeholder="otpauth-migration://offline?data=..."></textarea>
-    <button class="btn-primary" onclick="processData()">🔄 Konversi ke QR Code Standar</button>
-
-    <div id="results" style="margin-top: 30px;"></div>
 
     <script>
-        // --- LOGIKA SCANNER QR CODE ---
-        let html5QrCode;
+        // ===================================================================
+        // UTILITY: Escape HTML untuk mencegah XSS
+        // ===================================================================
+        function escapeHtml(str) {
+            if (typeof str !== 'string') return '';
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
+
+        // ===================================================================
+        // UTILITY: Copy to Clipboard
+        // ===================================================================
+        async function copyToClipboard(text, buttonEl) {
+            try {
+                await navigator.clipboard.writeText(text);
+                const originalText = buttonEl.textContent;
+                buttonEl.textContent = '✓ Tersalin!';
+                buttonEl.classList.add('copied');
+                setTimeout(() => {
+                    buttonEl.textContent = originalText;
+                    buttonEl.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                // Fallback untuk browser yang tidak support Clipboard API
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    buttonEl.textContent = '✓ Tersalin!';
+                    buttonEl.classList.add('copied');
+                    setTimeout(() => {
+                        buttonEl.textContent = '📋 Salin';
+                        buttonEl.classList.remove('copied');
+                    }, 2000);
+                } catch (e) {
+                    console.error('Gagal menyalin:', e);
+                }
+                document.body.removeChild(textarea);
+            }
+        }
+
+        // ===================================================================
+        // LOGIKA SCANNER QR CODE
+        // Best Practices dari Context7 (html5-qrcode v2.3.8):
+        // - formatsToSupport: hanya QR_CODE (hemat CPU)
+        // - useBarCodeDetectorIfSupported: gunakan native API jika ada
+        // - aspectRatio: 16:9 untuk viewfinder stabil
+        // - disableFlip: false (scan mirrored codes)
+        // - Selalu .clear() setelah .stop() untuk cegah memory leak
+        // ===================================================================
+        let html5QrCode = null;
 
         function initScanner() {
             if (!html5QrCode) {
-                html5QrCode = new Html5Qrcode("reader");
+                html5QrCode = new Html5Qrcode("reader", {
+                    // Best Practice: Hanya support QR Code format (bukan semua barcode)
+                    // Ini menghemat CPU karena tidak perlu decode EAN, UPC, dll
+                    formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
+                    // Best Practice: Gunakan native BarcodeDetector API jika tersedia
+                    // Lebih cepat dibanding JavaScript-based decoder
+                    useBarCodeDetectorIfSupported: true,
+                    // Tidak perlu verbose logging di production
+                    verbose: false
+                });
+            }
+        }
+
+        function destroyScanner() {
+            // Best Practice: Benar-benar bersihkan instance untuk mencegah memory leak
+            if (html5QrCode) {
+                try {
+                    html5QrCode.clear();
+                } catch (e) {
+                    // Abaikan jika sudah di-clear
+                }
+                html5QrCode = null;
             }
         }
 
         function startCamera() {
             initScanner();
-            document.getElementById('reader').style.display = 'block';
-            document.getElementById('btn-stop-camera').style.display = 'inline-block';
-            
-            // Mencoba menggunakan kamera belakang jika ada
+            const readerContainer = document.getElementById('reader-container');
+            const btnStop = document.getElementById('btn-stop-camera');
+            const btnStart = document.getElementById('btn-start-camera');
+            const btnFile = document.getElementById('btn-scan-file');
+
+            readerContainer.classList.add('active');
+            btnStop.style.display = 'inline-flex';
+            btnStart.disabled = true;
+            btnFile.disabled = true;
+
             html5QrCode.start(
-                { facingMode: "environment" },
-                { fps: 10, qrbox: { width: 250, height: 250 } },
-                (decodedText) => {
-                    // Jika berhasil scan
+                // Best Practice: facingMode exact untuk memaksa kamera belakang
+                { facingMode: { exact: "environment" } },
+                {
+                    fps: 10,
+                    qrbox: { width: 250, height: 250 },
+                    // Best Practice: Set aspect ratio 16:9 untuk menghindari
+                    // video distortion dan blank viewfinder
+                    aspectRatio: 1.777778,
+                    // Best Practice: Jangan disable flip agar mirrored QR codes
+                    // tetap bisa di-scan
+                    disableFlip: false
+                },
+                (decodedText, result) => {
+                    // Best Practice: Stop kamera segera setelah berhasil scan
                     stopCamera();
                     document.getElementById('migrationUrl').value = decodedText;
-                    processData(); // Otomatis proses
+                    processData();
                 },
-                (errorMessage) => { /* Abaikan error tiap frame yang gagal baca */ }
+                (errorMessage) => {
+                    // Best Practice: Callback ini dipanggil tiap frame tanpa QR code
+                    // Aman untuk diabaikan, jangan log (performance)
+                }
             ).catch((err) => {
-                alert("Gagal mengakses kamera. Pastikan browser memiliki izin kamera.\nError: " + err);
-                stopCamera();
+                // Fallback: Jika kamera belakang tidak ada, coba tanpa "exact"
+                html5QrCode.start(
+                    { facingMode: "environment" },
+                    {
+                        fps: 10,
+                        qrbox: { width: 250, height: 250 },
+                        aspectRatio: 1.777778,
+                        disableFlip: false
+                    },
+                    (decodedText, result) => {
+                        stopCamera();
+                        document.getElementById('migrationUrl').value = decodedText;
+                        processData();
+                    },
+                    (errorMessage) => {}
+                ).catch((err2) => {
+                    showStatusMessage('error',
+                        'Gagal mengakses kamera. Pastikan:<br>' +
+                        '• Browser memiliki izin kamera<br>' +
+                        '• Halaman dibuka via HTTPS atau localhost<br>' +
+                        '• Tidak ada aplikasi lain menggunakan kamera'
+                    );
+                    stopCamera();
+                });
             });
         }
 
         function stopCamera() {
+            const readerContainer = document.getElementById('reader-container');
+            const btnStop = document.getElementById('btn-stop-camera');
+            const btnStart = document.getElementById('btn-start-camera');
+            const btnFile = document.getElementById('btn-scan-file');
+
+            const cleanup = () => {
+                readerContainer.classList.remove('active');
+                btnStop.style.display = 'none';
+                btnStart.disabled = false;
+                btnFile.disabled = false;
+            };
+
             if (html5QrCode && html5QrCode.isScanning) {
                 html5QrCode.stop().then(() => {
-                    document.getElementById('reader').style.display = 'none';
-                    document.getElementById('btn-stop-camera').style.display = 'none';
-                }).catch(err => console.error(err));
+                    // Best Practice: Panggil .clear() setelah .stop()
+                    // untuk benar-benar lepaskan resource canvas & video
+                    try { html5QrCode.clear(); } catch (e) {}
+                    // Reset instance agar bisa di-init ulang bersih
+                    html5QrCode = null;
+                    cleanup();
+                }).catch((err) => {
+                    console.error('Error stopping camera:', err);
+                    destroyScanner();
+                    cleanup();
+                });
             } else {
-                document.getElementById('reader').style.display = 'none';
-                document.getElementById('btn-stop-camera').style.display = 'none';
+                cleanup();
             }
         }
 
         function scanFromFile(event) {
             initScanner();
-            if (event.target.files.length == 0) return;
-            
+            if (!event.target.files || event.target.files.length === 0) return;
+
             const imageFile = event.target.files[0];
-            html5QrCode.scanFile(imageFile, true)
+
+            // Validasi ukuran file (max 10MB)
+            if (imageFile.size > 10 * 1024 * 1024) {
+                showStatusMessage('error', 'Ukuran file terlalu besar (max 10MB). Kompres gambar terlebih dahulu.');
+                event.target.value = '';
+                return;
+            }
+
+            html5QrCode.scanFile(imageFile, /* showImage= */ true)
                 .then(decodedText => {
                     document.getElementById('migrationUrl').value = decodedText;
-                    processData(); // Otomatis proses
+                    processData();
                 })
                 .catch(err => {
-                    alert("Gagal membaca QR Code dari gambar tersebut. Pastikan gambar jelas dan tidak terpotong.");
+                    showStatusMessage('error',
+                        'Gagal membaca QR Code dari gambar. Pastikan:<br>' +
+                        '• Gambar jelas dan tidak terpotong<br>' +
+                        '• QR code memiliki quiet zone (area putih) di sekelilingnya<br>' +
+                        '• Kontras cukup antara QR code dan background'
+                    );
                 });
-            
-            // Reset input file agar bisa memilih file yang sama lagi jika perlu
+
+            // Reset input file agar bisa memilih file yang sama lagi
             event.target.value = '';
         }
 
-        // --- LOGIKA KONVERSI (Protobuf & Base32) ---
+        // ===================================================================
+        // EVENT LISTENERS (Best Practice: Hapus inline onclick handlers)
+        // ===================================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('btn-start-camera').addEventListener('click', startCamera);
+            document.getElementById('btn-scan-file').addEventListener('click', () => {
+                document.getElementById('file-input').click();
+            });
+            document.getElementById('btn-stop-camera').addEventListener('click', stopCamera);
+            document.getElementById('file-input').addEventListener('change', scanFromFile);
+            document.getElementById('btn-convert').addEventListener('click', processData);
+
+            // Keyboard shortcut: Enter di textarea langsung konversi
+            document.getElementById('migrationUrl').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    e.preventDefault();
+                    processData();
+                }
+            });
+        });
+
+        // Best Practice: Cleanup saat halaman ditutup/navigasi untuk lepas kamera
+        window.addEventListener('beforeunload', () => {
+            if (html5QrCode && html5QrCode.isScanning) {
+                html5QrCode.stop().catch(() => {});
+            }
+            destroyScanner();
+        });
+
+        // ===================================================================
+        // LOGIKA KONVERSI: Base32 Encoding (RFC 4648)
+        // ===================================================================
         function base32Encode(buffer) {
+            if (!buffer || buffer.length === 0) return '';
             const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
             let bits = 0, value = 0, output = '';
             for (let i = 0; i < buffer.length; i++) {
@@ -129,140 +1116,474 @@
                     bits -= 5;
                 }
             }
-            if (bits > 0) output += alphabet[(value << (5 - bits)) & 31];
+            if (bits > 0) {
+                output += alphabet[(value << (5 - bits)) & 31];
+            }
             return output;
         }
 
+        // ===================================================================
+        // LOGIKA KONVERSI: Base64 to Uint8Array (URL-safe support + padding)
+        // ===================================================================
         function base64ToUint8Array(base64) {
-            const binary = atob(base64.replace(/-/g, '+').replace(/_/g, '/'));
-            const bytes = new Uint8Array(binary.length);
-            for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-            return bytes;
+            // Normalisasi URL-safe base64 ke base64 standar
+            let normalized = base64.replace(/-/g, '+').replace(/_/g, '/');
+            // Best Practice: Tambahkan padding = jika perlu
+            while (normalized.length % 4 !== 0) {
+                normalized += '=';
+            }
+            // Validasi karakter base64
+            if (!/^[A-Za-z0-9+/]*={0,2}$/.test(normalized)) {
+                throw new Error('Data Base64 mengandung karakter tidak valid.');
+            }
+            try {
+                const binary = atob(normalized);
+                const bytes = new Uint8Array(binary.length);
+                for (let i = 0; i < binary.length; i++) {
+                    bytes[i] = binary.charCodeAt(i);
+                }
+                return bytes;
+            } catch (e) {
+                throw new Error('Data Base64 tidak valid. Pastikan URL belum dimodifikasi.');
+            }
         }
 
+        // ===================================================================
+        // LOGIKA KONVERSI: Protobuf Decoder
+        // Berdasarkan spesifikasi reverse-engineered dari Google Authenticator:
+        //
+        // message MigrationPayload {
+        //   repeated OtpParameters otp_parameters = 1;
+        //   int32 version = 2;
+        //   int32 batch_size = 3;
+        //   int32 batch_index = 4;
+        //   int32 batch_id = 5;
+        // }
+        //
+        // message OtpParameters {
+        //   bytes secret = 1;
+        //   string name = 2;
+        //   string issuer = 3;
+        //   Algorithm algorithm = 4;
+        //   DigitCount digits = 5;
+        //   OtpType type = 6;
+        //   int64 counter = 7;
+        // }
+        // ===================================================================
+        const MAX_VARINT_BYTES = 10; // Protobuf varint max 10 bytes (64-bit)
+
         function decodeVarint(buffer, offset) {
-            let result = 0, shift = 0;
-            while (true) {
-                let byte = buffer[offset++];
-                result |= (byte & 0x7F) << shift;
-                if ((byte & 0x80) === 0) break;
+            let result = 0;
+            let shift = 0;
+            let bytesRead = 0;
+
+            while (offset < buffer.length) {
+                const byte = buffer[offset++];
+                bytesRead++;
+
+                if (bytesRead > MAX_VARINT_BYTES) {
+                    throw new Error('Varint terlalu panjang, data mungkin corrupt.');
+                }
+
+                // Gunakan hanya 28-bit aman untuk bitwise, sisanya pakai Math
+                if (shift < 28) {
+                    result |= (byte & 0x7F) << shift;
+                } else {
+                    result += (byte & 0x7F) * Math.pow(2, shift);
+                }
+
+                if ((byte & 0x80) === 0) {
+                    return { value: result, offset: offset };
+                }
                 shift += 7;
             }
-            return { value: result, length: offset };
+            throw new Error('Varint tidak lengkap, buffer berakhir terlalu cepat.');
         }
+
+        // Mapping enum protobuf Google Authenticator
+        const ALGORITHM_MAP = {
+            0: 'SHA1',    // ALGORITHM_UNSPECIFIED (defaults to SHA1)
+            1: 'SHA1',    // ALGORITHM_SHA1
+            2: 'SHA256',  // ALGORITHM_SHA256
+            3: 'SHA512',  // ALGORITHM_SHA512
+            4: 'MD5'      // ALGORITHM_MD5
+        };
+
+        const DIGIT_COUNT_MAP = {
+            0: 6,  // DIGIT_COUNT_UNSPECIFIED (defaults to 6)
+            1: 6,  // DIGIT_COUNT_SIX
+            2: 8   // DIGIT_COUNT_EIGHT
+        };
+
+        const OTP_TYPE_MAP = {
+            0: 'totp',  // OTP_TYPE_UNSPECIFIED (defaults to totp)
+            1: 'hotp',  // OTP_TYPE_HOTP
+            2: 'totp'   // OTP_TYPE_TOTP
+        };
 
         function parseProtobuf(buffer) {
             let offset = 0;
-            let accounts = [];
+            const accounts = [];
+            // Best Practice: Parse batch metadata (fields 2-5)
+            const batchInfo = {
+                version: null,
+                batchSize: null,
+                batchIndex: null,
+                batchId: null
+            };
+
             while (offset < buffer.length) {
-                let tagInfo = decodeVarint(buffer, offset);
-                let tag = tagInfo.value;
-                offset = tagInfo.length;
-                let fieldNum = tag >>> 3;
-                let wireType = tag & 7;
-                
-                if (wireType === 0) { offset = decodeVarint(buffer, offset).length; } 
-                else if (wireType === 2) {
-                    let lenInfo = decodeVarint(buffer, offset);
-                    let len = lenInfo.value;
-                    offset = lenInfo.length;
-                    
-                    if (fieldNum === 1) { 
+                const tagInfo = decodeVarint(buffer, offset);
+                const tag = tagInfo.value;
+                offset = tagInfo.offset;
+
+                const fieldNum = tag >>> 3;
+                const wireType = tag & 7;
+
+                if (wireType === 0) {
+                    // Varint
+                    const valInfo = decodeVarint(buffer, offset);
+                    offset = valInfo.offset;
+                    // Parse batch metadata fields
+                    switch (fieldNum) {
+                        case 2: batchInfo.version = valInfo.value; break;
+                        case 3: batchInfo.batchSize = valInfo.value; break;
+                        case 4: batchInfo.batchIndex = valInfo.value; break;
+                        case 5: batchInfo.batchId = valInfo.value; break;
+                    }
+                } else if (wireType === 2) {
+                    // Length-delimited
+                    const lenInfo = decodeVarint(buffer, offset);
+                    const len = lenInfo.value;
+                    offset = lenInfo.offset;
+
+                    if (offset + len > buffer.length) {
+                        throw new Error('Data protobuf corrupt: panjang field melebihi buffer.');
+                    }
+
+                    if (fieldNum === 1) {
                         accounts.push(parseOtpParameters(buffer.slice(offset, offset + len)));
                     }
                     offset += len;
-                } 
-                else { break; }
+                } else if (wireType === 5) {
+                    // Fixed 32-bit — skip 4 bytes
+                    if (offset + 4 > buffer.length) throw new Error('Buffer terlalu pendek untuk fixed32.');
+                    offset += 4;
+                } else if (wireType === 1) {
+                    // Fixed 64-bit — skip 8 bytes
+                    if (offset + 8 > buffer.length) throw new Error('Buffer terlalu pendek untuk fixed64.');
+                    offset += 8;
+                } else {
+                    console.warn(`Wire type tidak dikenal: ${wireType} pada field ${fieldNum}, menghentikan parsing.`);
+                    break;
+                }
             }
-            return accounts;
+            return { accounts, batchInfo };
         }
 
         function parseOtpParameters(buffer) {
-            let offset = 0, account = {};
-            const dec = new TextDecoder();
+            let offset = 0;
+            const account = {
+                secret: null,
+                name: '',
+                issuer: '',
+                algorithm: 1,  // default SHA1
+                digits: 0,     // default 6
+                type: 2,       // default TOTP
+                counter: 0
+            };
+            const dec = new TextDecoder('utf-8');
+
             while (offset < buffer.length) {
-                let tagInfo = decodeVarint(buffer, offset);
-                let tag = tagInfo.value;
-                offset = tagInfo.length;
-                let fieldNum = tag >>> 3, wireType = tag & 7;
-                
+                const tagInfo = decodeVarint(buffer, offset);
+                const tag = tagInfo.value;
+                offset = tagInfo.offset;
+
+                const fieldNum = tag >>> 3;
+                const wireType = tag & 7;
+
                 if (wireType === 0) {
-                    let valInfo = decodeVarint(buffer, offset);
-                    offset = valInfo.length;
-                    if (fieldNum === 4) account.algorithm = valInfo.value;
-                    if (fieldNum === 6) account.type = valInfo.value;
+                    const valInfo = decodeVarint(buffer, offset);
+                    offset = valInfo.offset;
+
+                    switch (fieldNum) {
+                        case 4: account.algorithm = valInfo.value; break;
+                        case 5: account.digits = valInfo.value; break;
+                        case 6: account.type = valInfo.value; break;
+                        case 7: account.counter = valInfo.value; break;
+                    }
                 } else if (wireType === 2) {
-                    let lenInfo = decodeVarint(buffer, offset);
-                    let data = buffer.slice(lenInfo.length, lenInfo.length + lenInfo.value);
-                    offset = lenInfo.length + lenInfo.value;
-                    
-                    if (fieldNum === 1) account.secret = data;
-                    if (fieldNum === 2) account.name = dec.decode(data);
-                    if (fieldNum === 3) account.issuer = dec.decode(data);
+                    const lenInfo = decodeVarint(buffer, offset);
+                    const len = lenInfo.value;
+                    offset = lenInfo.offset;
+
+                    if (offset + len > buffer.length) {
+                        throw new Error('Data OTP corrupt: panjang field melebihi buffer.');
+                    }
+
+                    const data = buffer.slice(offset, offset + len);
+                    offset += len;
+
+                    switch (fieldNum) {
+                        case 1: account.secret = data; break;
+                        case 2: account.name = dec.decode(data); break;
+                        case 3: account.issuer = dec.decode(data); break;
+                    }
+                } else if (wireType === 5) {
+                    if (offset + 4 > buffer.length) break;
+                    offset += 4;
+                } else if (wireType === 1) {
+                    if (offset + 8 > buffer.length) break;
+                    offset += 8;
+                } else {
+                    break;
                 }
             }
             return account;
         }
 
+        // ===================================================================
+        // LOGIKA UTAMA: Proses dan Tampilkan Hasil
+        // ===================================================================
+        // Simpan referensi QRCode instances untuk cleanup (cegah memory leak)
+        let qrCodeInstances = [];
+
         function processData() {
             const urlInput = document.getElementById('migrationUrl').value.trim();
             const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = ''; 
 
-            if(!urlInput) {
-                alert("Silakan scan QR code atau masukkan URL otpauth-migration terlebih dahulu.");
+            // Best Practice: Clear QRCode instances sebelum render ulang
+            qrCodeInstances.forEach(qr => {
+                try { qr.clear(); } catch (e) {}
+            });
+            qrCodeInstances = [];
+            resultsDiv.innerHTML = '';
+
+            if (!urlInput) {
+                showStatusMessage('error', 'Silakan scan QR code atau masukkan URL otpauth-migration terlebih dahulu.');
+                return;
+            }
+
+            // Best Practice (Anti-Quishing): Validasi URL scheme secara ketat
+            if (!urlInput.startsWith('otpauth-migration://')) {
+                showStatusMessage('error',
+                    'URL tidak valid. Format yang benar: <code>otpauth-migration://offline?data=...</code><br>' +
+                    'Pastikan Anda menggunakan QR Code export dari Google Authenticator.'
+                );
                 return;
             }
 
             try {
                 const url = new URL(urlInput);
                 const dataParam = url.searchParams.get('data');
-                if (!dataParam) throw new Error("Data base64 tidak ditemukan dalam URL.");
+                if (!dataParam) {
+                    throw new Error("Parameter 'data' (base64) tidak ditemukan dalam URL.");
+                }
 
                 const buffer = base64ToUint8Array(decodeURIComponent(dataParam));
-                const accounts = parseProtobuf(buffer);
+                const { accounts, batchInfo } = parseProtobuf(buffer);
 
-                if (accounts.length === 0) throw new Error("Tidak ada akun ditemukan.");
+                if (accounts.length === 0) {
+                    throw new Error("Tidak ada akun ditemukan dalam data tersebut.");
+                }
 
+                // Tampilkan info batch jika ada multi-QR export
+                if (batchInfo.batchSize && batchInfo.batchSize > 1) {
+                    const batchBanner = document.createElement('div');
+                    batchBanner.className = 'batch-banner';
+                    batchBanner.innerHTML =
+                        '<span class="batch-banner__icon" aria-hidden="true">📦</span>' +
+                        '<span>QR Code batch <strong>' + (batchInfo.batchIndex + 1) +
+                        '</strong> dari <strong>' + batchInfo.batchSize +
+                        '</strong>. Scan semua QR code untuk mendapatkan seluruh akun Anda.</span>';
+                    resultsDiv.appendChild(batchBanner);
+                }
+
+                // Header hasil
+                const header = document.createElement('div');
+                header.className = 'results-header';
+                const headerTitle = document.createElement('h2');
+                headerTitle.textContent = 'Hasil Konversi';
+                const headerCount = document.createElement('span');
+                headerCount.className = 'results-header__count';
+                headerCount.textContent = accounts.length;
+                header.appendChild(headerTitle);
+                header.appendChild(headerCount);
+                resultsDiv.appendChild(header);
+
+                // Counter akun yang berhasil di-render
+                let renderedCount = 0;
+
+                // Render setiap akun
                 accounts.forEach((acc, index) => {
-                    const secretStr = base32Encode(acc.secret);
-                    const issuer = acc.issuer || "Unknown";
-                    const name = acc.name || "Account";
-                    
-                    const issuerParam = encodeURIComponent(issuer);
-                    const nameParam = encodeURIComponent(`${issuer}:${name}`);
-                    const otpUri = `otpauth://totp/${nameParam}?secret=${secretStr}&issuer=${issuerParam}`;
+                    if (!acc.secret || acc.secret.length === 0) {
+                        console.warn(`Akun #${index + 1} tidak memiliki secret, dilewati.`);
+                        return;
+                    }
 
+                    const secretStr = base32Encode(acc.secret);
+                    const issuer = acc.issuer || 'Unknown';
+                    const name = acc.name || 'Account';
+                    const algorithm = ALGORITHM_MAP[acc.algorithm] || 'SHA1';
+                    const digits = DIGIT_COUNT_MAP[acc.digits] || 6;
+                    const otpType = OTP_TYPE_MAP[acc.type] || 'totp';
+
+                    // Build otpauth URI (RFC 6238 / RFC 4226 compliant)
+                    const issuerEnc = encodeURIComponent(issuer);
+                    const labelEnc = encodeURIComponent(`${issuer}:${name}`);
+                    let otpUri = `otpauth://${otpType}/${labelEnc}?secret=${secretStr}&issuer=${issuerEnc}`;
+
+                    // Tambahkan parameter non-default untuk kompatibilitas
+                    if (algorithm !== 'SHA1') otpUri += `&algorithm=${algorithm}`;
+                    if (digits !== 6) otpUri += `&digits=${digits}`;
+                    if (otpType === 'hotp') otpUri += `&counter=${acc.counter || 0}`;
+
+                    // Buat card dengan DOM API (bukan innerHTML) untuk mencegah XSS
                     const card = document.createElement('div');
-                    card.className = 'card';
-                    card.innerHTML = `
-                        <div class="qr-container" id="qr-${index}"></div>
-                        <div class="details">
-                            <h3 style="margin-top:0; color:#333;">${issuer}</h3>
-                            <p style="margin:5px 0;"><strong>Akun:</strong> ${name}</p>
-                            <p style="margin:5px 0;"><strong>Secret:</strong> <code style="background:#eee; padding:2px 5px; border-radius:3px;">${secretStr}</code></p>
-                            <p style="font-size:11px; color:#777; margin-top:10px; word-break:break-all;">URI: ${otpUri}</p>
-                        </div>
-                    `;
+                    card.className = 'account-card';
+                    card.style.animationDelay = `${index * 0.08}s`;
+
+                    // QR container
+                    const qrContainer = document.createElement('div');
+                    qrContainer.className = 'account-card__qr';
+                    qrContainer.id = `qr-${index}`;
+                    card.appendChild(qrContainer);
+
+                    // Info container
+                    const info = document.createElement('div');
+                    info.className = 'account-card__info';
+
+                    // Issuer + type badge
+                    const issuerEl = document.createElement('div');
+                    issuerEl.className = 'account-card__issuer';
+                    issuerEl.appendChild(document.createTextNode(issuer));
+                    const badge = document.createElement('span');
+                    badge.className = `account-card__type-badge account-card__type-badge--${otpType}`;
+                    badge.textContent = otpType.toUpperCase();
+                    issuerEl.appendChild(badge);
+                    info.appendChild(issuerEl);
+
+                    // Account name
+                    const nameField = document.createElement('p');
+                    nameField.className = 'account-card__field';
+                    const nameLabel = document.createElement('strong');
+                    nameLabel.textContent = 'Akun: ';
+                    nameField.appendChild(nameLabel);
+                    nameField.appendChild(document.createTextNode(name));
+                    info.appendChild(nameField);
+
+                    // Secret row (dengan tombol copy)
+                    const secretField = document.createElement('p');
+                    secretField.className = 'account-card__field';
+                    const secretLabel = document.createElement('strong');
+                    secretLabel.textContent = 'Secret: ';
+                    secretField.appendChild(secretLabel);
+                    const secretRow = document.createElement('span');
+                    secretRow.className = 'account-card__secret-row';
+                    const secretCode = document.createElement('code');
+                    secretCode.className = 'account-card__secret';
+                    secretCode.textContent = secretStr;
+                    secretRow.appendChild(secretCode);
+                    const copySecretBtn = document.createElement('button');
+                    copySecretBtn.className = 'btn btn--copy';
+                    copySecretBtn.type = 'button';
+                    copySecretBtn.textContent = '📋 Salin';
+                    copySecretBtn.setAttribute('aria-label', `Salin secret ${issuer}`);
+                    copySecretBtn.addEventListener('click', () => copyToClipboard(secretStr, copySecretBtn));
+                    secretRow.appendChild(copySecretBtn);
+                    secretField.appendChild(secretRow);
+                    info.appendChild(secretField);
+
+                    // Meta tags (algorithm, digits, type-specific info)
+                    const metaDiv = document.createElement('div');
+                    metaDiv.className = 'account-card__meta';
+                    const tags = [
+                        `🔐 ${algorithm}`,
+                        `🔢 ${digits} digit`,
+                        otpType === 'hotp' ? `🔄 Counter: ${acc.counter || 0}` : `⏱️ 30s`
+                    ];
+                    tags.forEach(tagText => {
+                        const tagEl = document.createElement('span');
+                        tagEl.className = 'meta-tag';
+                        tagEl.textContent = tagText;
+                        metaDiv.appendChild(tagEl);
+                    });
+                    info.appendChild(metaDiv);
+
+                    // URI display (dengan tombol copy)
+                    const uriDiv = document.createElement('div');
+                    uriDiv.className = 'account-card__uri';
+                    const uriText = document.createElement('span');
+                    uriText.className = 'account-card__uri-text';
+                    uriText.textContent = otpUri;
+                    uriDiv.appendChild(uriText);
+                    const copyUriBtn = document.createElement('button');
+                    copyUriBtn.className = 'btn btn--copy';
+                    copyUriBtn.type = 'button';
+                    copyUriBtn.textContent = '📋 Salin';
+                    copyUriBtn.setAttribute('aria-label', `Salin URI ${issuer}`);
+                    copyUriBtn.addEventListener('click', () => copyToClipboard(otpUri, copyUriBtn));
+                    uriDiv.appendChild(copyUriBtn);
+                    info.appendChild(uriDiv);
+
+                    card.appendChild(info);
                     resultsDiv.appendChild(card);
 
-                    new QRCode(document.getElementById(`qr-${index}`), {
+                    // Generate QR Code
+                    // Best Practice dari Context7 (QRCode.js):
+                    // - correctLevel: H (High, 30% recovery) — lebih tahan terhadap
+                    //   distorsi saat scan dari layar (refleksi, resolusi rendah)
+                    // - Ukuran 160x160 untuk keseimbangan antara scannability dan layout
+                    const qrInstance = new QRCode(qrContainer, {
                         text: otpUri,
-                        width: 150,
-                        height: 150,
-                        colorDark : "#000000",
-                        colorLight : "#ffffff",
-                        correctLevel : QRCode.CorrectLevel.M
+                        width: 160,
+                        height: 160,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
                     });
+                    qrCodeInstances.push(qrInstance);
+                    renderedCount++;
                 });
 
-                // Scroll layar otomatis ke arah hasil
+                if (renderedCount > 0) {
+                    showStatusMessage('success', `Berhasil mengonversi ${renderedCount} akun.`);
+                } else {
+                    showStatusMessage('warning', 'Data berhasil diparse, tetapi tidak ada akun dengan secret valid.');
+                }
                 resultsDiv.scrollIntoView({ behavior: 'smooth' });
 
             } catch (error) {
-                alert("Gagal mengonversi data. Pastikan format QR Google Authenticator benar.\nError: " + error.message);
+                showStatusMessage('error', `Gagal mengonversi: ${escapeHtml(error.message)}`);
             }
+        }
+
+        // ===================================================================
+        // UI HELPER: Status Messages
+        // ===================================================================
+        function showStatusMessage(type, message) {
+            const resultsDiv = document.getElementById('results');
+            const icons = { error: '❌', success: '✅', warning: '⚠️' };
+
+            const existing = resultsDiv.querySelector('.status-message');
+            if (existing) existing.remove();
+
+            const msgEl = document.createElement('div');
+            msgEl.className = `status-message status-message--${type}`;
+            msgEl.setAttribute('role', 'alert');
+
+            const iconSpan = document.createElement('span');
+            iconSpan.setAttribute('aria-hidden', 'true');
+            iconSpan.textContent = icons[type] || '';
+            msgEl.appendChild(iconSpan);
+
+            const textSpan = document.createElement('span');
+            textSpan.innerHTML = message; // message dikontrol internal, bukan user input
+            msgEl.appendChild(textSpan);
+
+            resultsDiv.insertBefore(msgEl, resultsDiv.firstChild);
         }
     </script>
 </body>
+
 </html>
