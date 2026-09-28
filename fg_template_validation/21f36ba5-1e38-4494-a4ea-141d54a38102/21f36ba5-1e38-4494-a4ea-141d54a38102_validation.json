@@ -1,0 +1,808 @@
+{
+  "version" : "1.7.1",
+  "testFunctions" : [ {
+    "dataKey" : "sls",
+    "componentValidation" : [ "sls" ],
+    "validations" : [ {
+      "test" : "let value = getValue('sls'); (value.length > 0 && (value.length < 3 || value.length > 40));",
+      "message" : "Isian minimal 3 Karakter sampai 40 karakter",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "namakomersial",
+    "componentValidation" : [ "namakomersial" ],
+    "validations" : [ {
+      "test" : "let value = getValue('namakomersial'); (value.length > 0 && (value.length < 3 || value.length > 100));\r\n",
+      "message" : "Isian minimal 3 Karakter sampai 100 karakter",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "alamat",
+    "componentValidation" : [ "alamat" ],
+    "validations" : [ {
+      "test" : "let value = getValue('alamat'); (value.length > 0 && (value.length < 5 || value.length > 200));",
+      "message" : "Isian minimal 5 karakter sampai 200 karakter",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "jenisakomodasi",
+    "componentValidation" : [ "jenisakomodasi" ],
+    "validations" : [ {
+      "test" : "let glg=getValue('jenisakomodasi');\nif(glg !== undefined) {\n    glg < 1 || glg > 2\n}",
+      "message" : "Isian harus 1 atau 2",
+      "type" : 2
+    }, {
+      "test" : "!(/^\\d+$/.test(getValue('jenisakomodasi'))) && getValue('jenisakomodasi').length > 0",
+      "message" : "Isian harus angka",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "kelasakomodasi",
+    "componentValidation" : [ "kelasakomodasi", "jenisakomodasi" ],
+    "validations" : [ {
+      "test" : "!(/^\\d+$/.test(getValue('kelasakomodasi'))) && getValue('kelasakomodasi').length > 0",
+      "message" : "Isian harus angka",
+      "type" : 2
+    }, {
+      "test" : "let kls=getValue('kelasakomodasi');\nlet jns=getValue('jenisakomodasi');\nif(kls !== undefined  && jns.length > 0) {\n    jns=='2' && kls == '5'\n}",
+      "message" : "hotel non bintang maksimal kelas adalah 4",
+      "type" : 2
+    }, {
+      "test" : "let glg=getValue('kelasakomodasi');\nif(glg !== undefined) {\n( glg < 1 | glg > 5)\n}",
+      "message" : "Isian antara 1 sampai 5",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "kbli",
+    "componentValidation" : [ "jenisakomodasi", "kbli", "kelasakomodasi" ],
+    "validations" : [ {
+      "test" : "let jenisakomodasi = getValue('jenisakomodasi') !== undefined ? Number(getValue('jenisakomodasi')) : 0;\nlet kelas = getValue('kelasakomodasi') !== undefined ? Number(getValue('kelasakomodasi')) : 0;\nlet kbli = Number(getValue('kbli')?.[0]?.value ?? 0);\nlet result = 0;\n\nif(jenisakomodasi == 1 && kelas == 2 && kbli != 0 && kbli !=  55104)\n{result = 1};\n\nresult > 0;\n\n",
+      "message" : "Jika jenis akomodasi = hotel bintang dan kelas = 2 maka KBLI harus 55104",
+      "type" : 2
+    }, {
+      "test" : "let jenisakomodasi = getValue('jenisakomodasi') !== undefined ? Number(getValue('jenisakomodasi')) : 0;\nlet kelas = getValue('kelasakomodasi') !== undefined ? Number(getValue('kelasakomodasi')) : 0;\nlet kbli = Number(getValue('kbli')?.[0]?.value ?? 0);\nlet result = 0;\n\nif(jenisakomodasi == 1 && kelas == 4 && kbli != 0 && kbli !=  55102)\n{result = 1};\n\nresult > 0;\n\n",
+      "message" : "Jika jenis akomodasi = hotel bintang dan kelas = 4 maka KBLI harus 55102",
+      "type" : 2
+    }, {
+      "test" : "let jenisakomodasi = getValue('jenisakomodasi') !== undefined ? Number(getValue('jenisakomodasi')) : 0;\nlet kelas = getValue('kelasakomodasi') !== undefined ? Number(getValue('kelasakomodasi')) : 0;\nlet kbli = Number(getValue('kbli')?.[0]?.value ?? 0);\nlet result = 0;\n\nif(jenisakomodasi == 1 && kelas == 3 && kbli != 0 && kbli !=  55103)\n{result = 1};\n\nresult > 0;\n\n",
+      "message" : "Jika jenis akomodasi = hotel bintang dan kelas = 3 maka KBLI harus 55103",
+      "type" : 2
+    }, {
+      "test" : "let jenisakomodasi = getValue('jenisakomodasi') !== undefined ? Number(getValue('jenisakomodasi')) : 0;\nlet kelas = getValue('kelasakomodasi') !== undefined ? Number(getValue('kelasakomodasi')) : 0;\nlet kbli = Number(getValue('kbli')?.[0]?.value ?? 0);\nlet result = 0;\n\nif(jenisakomodasi == 1 && kelas == 1 && kbli != 0 && kbli !=  55105)\n{result = 1};\n\nresult > 0;\n\n",
+      "message" : "Jika jenis akomodasi = hotel bintang dan kelas = 1 maka KBLI harus 55105 ",
+      "type" : 2
+    }, {
+      "test" : "let jenisakomodasi = getValue('jenisakomodasi') !== undefined ? Number(getValue('jenisakomodasi')) : 0;\nlet kelas = getValue('kelasakomodasi') !== undefined ? Number(getValue('kelasakomodasi')) : 0;\nlet kbli = Number(getValue('kbli')?.[0]?.value ?? 0);\nlet result = 0;\n\nif(jenisakomodasi == 1 && kelas == 5 && kbli != 0 && kbli !=  55101)\n{result = 1};\n\nresult > 0;\n\n",
+      "message" : "Jika jenis akomodasi = hotel bintang dan kelas = 4 maka KBLI harus 55102",
+      "type" : 2
+    }, {
+      "test" : "let jenisakomodasi = getValue('jenisakomodasi') !== undefined ? Number(getValue('jenisakomodasi')) : 0;\nlet kbli = Number(getValue('kbli')?.[0]?.value ?? 0);\nlet result = 0;\n\nif(jenisakomodasi == 1 && ( kbli < 55101 || kbli > 55105 ))\n{result = 1};\n\nresult > 0;\n\n",
+      "message" : "Jika jenis akomodasi terisi 1 (Bintang) maka KBLI 2025 harus 55101 atau 55102 atau 55103 atau 55104 atau 55105",
+      "type" : 2
+    }, {
+      "test" : "let jenisakomodasi = getValue('jenisakomodasi') !== undefined ? Number(getValue('jenisakomodasi')) : 0;\nlet kbli = Number(getValue('kbli')?.[0]?.value ?? 0);\nlet result = 0;\n\nif(jenisakomodasi == 2 && ( kbli < 55106 || kbli > 55300 ))\n{result = 1};\n\nresult > 0;\n\n",
+      "message" : "Jika jenis akomodasi terisi 2 (nonbintang) maka KBLI 2025 harus 55106 atau 55201 atau 55202 atau 55203 atau 55204 atau 55209 dan/atau 55300",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b1r11",
+    "componentValidation" : [ "jenissampel", "b1r11" ],
+    "validations" : [ {
+      "test" : "let jenis = getValue('jenissampel'); \nlet penunjang = getValue('b1r11'); \n\nif(penunjang.length > 0) \n{\n   getConfig().initialMode == 1 && Number(penunjang[0].value) != 1\n}\n",
+      "message" : "Jika sampel adalah tambahan maka rincian ini harus terisi 1",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b1r12a",
+    "componentValidation" : [ "b1r12a", "jenisakomodasi", "kelasakomodasi" ],
+    "validations" : [ {
+      "test" : "let a = getValue('b1r12a'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "let b3r12a = Number(getValue('b1r12a') ?? 0);\nlet b1r8 = Number(getValue('jenisakomodasi') ?? 0);\nlet b1r9 = Number(getValue('kelasakomodasi') ?? 0);\nlet cek = 0;\n\nif(b1r8 == 1 && b1r9 == 3)\n{\n    if(b3r12a < 3 || b3r12a > 1000)\n    {\n        cek = 1;\n    }\n}\n\n\ncek > 0;",
+      "message" : "jenis akomodasi =’1’ dan kelas akomodasi=’3’ maka isian 3 < jumlah kamar < 1.000",
+      "type" : 2
+    }, {
+      "test" : "let b3r12a = Number(getValue('b1r12a') ?? 0);\nlet b1r8 = Number(getValue('jenisakomodasi') ?? 0);\nlet b1r9 = Number(getValue('kelasakomodasi') ?? 0);\nlet cek = 0;\n\nif(b1r8 == 2 && b1r9 == 4)\n{\n    if(b3r12a <= 40)\n    {\n        cek = 1;\n    }\n}\n\n\ncek > 0;",
+      "message" : "jenis akomodasi =’2’ dan kelas akomodasi=’4’ maka isian jumlah kamar > 40",
+      "type" : 2
+    }, {
+      "test" : "let b3r12a = Number(getValue('b1r12a') ?? 0);\nlet b1r8 = Number(getValue('jenisakomodasi') ?? 0);\nlet b1r9 = Number(getValue('kelasakomodasi') ?? 0);\nlet cek = 0;\n\nif(b1r8 == 1 && b1r9 == 5)\n{\n    if(b3r12a < 3 || b3r12a > 3000)\n    {\n        cek = 1;\n    }\n}\n\n\ncek > 0;",
+      "message" : "jenis akomodasi =’1’ dan kelas akomodasi=’5’ maka isian 3 < jumlah kamar < 3.000",
+      "type" : 2
+    }, {
+      "test" : "let b3r12a = Number(getValue('b1r12a') ?? 0);\nlet b1r8 = Number(getValue('jenisakomodasi') ?? 0);\nlet b1r9 = Number(getValue('kelasakomodasi') ?? 0);\nlet cek = 0;\n\nif(b1r8 == 1 && b1r9 == 1)\n{\n    if(b3r12a < 3 || b3r12a > 600)\n    {\n        cek = 1;\n    }\n}\n\n\ncek > 0;",
+      "message" : "jenis akomodasi =’1’ dan kelas akomodasi=’1’ maka isian 3 < jumlah kamar < 600",
+      "type" : 2
+    }, {
+      "test" : "let b3r12a = Number(getValue('b1r12a') ?? 0);\nlet b1r8 = Number(getValue('jenisakomodasi') ?? 0);\nlet b1r9 = Number(getValue('kelasakomodasi') ?? 0);\nlet cek = 0;\n\nif(b1r8 == 2 && b1r9 == 1)\n{\n    if(b3r12a < 1 || b3r12a > 9)\n    {\n        cek = 1;\n    }\n}\n\n\ncek > 0;",
+      "message" : "jenis akomodasi =’2’ dan kelas akomodasi=’1’ maka isian jumlah kamar < 10",
+      "type" : 2
+    }, {
+      "test" : "let b3r12a = Number(getValue('b1r12a') ?? 0);\nlet b1r8 = Number(getValue('jenisakomodasi') ?? 0);\nlet b1r9 = Number(getValue('kelasakomodasi') ?? 0);\nlet cek = 0;\n\nif(b1r8 == 1 && b1r9 == 2)\n{\n    if(b3r12a < 3 || b3r12a > 800)\n    {\n        cek = 1;\n    }\n}\n\n\ncek > 0;",
+      "message" : "jenis akomodasi =’1’ dan kelas akomodasi=’2’ maka isian 3 < jumlah kamar < 800",
+      "type" : 2
+    }, {
+      "test" : "let b3r12a = Number(getValue('b1r12a') ?? 0);\nlet b1r8 = Number(getValue('jenisakomodasi') ?? 0);\nlet b1r9 = Number(getValue('kelasakomodasi') ?? 0);\nlet cek = 0;\n\nif(b1r8 == 1 && b1r9 == 4)\n{\n    if(b3r12a < 3 || b3r12a > 1500)\n    {\n        cek = 1;\n    }\n}\n\n\ncek > 0;",
+      "message" : "jenis akomodasi =’1’ dan kelas akomodasi=’4’ maka isian 3 < jumlah kamar < 1.500",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b1r12a'); \nif (a !== undefined)\nNumber(a) < 1 || Number(a) > 9999;\n",
+      "message" : "Isian harus lebih dari 0 dan maksimal 4 digit",
+      "type" : 2
+    }, {
+      "test" : "let b3r12a = Number(getValue('b1r12a') ?? 0);\nlet b1r8 = Number(getValue('jenisakomodasi') ?? 0);\nlet b1r9 = Number(getValue('kelasakomodasi') ?? 0);\nlet cek = 0;\n\nif(b1r8 == 2 && b1r9 == 2)\n{\n    if(b3r12a < 10 || b3r12a > 24)\n    {\n        cek = 1;\n    }\n}\n\n\ncek > 0;",
+      "message" : "jenis akomodasi =’2’ dan kelas akomodasi=’2’ maka isian 10 <= jumlah kamar <= 24",
+      "type" : 2
+    }, {
+      "test" : "let b3r12a = Number(getValue('b1r12a') ?? 0);\nlet b1r8 = Number(getValue('jenisakomodasi') ?? 0);\nlet b1r9 = Number(getValue('kelasakomodasi') ?? 0);\nlet cek = 0;\n\nif(b1r8 == 2 && b1r9 == 3)\n{\n    if(b3r12a < 25 || b3r12a > 40)\n    {\n        cek = 1;\n    }\n}\n\n\ncek > 0;",
+      "message" : "jenis akomodasi =’2’ dan kelas akomodasi=’3’ maka isian 25 <= jumlah kamar <= 40",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b1r12b",
+    "componentValidation" : [ "b1r12b" ],
+    "validations" : [ {
+      "test" : "\r\nlet value = getValue('b1r12b') ? String(getValue('b1r12b')) : '';\r\nvalue.length < 3 || value.length > 200\r\n\r\n",
+      "message" : "maksimal 200 karakter",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b2r1a_rp",
+    "componentValidation" : [ "b2r1a_rp", "b2r1b_rp" ],
+    "validations" : [ {
+      "test" : "\r\nlet result1 = getValue('b2r1a_rp') ?? 0;\r\nlet cek = 0;\r\n\r\nif(Number(result1) != 0 && (Number(result1) < 50000 || Number(result1) > 150000000))\r\n{cek = 1;}\r\n\r\ncek > 0;\r\n\r\n",
+      "message" : "range Rp 50.000 sd Rp 150.000.000 atau isikan 0 jika tidak ada ",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r1a_rp'); \nif (a !== undefined)\nNumber(a) < 0;\n",
+      "message" : "Isian tidak boleh negatif",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r1a_rp'); \r\nif (a !== undefined)\r\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "let a = Number(getValue('b2r1a_rp') ?? 0);\r\nlet b = Number(getValue('b2r1b_rp') ?? 0);\r\nlet cek = 0;\r\n\r\nif(a > b)\r\n{\r\n    cek = 1;\r\n}\r\n\r\ncek > 0;",
+      "message" : "tarif non suite standar hari kerja harusnya <= tarif non suite standar hari libur ",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b2r1b_rp",
+    "componentValidation" : [ "b2r1b_rp", "b2r1a_rp" ],
+    "validations" : [ {
+      "test" : "let a = getValue('b2r1b_rp'); \r\nif (a !== undefined)\r\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "\r\nlet result1 = getValue('b2r1b_rp') ?? 0;\r\nNumber(result1) != 0 && (Number(result1) < 50000 || Number(result1) > 150000000);\r\n\r\n",
+      "message" : "range Rp 50.000 sd Rp 150.000.000 atau isikan 0 jika tidak ada",
+      "type" : 2
+    }, {
+      "test" : "let result = getValue('b2r1a_rp');\r\nlet result1 = getValue('b2r1b_rp');\r\n\r\nif(result != undefined && result1 != undefined) \r\n{\r\n    result1 > 5*result\r\n}",
+      "message" : "Tarif hari libur maksimal 5 kali tarif hari kerja",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r1b_rp'); \nif (a !== undefined)\nNumber(a) < 0;\n",
+      "message" : "Isian tidak boleh negatif",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b2r2a_rp",
+    "componentValidation" : [ "b2r2a_rp", "b2r2b_rp" ],
+    "validations" : [ {
+      "test" : "let a = Number(getValue('b2r2a_rp') ?? 0);\nlet b = Number(getValue('b2r2b_rp') ?? 0);\nlet cek = 0;\n\nif(a > b)\n{\n    cek = 1;\n}\n\ncek > 0;",
+      "message" : "tarif non suite superior hari kerja harusnya <= tarif non suite superior hari libur ",
+      "type" : 2
+    }, {
+      "test" : "\r\nlet result1 = getValue('b2r2a_rp') ?? 0;\r\nNumber(result1) != 0 && (Number(result1) < 50000 || Number(result1) > 150000000);\r\n\r\n",
+      "message" : "range Rp 50.000 sd Rp 150.000.000 atau isikan 0 jika tidak ada",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r2a_rp'); \nif (a !== undefined)\nNumber(a) < 0;\n",
+      "message" : "Isian tidak boleh negatif",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r2a_rp'); \r\nif (a !== undefined)\r\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b2r2b_rp",
+    "componentValidation" : [ "b2r2a_rp", "b2r2b_rp" ],
+    "validations" : [ {
+      "test" : "let result = getValue('b2r2a_rp');\r\nlet result1 = getValue('b2r2b_rp');\r\n\r\nif(result != undefined && result1 != undefined) \r\n{\r\n    result1 > 5*result\r\n}",
+      "message" : "Tarif hari libur maksimal 5 kali tarif hari kerja",
+      "type" : 2
+    }, {
+      "test" : "let result1 = getValue('b2r2b_rp') ?? 0;\r\nNumber(result1) != 0 && (Number(result1) < 50000 || Number(result1) > 150000000);\r\n\r\n\r\n",
+      "message" : "range Rp 50.000 sd Rp 150.000.000 atau isikan 0 jika tidak ada",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r2b_rp'); \nif (a !== undefined)\nNumber(a) < 0;\n",
+      "message" : "Isian tidak boleh negatif",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r2b_rp'); \r\nif (a !== undefined)\r\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b2r3a_rp",
+    "componentValidation" : [ "b2r3a_rp", "b2r3b_rp" ],
+    "validations" : [ {
+      "test" : "let a = Number(getValue('b2r3a_rp') ?? 0);\nlet b = Number(getValue('b2r3b_rp') ?? 0);\nlet cek = 0;\n\nif(a > b)\n{\n    cek = 1;\n}\n\ncek > 0;",
+      "message" : "tarif non suite deluxe hari kerja harusnya <= tarif non suite deluxe hari libur",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r3a_rp'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "\r\nlet result1 = getValue('b2r3a_rp') ?? 0;\r\nNumber(result1) != 0 && (Number(result1) < 50000 || Number(result1) > 150000000);\r\n\r\n",
+      "message" : "range Rp 50.000 sd Rp 150.000.000 atau isikan 0 jika tidak ada",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r3a_rp'); \nif (a !== undefined)\nNumber(a) < 0;\n",
+      "message" : "Isian tidak boleh negatif",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b2r3b_rp",
+    "componentValidation" : [ "b2r3b_rp", "b2r3a_rp" ],
+    "validations" : [ {
+      "test" : "\r\nlet result1 = getValue('b2r3b_rp') ?? 0;\r\nNumber(result1) != 0 && (Number(result1) < 50000 || Number(result1) > 150000000);\r\n",
+      "message" : "range Rp 50.000 sd Rp 150.000.000 atau isikan 0 jika tidak ada",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r3b_rp'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "let result = getValue('b2r3a_rp');\r\nlet result1 = getValue('b2r3b_rp');\r\n\r\nif(result != undefined && result1 != undefined) \r\n{\r\n    result1 > 5*result\r\n}",
+      "message" : "Tarif hari libur maksimal 5 kali tarif hari kerja",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r3b_rp'); \nif (a !== undefined)\nNumber(a) < 0;\n",
+      "message" : "Isian tidak boleh negatif",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b2r4a_rp",
+    "componentValidation" : [ "b2r4a_rp", "b2r4b_rp" ],
+    "validations" : [ {
+      "test" : "let a = getValue('b2r4a_rp'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "\r\nlet result1 = getValue('b2r4a_rp') ?? 0;\r\nNumber(result1) != 0 && (Number(result1) < 50000 || Number(result1) > 150000000);\r\n\r\n\r\n",
+      "message" : "range Rp 50.000 sd Rp 150.000.000 atau isikan 0 jika tidak ada",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r4a_rp'); \nif (a !== undefined)\nNumber(a) < 0;\n",
+      "message" : "Isian tidak boleh negatif",
+      "type" : 2
+    }, {
+      "test" : "let a = Number(getValue('b2r4a_rp') ?? 0);\nlet b = Number(getValue('b2r4b_rp') ?? 0);\nlet cek = 0;\n\nif(a > b)\n{\n    cek = 1;\n}\n\ncek > 0;",
+      "message" : "tarif suite junior hari kerja harusnya <= tarif suite junior hari libur ",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b2r4b_rp",
+    "componentValidation" : [ "b2r4a_rp", "b2r4b_rp" ],
+    "validations" : [ {
+      "test" : "let result = getValue('b2r4a_rp');\r\nlet result1 = getValue('b2r4b_rp');\r\n\r\nif(result != undefined && result1 != undefined) \r\n{\r\n    result1 > 5*result\r\n}",
+      "message" : "Tarif hari libur maksimal 5 kali tarif hari kerja",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r4b_rp'); \nif (a !== undefined)\nNumber(a) < 0;\n",
+      "message" : "Isian tidak boleh negatif",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r4b_rp'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "\r\n\r\nlet result1 = getValue('b2r4b_rp') ?? 0;\r\nNumber(result1) != 0 && (Number(result1) < 50000 || Number(result1) > 150000000);\r\n\r\n\r\n",
+      "message" : "range Rp 50.000 sd Rp 150.000.000 atau isikan 0 jika tidak ada",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b2r5a_rp",
+    "componentValidation" : [ "b2r5a_rp", "b2r5b_rp" ],
+    "validations" : [ {
+      "test" : "let a = Number(getValue('b2r5a_rp') ?? 0);\nlet b = Number(getValue('b2r5b_rp') ?? 0);\nlet cek = 0;\n\nif(a > b)\n{\n    cek = 1;\n}\n\ncek > 0;",
+      "message" : "tarif suite hari kerja harusnya <= tarif suite hari libur",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r5a_rp'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r5a_rp'); \nif (a !== undefined)\nNumber(a) < 0;\n",
+      "message" : "Isian tidak boleh negatif",
+      "type" : 2
+    }, {
+      "test" : "\r\nlet result1 = getValue('b2r5a_rp') ?? 0;\r\nNumber(result1) != 0 && (Number(result1) < 50000 || Number(result1) > 150000000);\r\n",
+      "message" : "range Rp 50.000 sd Rp 150.000.000 atau isikan 0 jika tidak ada",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b2r5b_rp",
+    "componentValidation" : [ "b2r5a_rp", "b2r5b_rp" ],
+    "validations" : [ {
+      "test" : "let result = getValue('b2r5a_rp');\r\nlet result1 = getValue('b2r5b_rp');\r\n\r\nif(result != undefined && result1 != undefined) \r\n{\r\n    result1 > 5*result\r\n}",
+      "message" : "Tarif hari libur maksimal 5 kali tarif hari kerja",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r5b_rp'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r5b_rp'); \nif (a !== undefined)\nNumber(a) < 0;\n",
+      "message" : "Isian tidak boleh negatif",
+      "type" : 2
+    }, {
+      "test" : "\r\n\r\nlet result1 = getValue('b2r5b_rp') ?? 0;\r\nNumber(result1) != 0 && (Number(result1) < 50000 || Number(result1) > 150000000);\r\n",
+      "message" : "range Rp 50.000 sd Rp 150.000.000 atau isikan 0 jika tidak ada",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b2r6a_rp",
+    "componentValidation" : [ "b2r6a_rp", "b2r6b_rp" ],
+    "validations" : [ {
+      "test" : "\r\nlet result1 = getValue('b2r6a_rp') ?? 0;\r\nNumber(result1) != 0 && (Number(result1) < 50000 || Number(result1) > 150000000);\r\n",
+      "message" : "range Rp 50.000 sd Rp 150.000.000 atau isikan 0 jika tidak ada",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r6a_rp'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "let a = Number(getValue('b2r6a_rp') ?? 0);\nlet b = Number(getValue('b2r6b_rp') ?? 0);\nlet cek = 0;\n\nif(a > b)\n{\n    cek = 1;\n}\n\ncek > 0;",
+      "message" : "tarif presiden suite hari kerja harusnya <= tarif presiden suite hari libur",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r6a_rp'); \nif (a !== undefined)\nNumber(a) < 0;\n",
+      "message" : "Isian tidak boleh negatif",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b2r6b_rp",
+    "componentValidation" : [ "b2r6b_rp", "b2r6a_rp" ],
+    "validations" : [ {
+      "test" : "let a = getValue('b2r6b_rp'); \nif (a !== undefined)\nNumber(a) < 0;\n",
+      "message" : "Isian tidak boleh negatif",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b2r6b_rp'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "\r\nlet result1 = getValue('b2r6b_rp') ?? 0; \r\nNumber(result1) != 0 && (Number(result1) < 50000 || Number(result1) > 150000000);\r\n\r\n",
+      "message" : "range Rp 50.000 sd Rp 150.000.000 atau isikan 0 jika tidak ada",
+      "type" : 2
+    }, {
+      "test" : "let result = getValue('b2r6a_rp');\r\nlet result1 = getValue('b2r6b_rp');\r\n\r\nif(result != undefined && result1 != undefined) \r\n{\r\n    result1 > 5*result\r\n}",
+      "message" : "Tarif hari libur maksimal 5 kali tarif hari kerja",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "bln_tahun",
+    "componentValidation" : [ "bln_tahun" ],
+    "validations" : [ {
+      "test" : "let str = getValue('bln_tahun');\r\nconst d = new Date();\r\nlet year = d.getFullYear();\r\nlet parts = str.split(\" \");\r\nlet thn = parts.length ==  2 ? parseInt(parts[1]) : 0;\r\nNumber(thn) != Number(year);",
+      "message" : "Isian tidak terdiri dari bulan tahun",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "jml_hari",
+    "componentValidation" : [ "bln_tahun", "jml_hari" ],
+    "validations" : [ {
+      "test" : "let value = getValue('jml_hari');\n\nif (value !== undefined) { value > 31\n    \n}",
+      "message" : "Jumlah hari lebih dari 31",
+      "type" : 2
+    }, {
+      "test" : "let result = getValue('bln_tahun');\r\nlet result1 = getValue('jml_hari');\r\n\r\nif(result[0] != undefined && result1 != undefined) \r\n{\r\n    ((result[0].value =='01' && result1 > 31) || (result[0].value =='02' && result1 > 28)|| (result[0].value =='03' && result1 > 31)||(result[0].value =='04' && result1 > 30)\r\n    ||(result[0].value =='05' && result1 > 31)||(result[0].value =='06' && result1 > 30)||(result[0].value =='07' && result1 > 31)||(result[0].value =='08' && result1 > 31)\r\n    ||(result[0].value =='09' && result1 > 30)||(result[0].value =='10' && result1 > 31)||(result[0].value =='11' && result1 > 30)||(result[0].value =='12' && result1 > 30))\r\n}",
+      "message" : "Jumlah hari lebih besar dari hari kalender",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r1",
+    "componentValidation" : [ "b3r1@$ROW$", "b1r12a" ],
+    "validations" : [ {
+      "test" : "let b3r1_new = Number(getValue('b3r1@$ROW$') ?? 0);\nlet b3r12a = Number(getValue('b1r12a') ?? 0);\nlet cek = 0;\n\nif(b3r1_new > b3r12a)\n{\n    cek = 1;\n}\n\n\ncek > 0;",
+      "message" : "Rincian ini tidak boleh lebih besar dari rincian Jumlah Fisik Kamar (B1R12a)",
+      "type" : 2
+    }, {
+      "test" : "let a = Number(getValue('b3r1@$ROW$') ?? 0);\nlet cek = 0;\n\nif(a<=0 || a>9999)\n{\n    cek = 1;\n}\n\ncek > 0;",
+      "message" : "rentang 1 sd 9999",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b3r1@$ROW$'); \nif (a !== undefined)\nNumber(a) < 1;",
+      "message" : "Isian harus lebih dari 0",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b3r1@$ROW$'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r2",
+    "componentValidation" : [ "b3r2@$ROW$", "b3r1@$ROW$", "jenisakomodasi" ],
+    "validations" : [ {
+      "test" : "let a = getValue('b3r2@$ROW$'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "let b3r1_new = Number(getValue('b3r1@$ROW$') ?? 0);\nlet b3r2_new = Number(getValue('b3r2@$ROW$') ?? 0);\nlet b1r8 = Number(getValue('jenisakomodasi') ?? 0);\nlet cek = 0;\n\nif(b1r8 == 2)\n{\n    if(b3r2_new < 1 || b3r2_new > 1000)\n    cek = 1;\n}\n\ncek > 0;",
+      "message" : "jika jenis akomodasi ='2' maka kapasitas tempat tidur net harus dalam rentang 1 - 1.000",
+      "type" : 2
+    }, {
+      "test" : "let b3r1_new = Number(getValue('b3r1@$ROW$') ?? 0);\nlet b3r2_new = Number(getValue('b3r2@$ROW$') ?? 0);\nlet b1r8 = Number(getValue('jenisakomodasi') ?? 0);\nlet cek = 0;\n\nif(b1r8 == 1)\n{\n    if(b3r2_new < 3 || b3r2_new > 30000)\n    cek = 1;\n}\n\n\ncek > 0;",
+      "message" : "jika jenis akomodasi ='1' maka kapasitas tempat tidur net harus dalam rentang 3 - 30.000",
+      "type" : 2
+    }, {
+      "test" : "let b3r1_new = Number(getValue('b3r1@$ROW$') ?? 0);\nlet b3r2_new = Number(getValue('b3r2@$ROW$') ?? 0);\nlet b1r8 = Number(getValue('jenisakomodasi') ?? 0);\nlet cek = 0;\n\nif(b1r8 == 2)\n{\n    if(b3r2_new < b3r1_new || b3r2_new > 20*b3r1_new)\n    cek = 1;\n}\n\n\ncek > 0;",
+      "message" : "Jika jenis akomodasi = 2 maka rincian ini minimal sama dengan jumlah kamar tersedia net sampai 20 kali jumlah kamar tersedia net",
+      "type" : 2
+    }, {
+      "test" : "let b3r1_new = Number(getValue('b3r1@$ROW$') ?? 0);\nlet b3r2_new = Number(getValue('b3r2@$ROW$') ?? 0);\nlet b1r8 = Number(getValue('jenisakomodasi') ?? 0);\nlet cek = 0;\n\nif(b1r8 == 1)\n{\n    if(b3r2_new < b3r1_new || b3r2_new > 10*b3r1_new)\n    cek = 1;\n}\n\n\ncek > 0;",
+      "message" : "Jika jenis akomodasi = 1 maka rincian ini minimal sama dengan jumlah kamar tersedia net sampai 10 kali jumlah kamar tersedia net",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r3",
+    "componentValidation" : [ "jenisakomodasi", "b3r3", "var_b3_r3", "b3r5", "b3r4", "b3r1", "b3r1@$ROW$" ],
+    "validations" : [ {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet kamar = null\r\nif (rowIndex==1){\r\nkamar=getValue('b3r3#' + rowIndex);\r\n}else{\r\nkamar=getValue('var_b3_r3#' + rowIndex); \r\n}\r\nif(jenis != undefined && kamar != undefined) \r\n\r\n{\r\n    jenis== 2 && (kamar < 0 || kamar > 600);\r\n}",
+      "message" : "jika jenis akomodasi adalah hotel nonbintang, maka jumlah kamar check in tidak boleh lebih dari 600",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet kamar = null\r\nif (rowIndex==1){\r\nkamar=getValue('b3r3#' + rowIndex);\r\n}else{\r\nkamar=getValue('var_b3_r3#' + rowIndex); \r\n}\r\n\r\nif(jenis != undefined && kamar != undefined)\r\n{\r\n    jenis== '1' && (kamar < 0 || kamar > 3000);\r\n}\r\n",
+      "message" : "Jika jenis akomodasi adalah hotel bintang, maka jumlah kamar check in tidak boleh lebih dari 3000",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet kasur = null\r\nif (rowIndex==1){\r\nkemarin=getValue('b3r3#' + rowIndex);\r\n}else{\r\nkasur=getValue('var_b3_r3#' + rowIndex); \r\n}\r\n\r\nlet cekout=getValue('b3r5#' + rowIndex);\r\nlet cekin=getValue('b3r4#' + rowIndex);\r\nlet kamar=getValue('b3r1#' + rowIndex);\r\n\r\nif(cekout != undefined && cekin != undefined && kemarin != undefined && kamar != undefined)\r\n{\r\n    ((parseInt(kemarin)+parseInt(cekin)-parseInt(cekout)) > parseInt(kamar));\r\n}",
+      "message" : "Jumlah kamar kemarin + cek in - cekout lebih besar dari jumlah kamar tersedia",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet kamar=getValue('b3r1@$ROW$');\r\nlet kasur = null\r\nif (rowIndex==1){\r\nkasur=getValue('b3r3#' + rowIndex);\r\n}else{\r\nkasur=getValue('var_b3_r3#' + rowIndex); \r\n}\r\n\r\nif(kasur != undefined && kamar != undefined) \r\n\r\n{\r\n    parseInt(kasur) > parseInt(kamar) ;\r\n}",
+      "message" : "Banyaknya Kamar yang Digunakan Kemarin lebih besar dari Jumlah kamar yang tersedia",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r4",
+    "componentValidation" : [ "jenisakomodasi", "b3r4", "b3r1" ],
+    "validations" : [ {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet kamar=getValue('b3r4#' + rowIndex);\r\n\r\nif(jenis != undefined && kamar != undefined)\r\n{\r\n    jenis== 1 && (kamar < 0 || kamar > 3000);\r\n}\r\n",
+      "message" : "Jika jenis akomodasi adalah hotel bintang, maka jumlah kamar check in tidak boleh lebih dari 3000",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet kasur=getValue('b3r4#' + rowIndex);\r\nlet kamar=getValue('b3r1#' + rowIndex);\r\n\r\nif(kamar != undefined && kasur != undefined)\r\n{\r\n   (parseInt(kasur) > parseInt(kamar)) ;\r\n}",
+      "message" : "Banyaknya kamar check in tidak boleh lebih dari kamar tersedia net",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet kamar=getValue('b3r4#' + rowIndex);\r\n\r\nif(jenis != undefined && kamar != undefined)\r\n{\r\n    jenis== 2 && (kamar < 0 || kamar > 600);\r\n}",
+      "message" : "Jika jenis akomodasi adalah hotel nonbintang, maka jumlah kamar check in tidak boleh lebih dari 600",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r5",
+    "componentValidation" : [ "b3r3", "var_b3_r3", "b3r5", "b3r1" ],
+    "validations" : [ {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet kasur = null\r\nif (rowIndex==1){\r\nkasur=getValue('b3r3#' + rowIndex);\r\nconsole.log(kasur)\r\n}else{\r\nkasur=getValue('var_b3_r3#' + rowIndex); \r\nconsole.log(kasur)\r\n}\r\n\r\nlet cekout=getValue('b3r5#' + rowIndex);\r\nlet kamar=getValue('b3r1#' + rowIndex);\r\n\r\nif(cekout != undefined && kasur != undefined && kamar != undefined)\r\n{\r\n    ((parseInt(kasur) > parseInt(kamar)) || (parseInt(cekout) > parseInt(kasur)));\r\n}",
+      "message" : "Banyaknya Kamar yang Digunakan Kemarin lebih besar dari Jumlah kamar yang tersedia atau Banyaknya Kamar yang Check Out lebih besar dari Banyaknya Kamar yang Digunakan Kemarin ",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r6",
+    "componentValidation" : [ "jenisakomodasi", "b3r3", "b3r6", "b3r7", "var_b3_r3", "var_b3_r6", "var_b3_r7" ],
+    "validations" : [ {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet kamar= null;\r\nlet asing= null;\r\nlet indo= null;\r\nif (rowIndex==1){\r\nkamar=getValue('b3r3#'+ rowIndex);\r\nasing=getValue('b3r6#'+rowIndex);\r\nindo=getValue('b3r7#'+rowIndex);\r\n}else{\r\nkamar=getValue('var_b3_r3#'+rowIndex); \r\nasing=getValue('var_b3_r6#'+rowIndex);\r\nindo=getValue('var_b3_r7#'+rowIndex);\r\n}\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 1 && (parseInt(asing) + parseInt(indo)) > 10*parseInt(kamar);\r\n}",
+      "message" : "Jenis akomodasi adalah hotel bintang  , banyak tamu yang menginap kemarin lebih besar dari 10 kali banyak kamar yg digunakan kemarin",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet kamar= null;\r\nlet asing= null;\r\nlet indo= null;\r\nif (rowIndex==1){\r\nkamar=getValue('b3r3#'+ rowIndex);\r\nasing=getValue('b3r6#'+rowIndex);\r\nindo=getValue('b3r7#'+rowIndex);\r\n}else{\r\nkamar=getValue('var_b3_r3#'+rowIndex); \r\nasing=getValue('var_b3_r6#'+rowIndex);\r\nindo=getValue('var_b3_r7#'+rowIndex);\r\n}\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n\r\n{\r\n    jenis== 2 && (parseInt(asing) + parseInt(indo)) > 12000 ;\r\n}",
+      "message" : "Jenis akomodasi adalah hotel nonbintang  , jumlah tamu asing + tamu indonesia tidak boleh lebih dari 12000",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet kamar= null;\r\nlet asing= null;\r\nlet indo= null;\r\nif (rowIndex==1){\r\nkamar=getValue('b3r3#'+ rowIndex);\r\nasing=getValue('b3r6#'+rowIndex);\r\nindo=getValue('b3r7#'+rowIndex);\r\n}else{\r\nkamar=getValue('var_b3_r3#'+rowIndex); \r\nasing=getValue('var_b3_r6#'+rowIndex);\r\nindo=getValue('var_b3_r7#'+rowIndex);\r\n}\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 1 && ((parseInt(asing) + parseInt(indo)) < parseInt(kamar));\r\n}",
+      "message" : "Jenis akomodasi adalah hotel bintang  , banyak tamu yang menginap kemarin lebih kecil dari banyak kamar yg digunakan kemarin",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet kamar= null;\r\nlet asing= null;\r\nlet indo= null;\r\nif (rowIndex==1){\r\nkamar=getValue('b3r3#'+ rowIndex);\r\nasing=getValue('b3r6#'+rowIndex);\r\nindo=getValue('b3r7#'+rowIndex);\r\n}else{\r\nkamar=getValue('var_b3_r3#'+rowIndex); \r\nasing=getValue('var_b3_r6#'+rowIndex);\r\nindo=getValue('var_b3_r7#'+rowIndex);\r\n}\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 1 && (parseInt(asing) + parseInt(indo)) > 30000 ;\r\n}",
+      "message" : "Jenis akomodasi adalah hotel bintang  , jumlah Tamu Asing + tamu indonesia tidak boleh lebih dari 30000",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet kamar= null;\r\nlet asing= null;\r\nlet indo= null;\r\nif (rowIndex==1){\r\nkamar=getValue('b3r3#'+ rowIndex);\r\nasing=getValue('b3r6#'+rowIndex);\r\nindo=getValue('b3r7#'+rowIndex);\r\n}else{\r\nkamar=getValue('var_b3_r3#'+rowIndex); \r\nasing=getValue('var_b3_r6#'+rowIndex);\r\nindo=getValue('var_b3_r7#'+rowIndex);\r\n}\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 2 && ((parseInt(asing) + parseInt(indo)) < parseInt(kamar));\r\n}",
+      "message" : "Jenis akomodasi adalah hotel nonbintang  , banyak tamu yang menginap kemarin lebih kecil dari banyak kamar yg digunakan kemarin",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet kamar= null;\r\nlet asing= null;\r\nlet indo= null;\r\nif (rowIndex==1){\r\nkamar=getValue('b3r3#'+ rowIndex);\r\nasing=getValue('b3r6#'+rowIndex);\r\nindo=getValue('b3r7#'+rowIndex);\r\n}else{\r\nkamar=getValue('var_b3_r3#'+rowIndex); \r\nasing=getValue('var_b3_r6#'+rowIndex);\r\nindo=getValue('var_b3_r7#'+rowIndex);\r\n}\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 2 && (parseInt(asing) + parseInt(indo)) > 20*parseInt(kamar);\r\n}",
+      "message" : "Jenis akomodasi adalah hotel nonbintang , banyak tamu yang menginap kemarin lebih besar dari 20 kali banyak kamar yg digunakan kemarin",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r7",
+    "componentValidation" : [ "jenisakomodasi", "b3r3", "b3r6", "b3r7", "var_b3_r3", "var_b3_r6", "var_b3_r7" ],
+    "validations" : [ {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet kamar= null;\r\nlet asing= null;\r\nlet indo= null;\r\nif (rowIndex==1){\r\nkamar=getValue('b3r3#'+ rowIndex);\r\nasing=getValue('b3r6#'+rowIndex);\r\nindo=getValue('b3r7#'+rowIndex);\r\n}else{\r\nkamar=getValue('var_b3_r3#'+rowIndex); \r\nasing=getValue('var_b3_r6#'+rowIndex);\r\nindo=getValue('var_b3_r7#'+rowIndex);\r\n}\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 2 && (parseInt(asing) + parseInt(indo)) > 20*parseInt(kamar);\r\n}",
+      "message" : "Jenis akomodasi adalah hotel nonbintang  , banyak tamu yang menginap kemarin lebih besar dari 20 kali banyak kamar yg digunakan kemarin",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet kamar= null;\r\nlet asing= null;\r\nlet indo= null;\r\nif (rowIndex==1){\r\nkamar=getValue('b3r3#'+ rowIndex);\r\nasing=getValue('b3r6#'+rowIndex);\r\nindo=getValue('b3r7#'+rowIndex);\r\n}else{\r\nkamar=getValue('var_b3_r3#'+rowIndex); \r\nasing=getValue('var_b3_r6#'+rowIndex);\r\nindo=getValue('var_b3_r7#'+rowIndex);\r\n}\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 1 && (parseInt(asing) + parseInt(indo)) > 30000 ;\r\n}",
+      "message" : "Jenis akomodasi adalah hotel bintang  , jumlah Tamu Asing + tamu indonesia tidak boleh lebih dari 30.000",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet kamar= null;\r\nlet asing= null;\r\nlet indo= null;\r\nif (rowIndex==1){\r\nkamar=getValue('b3r3#'+ rowIndex);\r\nasing=getValue('b3r6#'+rowIndex);\r\nindo=getValue('b3r7#'+rowIndex);\r\n}else{\r\nkamar=getValue('var_b3_r3#'+rowIndex); \r\nasing=getValue('var_b3_r6#'+rowIndex);\r\nindo=getValue('var_b3_r7#'+rowIndex);\r\n}\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined) \r\n{\r\n    jenis== 2 && (parseInt(asing) + parseInt(indo)) > 12.000 ;\r\n}",
+      "message" : "Jenis akomodasi adalah hotel nonbintang  , jumlah tamu asing + tamu indonesia lebih dari 12.000",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet kamar= null;\r\nlet asing= null;\r\nlet indo= null;\r\nif (rowIndex==1){\r\nkamar=getValue('b3r3#'+ rowIndex);\r\nasing=getValue('b3r6#'+rowIndex);\r\nindo=getValue('b3r7#'+rowIndex);\r\n}else{\r\nkamar=getValue('var_b3_r3#'+rowIndex); \r\nasing=getValue('var_b3_r6#'+rowIndex);\r\nindo=getValue('var_b3_r7#'+rowIndex);\r\n}\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 1 && (parseInt(asing) + parseInt(indo)) > 10*parseInt(kamar);\r\n}",
+      "message" : "Jenis akomodasi adalah hotel bintang  , banyak tamu yang menginap kemarin lebih besar dari 10 kali banyak kamar yg digunakan kemarin",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet kamar= null;\r\nlet asing= null;\r\nlet indo= null;\r\nif (rowIndex==1){\r\nkamar=getValue('b3r3#'+ rowIndex);\r\nasing=getValue('b3r6#'+rowIndex);\r\nindo=getValue('b3r7#'+rowIndex);\r\n}else{\r\nkamar=getValue('var_b3_r3#'+rowIndex); \r\nasing=getValue('var_b3_r6#'+rowIndex);\r\nindo=getValue('var_b3_r7#'+rowIndex);\r\n}\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 1 && ((parseInt(asing) + parseInt(indo)) < parseInt(kamar));\r\n}",
+      "message" : "Jenis akomodasi adalah hotel bintang  , banyak tamu yang menginap kemarin lebih kecil dari banyak kamar yg digunakan kemarin",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet kamar= null;\r\nlet asing= null;\r\nlet indo= null;\r\nif (rowIndex==1){\r\nkamar=getValue('b3r3#'+ rowIndex);\r\nasing=getValue('b3r6#'+rowIndex);\r\nindo=getValue('b3r7#'+rowIndex);\r\n}else{\r\nkamar=getValue('var_b3_r3#'+rowIndex); \r\nasing=getValue('var_b3_r6#'+rowIndex);\r\nindo=getValue('var_b3_r7#'+rowIndex);\r\n}\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 2 && ((parseInt(asing) + parseInt(indo)) < parseInt(kamar));\r\n}",
+      "message" : "Jenis akomodasi adalah hotel nonbintang  , banyak tamu yang menginap kemarin lebih kecil dari banyak kamar yg digunakan kemarin",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r8",
+    "componentValidation" : [ "jenisakomodasi", "b3r8", "b3r9", "b3r4" ],
+    "validations" : [ {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r8#' + rowIndex);\r\nlet indo=getValue('b3r9#' + rowIndex);\r\nlet kamar=getValue('b3r4#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined && kamar != undefined)\r\n{\r\n    jenis== 2 && (parseInt(asing) + parseInt(indo)) > 20*parseInt(kamar);\r\n}",
+      "message" : "Jenis akomodasi adalah hotel nonbintang  , banyak tamu yang Masuk Hari ini  lebih besar dari 20 kali banyak kamar yg check in",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r8#' + rowIndex);\r\nlet indo=getValue('b3r9#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined && kamar != undefined) \r\n{\r\n    jenis== 1 && (parseInt(asing) + parseInt(indo)) > 30000 ;\r\n}",
+      "message" : "Jenis akomodasi adalah hotel bintang  , jumlah tamu asing + tamu indonesia yang Masuk Hari ini tidak boleh lebih dari 30.000",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r8#' + rowIndex);\r\nlet indo=getValue('b3r9#' + rowIndex);\r\nlet kamar=getValue('b3r4#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined && kamar != undefined)\r\n{\r\n    jenis== 2 && (parseInt(asing) + parseInt(indo)) < parseInt(kamar);\r\n}",
+      "message" : "Jenis akomodasi adalah hotel nonbintang  , banyak tamu yang Masuk Hari ini lebih kecil dari banyak kamar Check In",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r8#' + rowIndex);\r\nlet indo=getValue('b3r9#' + rowIndex);\r\nlet kamar=getValue('b3r4#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined && kamar != undefined)\r\n{\r\n    jenis== 1 && (parseInt(asing) + parseInt(indo)) > 10*parseInt(kamar);\r\n}",
+      "message" : "Jenis akomodasi adalah hotel bintang  , banyak tamu yang Masuk Hari ini  lebih besar dari 10 kali banyak kamar yg check in",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r8#' + rowIndex);\r\nlet indo=getValue('b3r9#' + rowIndex);\r\nlet kamar=getValue('b3r4#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined && kamar != undefined)\r\n{\r\n    jenis== 1 && (parseInt(asing) + parseInt(indo)) < parseInt(kamar);\r\n}",
+      "message" : "Jenis akomodasi adalah hotel bintang  , banyak tamu yang Masuk Hari ini lebih kecil dari banyak kamar Check In",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r8#' + rowIndex);\r\nlet indo=getValue('b3r9#' + rowIndex);\r\n\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined && kamar != undefined)\r\n{\r\n    jenis== 2 && (parseInt(asing) + parseInt(indo)) > 12000 ;\r\n}",
+      "message" : "Jenis akomodasi adalah hotel nonbintang , jumlah tamu asing + tamu indonesia yang Masuk Hari ini tidak boleh lebih dari 12.000",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r9",
+    "componentValidation" : [ "jenisakomodasi", "b3r8", "b3r9", "b3r4" ],
+    "validations" : [ {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r8#' + rowIndex);\r\nlet indo=getValue('b3r9#' + rowIndex);\r\nlet kamar=getValue('b3r4#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined && kamar != undefined)\r\n{\r\n    jenis== 2 && (parseInt(asing) + parseInt(indo)) < parseInt(kamar);\r\n}",
+      "message" : "Jenis akomodasi adalah hotel nonbintang  , banyak tamu yang Masuk Hari ini lebih kecil dari banyak kamar Check In",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r8#' + rowIndex);\r\nlet indo=getValue('b3r9#' + rowIndex);\r\nlet kamar=getValue('b3r4#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 1 && (parseInt(asing) + parseInt(indo)) > 10*parseInt(kamar);\r\n}",
+      "message" : "Jenis akomodasi adalah hotel bintang  , banyak tamu yang Masuk Hari ini  lebih besar dari 10 kali banyak kamar yg check in",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r8#' + rowIndex);\r\nlet indo=getValue('b3r9#' + rowIndex);\r\n\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 1 && (parseInt(asing) + parseInt(indo)) > 30000 ;\r\n}",
+      "message" : "Jenis akomodasi adalah hotel bintang  , jumlah tamu asing + tamu indonesia yang Masuk Hari ini tidak boleh lebih dari 30.000",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r8#' + rowIndex);\r\nlet indo=getValue('b3r9#' + rowIndex);\r\n\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined) \r\n{\r\n    jenis== 2 && (parseInt(asing) + parseInt(indo)) > 12000 ;\r\n}",
+      "message" : "Jenis akomodasi adalah hotel nonbintang  , jumlah tamu asing + tamu indonesia yang Masuk Hari ini tidak boleh lebih dari 12.000",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r8#' + rowIndex);\r\nlet indo=getValue('b3r9#' + rowIndex);\r\nlet kamar=getValue('b3r4#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined && kamar != undefined)\r\n{\r\n    jenis== 2 && (parseInt(asing) + parseInt(indo)) > 20*parseInt(kamar);\r\n}",
+      "message" : "Jenis akomodasi adalah hotel nonbintang  , banyak tamu yang Masuk Hari ini  lebih besar dari 20 kali banyak kamar yg check in",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r8#' + rowIndex);\r\nlet indo=getValue('b3r9#' + rowIndex);\r\nlet kamar=getValue('b3r4#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 1 && (parseInt(asing) + parseInt(indo)) < parseInt(kamar);\r\n}",
+      "message" : "Jenis akomodasi adalah hotel bintang  , banyak tamu yang Masuk Hari ini lebih kecil dari banyak kamar Check In",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r10",
+    "componentValidation" : [ "jenisakomodasi", "b3r10", "b3r11", "b3r5", "b3r6", "var_b3_r6" ],
+    "validations" : [ {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r10#' + rowIndex);\r\nlet indo=getValue('b3r11#' + rowIndex);\r\nlet kamar=getValue('b3r5#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined && kamar != undefined)\r\n{\r\n    jenis== 2 && (parseInt(asing) + parseInt(indo)) > 20*parseInt(kamar);\r\n}",
+      "message" : "Jenis akomodasi adalah hotel nonbintang  , banyak tamu yang Keluar Hari ini  lebih besar dari 20 kali banyak kamar yg check out",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r10#' + rowIndex);\r\nlet indo=getValue('b3r11#' + rowIndex);\r\nlet kamar=getValue('b3r5#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined && kamar != undefined)\r\n{\r\n    jenis== 1 && (parseInt(asing) + parseInt(indo)) > 10*parseInt(kamar);\r\n}",
+      "message" : "Jenis akomodasi adalah hotel bintang  , banyak tamu yang keluar Hari ini  lebih besar dari 10 kali banyak kamar yg check out",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r10#' + rowIndex);\r\nlet indo=getValue('b3r11#' + rowIndex);\r\n\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 2 && (parseInt(asing) + parseInt(indo)) > 12000 ;\r\n}",
+      "message" : "Jenis akomodasi adalah hotel nonbintang  , jumlah tamu asing + tamu indonesia yang keluar Hari ini tidak boleh lebih dari 12.000",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r10#' + rowIndex);\r\nlet indo=getValue('b3r11#' + rowIndex);\r\n\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 1 && (parseInt(asing) + parseInt(indo)) > 30000 ;\r\n}",
+      "message" : "Jenis akomodasi adalah hotel bintang  , jumlah tamu asing + tamu indonesia yang keluar Hari ini tidak boleh lebih dari 30.000",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r10#' + rowIndex);\r\nlet indo=getValue('b3r11#' + rowIndex);\r\nlet kamar=getValue('b3r5#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined && kamar != undefined)\r\n{\r\n    jenis== 2 && (parseInt(asing) + parseInt(indo)) < parseInt(kamar);\r\n}",
+      "message" : "Jenis akomodasi adalah hotel nonbintang  , banyak tamu yang Keluar Hari ini lebih kecil dari banyak kamar Check out",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r10#' + rowIndex);\r\nlet indo=getValue('b3r11#' + rowIndex);\r\nlet kamar=getValue('b3r5#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined && kamar != undefined)\r\n{\r\n    jenis== 1 && (parseInt(asing) + parseInt(indo)) < parseInt(kamar);\r\n}",
+      "message" : "Jenis akomodasi adalah hotel bintang  , banyak tamu yang Keluar Hari ini lebih kecil dari banyak kamar Check out",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asingkeluar=getValue('b3r10#' + rowIndex);\r\nlet asing = null\r\nif (rowIndex==1){\r\nasing=getValue('b3r6#' + rowIndex);\r\nconsole.log(asing)\r\n}else{\r\nasing=getValue('var_b3_r6#' + rowIndex); \r\nconsole.log(asing)\r\n}\r\nif(asing != undefined && asingkeluar != undefined)\r\n{\r\n    parseInt(asingkeluar) > parseInt(asing);\r\n}",
+      "message" : "Tamu Asing yang keluar Hari ini lebih besar dari Tamu Asing yg Menginap Kemarin",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r11",
+    "componentValidation" : [ "jenisakomodasi", "b3r11", "b3r10", "b3r7", "var_b3_r7", "b3r5" ],
+    "validations" : [ {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet indokeluar=getValue('b3r11#' + rowIndex);\r\nlet asingkeluar=getValue('b3r10#' + rowIndex);\r\nlet indo = null\r\nif (rowIndex==1){\r\nindo=getValue('b3r7#' + rowIndex);\r\nconsole.log(indo)\r\n}else{\r\nindo=getValue('var_b3_r7#' + rowIndex); \r\nconsole.log(indo)\r\n}\r\nif(indo != undefined && indokeluar != undefined)\r\n{\r\n    Number(indokeluar) > Number(indo);\r\n}",
+      "message" : "Tamu Indonesia yang keluar Hari ini lebih besar dari Tamu Indonesia yg Menginap Kemarin",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r10#' + rowIndex);\r\nlet indo=getValue('b3r11#' + rowIndex);\r\nlet kamar=getValue('b3r5#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined && kamar != undefined)\r\n{\r\n    jenis== 2 && (Number(asing) + Number(indo)) < Number(kamar);\r\n}",
+      "message" : "Hotel Non Bintang , b2nyak tamu yang Keluar Hari ini lebih kecil dari banyak kamar Check out",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r10#' + rowIndex);\r\nlet indo=getValue('b3r11#' + rowIndex);\r\nlet kamar=getValue('b3r5#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined && kamar != undefined)\r\n{\r\n    jenis== 1 && (Number(asing) + Number(indo)) > 10*Number(kamar);\r\n}",
+      "message" : "Hotel  Bintang , banyak tamu yang keluar Hari ini  lebih besar dari 10 kali banyak kamar yg check out",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r10#' + rowIndex);\r\nlet indo=getValue('b3r11#' + rowIndex);\r\nlet kamar=getValue('b3r5#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined && kamar != undefined)\r\n{\r\n    jenis== 1 && (Number(asing) + Number(indo)) < Number(kamar);\r\n}",
+      "message" : "Hotel Bintang , banyak tamu yang Keluar Hari ini lebih kecil dari banyak kamar Check out",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r10#' + rowIndex);\r\nlet indo=getValue('b3r11#' + rowIndex);\r\n\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 2 && (Number(asing) + Number(indo)) > 12000 ;\r\n}",
+      "message" : "Hotel Non Bintang , jumlah tamu asing + tamu indonesia yang keluar Hari ini tidak boleh lebih dari 12.000",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r10#' + rowIndex);\r\nlet indo=getValue('b3r11#' + rowIndex);\r\nif(jenis != undefined && asing != undefined && indo != undefined)\r\n{\r\n    jenis== 1 && (Number(asing) + Number(indo)) > 30000 ;\r\n}",
+      "message" : "Hotel Bintang , jumlah tamu asing + tamu indonesia yang keluar Hari ini tidak boleh lebih dari 30.000",
+      "type" : 2
+    }, {
+      "test" : "let rowIndex = getRowIndex(0);\r\nlet jenis=getValue('jenisakomodasi');\r\nlet asing=getValue('b3r10#' + rowIndex);\r\nlet indo=getValue('b3r11#' + rowIndex);\r\nlet kamar=getValue('b3r5#' + rowIndex);\r\n\r\nif(jenis != undefined && asing != undefined && indo != undefined && kamar != undefined)\r\n{\r\n    jenis== 2 && (Number(asing) + Number(indo)) > 20*Number(kamar);\r\n}",
+      "message" : "Hotel Non Bintang , banyak tamu yang Keluar Hari ini  lebih besar dari 20 kali banyak kamar yg check out",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r12",
+    "componentValidation" : [ "b3r12" ],
+    "validations" : [ {
+      "test" : "let a = getValue('b3r12'); \nif (a !== undefined)\nNumber(a) < 1 || Number(a) > 9999;",
+      "message" : "rentang isian 1-9.999",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b3r12'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r13",
+    "componentValidation" : [ "b1r13", "b3r13", "b3r14", "b3r15", "b3r16", "b3r17", "b3r18", "b3r19" ],
+    "validations" : [ {
+      "test" : "let fasilitas = Number(getValue('b1r13')?.[0]?.value ?? 0);\nlet b3r13 = Number(getValue('b3r13')?.[0]?.value ?? 0);\nlet cek = 0;\n\nif(fasilitas == 2 && b3r13 == 1)\n{cek = 1;}\n\ncek > 0;",
+      "message" : "Jika tidak memiliki fasilitas paket meeting (b1r13 = 2 ) maka rincian ini harus terisi 2",
+      "type" : 2
+    }, {
+      "test" : "let ispktmeeting = Number(getValue('b3r13')?.[0]?.value ?? 0);\n\nlet b3r14 = Number(getValue('b3r14') ?? 0);\nlet b3r15 = Number(getValue('b3r15') ?? 0);\nlet b3r16 = Number(getValue('b3r16') ?? 0);\nlet b3r17 = Number(getValue('b3r17') ?? 0);\nlet b3r18 = Number(getValue('b3r18') ?? 0);\nlet b3r19 = Number(getValue('b3r19') ?? 0);\n\nlet cek = 0;\n\nIF(ispktmeeting == 1 && b3r14+b3r15+b3r16+b3r17+b3r18+b3r19 == 0)\n{cek = 1;}\n\ncek > 0;",
+      "message" : "Jika rincian ini terisi 1 maka minimal rincian 2a & 2b atau 2c &2d atau 2e & 2f ada yang terisi > 0 ",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r14",
+    "componentValidation" : [ "b3r14" ],
+    "validations" : [ {
+      "test" : "let a = Number(getValue('b3r14') ?? 0);\nlet cek = 0;\n\nif(a < 0)\n{\n    cek = 1;\n}\nelse if(a!= 0 && (a<3 || a>99999))\n{\n    cek = 1;\n}\n\ncek > 0;",
+      "message" : "Isian boleh 0 atau 3 <= range <= 99999",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b3r14'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r15",
+    "componentValidation" : [ "b3r15", "b3r14" ],
+    "validations" : [ {
+      "test" : "let a = Number(getValue('b3r15') ?? 0);\nlet cek = 0;\n\nif(a < 0)\n{\n    cek = 1;\n}\n\n\ncek > 0;",
+      "message" : "Isian tidak boleh kurang dari 0",
+      "type" : 2
+    }, {
+      "test" : "let a = Number(getValue('b3r15') ?? 0);\nlet cek = 0;\n\nif(a > 0)\n{\n    if(a<150000 || a>9999999)\n    {\n        cek = 1;\n    }\n}\n\ncek > 0;",
+      "message" : "Isian boleh 0 atau 150.000 <= range <= 9.999.999",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b3r15'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "let jumpaket = Number(getValue('b3r14') ?? 0);\nlet a = Number(getValue('b3r15') ?? 0);\nlet cek = 0;\n\nif(jumpaket > 0 && a == 0)\n{\n    cek = 1;\n}\n\ncek > 0;",
+      "message" : "Harga paket fullboard harus terisi",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "b3r16",
+    "componentValidation" : [ "b3r16" ],
+    "validations" : [ {
+      "test" : "let a = getValue('b3r16'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "let a = Number(getValue('b3r16') ?? 0);\nlet cek = 0;\n\nif(a < 0)\n{\n    cek = 1;\n}\nelse if(a!= 0 && (a<3 || a>99999))\n{\n    cek = 1;\n}\n\ncek > 0;",
+      "message" : "Isian boleh 0 atau 3 <= range <= 99999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r17",
+    "componentValidation" : [ "b3r17", "b3r16" ],
+    "validations" : [ {
+      "test" : "let a = Number(getValue('b3r17') ?? 0);\nlet cek = 0;\n\nif(a > 0)\n{\n    if(a<100000 || a>9999999)\n    {\n        cek = 1;\n    }\n}\n\ncek > 0;",
+      "message" : "Isian boleh 0 atau 100.000 <= range <= 9.999.999",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b3r17'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "let jumpaket = Number(getValue('b3r16') ?? 0);\nlet a = Number(getValue('b3r17') ?? 0);\nlet cek = 0;\n\nif(jumpaket > 0 && a == 0)\n{\n    cek = 1;\n}\n\ncek > 0;",
+      "message" : "Harga paket fullday harus terisi",
+      "type" : 1
+    }, {
+      "test" : "let a = Number(getValue('b3r17') ?? 0);\nlet cek = 0;\n\nif(a < 0)\n{\n    cek = 1;\n}\n\n\ncek > 0;",
+      "message" : "Isian tidak boleh kurang dari 0",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r18",
+    "componentValidation" : [ "b3r18" ],
+    "validations" : [ {
+      "test" : "let a = Number(getValue('b3r18') ?? 0);\nlet cek = 0;\n\nif(a < 0)\n{\n    cek = 1;\n}\nelse if(a!= 0 && (a<3 || a>99999))\n{\n    cek = 1;\n}\n\ncek > 0;",
+      "message" : "Isian boleh 0 atau 3 <= range <= 99999",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('b3r18'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "b3r19",
+    "componentValidation" : [ "b3r19", "b3r18", "b3r17", "b3r15" ],
+    "validations" : [ {
+      "test" : "let a = Number(getValue('b3r19') ?? 0);\nlet cek = 0;\n\nif(a < 0)\n{\n    cek = 1;\n}\n\n\ncek > 0;",
+      "message" : "Isian tidak boleh kurang dari 0",
+      "type" : 2
+    }, {
+      "test" : "let jumpaket = Number(getValue('b3r18') ?? 0);\nlet a = Number(getValue('b3r19') ?? 0);\nlet cek = 0;\n\nif(jumpaket > 0 && a == 0)\n{\n    cek = 1;\n}\n\ncek > 0;",
+      "message" : "Harga paket halfday harus terisi",
+      "type" : 1
+    }, {
+      "test" : "let a = getValue('b3r19'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "let a = Number(getValue('b3r19') ?? 0);\nlet cek = 0;\n\nif(a > 0)\n{\n    if(a<50000 || a>9999999)\n    {\n        cek = 1;\n    }\n}\n\ncek > 0;",
+      "message" : "Isian boleh 0 atau 50.000 <= range <= 9.999.999",
+      "type" : 2
+    }, {
+      "test" : "let halfday = Number(getValue('b3r19') ?? 0);\nlet fullday = Number(getValue('b3r17') ?? 0);\nlet fullboard = Number(getValue('b3r15') ?? 0);\nlet cek = 0;\n\nif(halfday > fullday || halfday > fullboard)\n{\n    cek = 1;\n}\n\ncek > 0;",
+      "message" : "Rata-rata harga per pax paket halfday tidak boleh lebih besar dari rata-rata per pax paket fullday atau Rata-rata harga per pax paket halfday tidak boleh lebih besar dari rata-rata per pax paket fullboard",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "catatan",
+    "componentValidation" : [ "catatan" ],
+    "validations" : [ {
+      "test" : "let value = getValue('catatan'); \nvalue.length > 200;",
+      "message" : "max 200 karakter",
+      "type" : 2
+    } ]
+  } ]
+}

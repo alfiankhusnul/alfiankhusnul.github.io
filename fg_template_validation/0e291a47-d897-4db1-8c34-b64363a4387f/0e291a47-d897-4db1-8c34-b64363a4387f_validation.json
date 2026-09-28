@@ -1,0 +1,1244 @@
+{
+  "version" : "0.1.4",
+  "testFunctions" : [ {
+    "dataKey" : "bersedia",
+    "componentValidation" : [ "bersedia" ],
+    "validations" : [ {
+      "test" : "let a = getValue('bersedia');\n\nif (a.length>0 ){\n    a[0].value==2 ;\n}",
+      "message" : "Silahkan kembali untuk memastikan kesedian wawancara",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r403",
+    "componentValidation" : [ "r403", "status_krt", "r401", "nama_krt", "r402" ],
+    "validations" : [ {
+      "test" : "let a = getValue('r403#'+getRowIndex(0))\nlet b = getValue('status_krt')\n\nif(a.length > 0 && b.length > 0){\n    a[0].value=='6' && b[0].status=='1'\n} ",
+      "message" : "\"Hubungan dengan KRT\" Cucu tapi \"Status Perkawinan\" KRT nya belum kawin",
+      "type" : 2
+    }, {
+      "test" : "let indeks = getValue('r401#'+getRowIndex(0));\nlet val403 = getValue('r403#'+getRowIndex(0)); \nindeks = parseInt(indeks)\n\nif(val403.length > 0 && indeks !=\"\") \nindeks !== 1 && val403[0].value == '1';",
+      "message" : "Kepala Rumah Tangga hanya ART pertama",
+      "type" : 2
+    }, {
+      "test" : "let indeks = getValue('r401#'+getRowIndex(0));\nlet val403 = getValue('r403#'+getRowIndex(0));\nindeks = parseInt(indeks)\n\nif(val403.length > 0 && indeks !=\"\") \n(getValue('nama_krt').toUpperCase()).trim() !== (getValue('r402#'+getRowIndex(0)).toUpperCase()).trim() && val403[0].value == '1' && indeks == 1;",
+      "message" : "Nama KRT tidak sama dengan Nama KRT di Blok I Rincian 110, tuliskan keterangan di Blok XVIII Catatan",
+      "type" : 1
+    }, {
+      "test" : "let indeks = getValue('r401#'+getRowIndex(0));\nlet val403 = getValue('r403#'+getRowIndex(0)); \nindeks = parseInt(indeks)\n\nif(val403.length > 0 && indeks !=\"\") \nindeks == 1 && val403[0].value !== '1';",
+      "message" : "ART pertama harus Kepala Rumah Tangga",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r404",
+    "componentValidation" : [ "r403", "r404", "status_krt" ],
+    "validations" : [ {
+      "test" : "let a = getValue('r403#'+getRowIndex(0))\nlet b = getValue('r404#'+getRowIndex(0))\n\nif(a.length > 0 && b.length > 0){\n    a[0].value=='7' && b[0].value=='1'\n} ",
+      "message" : "\"Hubungan dengan KRT\" Orang tua/mertua tapi \"Status Perkawinan\" belum kawin",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('r403#'+getRowIndex(0))\nlet b = getValue('r404#'+getRowIndex(0))\n\nif(a.length > 0 && b.length > 0){\n    a[0].value=='2' && b[0].value!='2'\n} ",
+      "message" : "\"Hubungan dengan KRT\" Suami/Istri tapi \"Status Perkawinan\" KRT nya belum kawin",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('r403#'+getRowIndex(0))\nlet b = getValue('r404#'+getRowIndex(0))\n\nif(a.length > 0 && b.length > 0){\n    a[0].value=='5' && b[0].value!='2'\n} ",
+      "message" : "R403 = Menantu tetapi tidak berstatus menikah",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('r403#'+getRowIndex(0))\nlet b = getValue('status_krt')\n\nif(a.length > 0 && b.length > 0){\n    a[0].value=='2' && b[0].status=='1'\n} ",
+      "message" : "R403 = Istri/ suami tetapi KRT belum kawin",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('r403#'+getRowIndex(0))\nlet b = getValue('status_krt')\n\nif(a.length > 0 && b.length > 0){\n    a[0].value=='3' && b[0].status=='1'\n} ",
+      "message" : "\"Hubungan dengan KRT\" Anak kandung/tiri tapi \"Status Perkawinan\" KRT nya belum kawin",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r405",
+    "componentValidation" : [ "r401", "jk_krt", "r403", "r405", "menantu", "anak" ],
+    "validations" : [ {
+      "test" : "let indeks = getValue('r401#'+getRowIndex(0));\r\nlet jk_krt = getValue('jk_krt'); \r\nlet val403 = getValue('r403#'+getRowIndex(0)); \r\nlet val405 = getValue('r405#'+getRowIndex(0)); \r\n\r\nindeks = parseInt(indeks)\r\n\r\nif(val403.length > 0 && val405.length > 0 && jk_krt.length > 0) \r\nval403[0].value == '2' && \r\nString(jk_krt[0].gender) == String(val405[0].value)\r\n",
+      "message" : "Hubungan dengan KRT berkode 2 namun jenis kelamin sama dengan jenis kelamin KRT",
+      "type" : 2
+    }, {
+      "test" : "let menantu = getValue('menantu')\nlet anak = getValue('anak')\nlet r401 = getValue('r401#'+getRowIndex(0))\nlet r401_anak = getValue('r401#'+(parseInt(getRowIndex(0))-1))\nlet arr = []\nlet arr1 = []\nr401 = parseInt(r401)\nr401_anak = parseInt(r401_anak)\nif (menantu.length>0){\n    arr = menantu.filter((m => m.value == r401))\n    if (arr.length>0 && anak.length>0){\n        arr1 = anak.filter((m => m.value == r401_anak))\n        if(arr1.length>0){\n            arr1[0].kawin== '2' && arr[0].jk == arr1[0].jk\n        }\n    }\n}\n",
+      "message" : "Hubungan adalah menantu tetapi jenis kelamin sama dengan Anak (ART sebelumnya) dari KRT",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r406_tanggal",
+    "componentValidation" : [ "date_val" ],
+    "validations" : [ {
+      "test" : "let a = getValue('date_val#'+getRowIndex(0))\n\na == '0'",
+      "message" : "Isian tidak sesuai",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r406_bulan",
+    "componentValidation" : [ "date_val" ],
+    "validations" : [ {
+      "test" : "let a = getValue('date_val#'+getRowIndex(0))\n\na == '0'",
+      "message" : "Isian tidak sesuai",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r406_tahun",
+    "componentValidation" : [ "r406_tanggal", "r406_bulan", "r406_tahun", "date_val" ],
+    "validations" : [ {
+      "test" : "// let today = new Date()\n\n// let tgl = getValue('r406_tanggal#'+getRowIndex(0))\n// let bln = getValue('r406_bulan#'+getRowIndex(0))\n// let thn = getValue('r406_tahun#'+getRowIndex(0))\n\n// let tgl_ = tgl[0].value\n// let bln_ = bln[0].value\n    \n// if (tgl_ =='98'){\n//         tgl_ = today.getDate();\n//     }\n// if (bln_ =='98'){\n//         bln_ = today.getMonth() + 1;\n//     }\n\n// let tl = thn + \"-\" + bln_ + \"-\" + tgl_;\n\n// tl > today\n\nlet a = getValue('r406_tanggal#' + getRowIndex(0));\nlet b = getValue('r406_bulan#' + getRowIndex(0));\nlet c = getValue('r406_tahun#' + getRowIndex(0));\nlet correct = 1;\n\nif (a != undefined && b != undefined && c != undefined) {\n    let day = parseInt(a[0].value);\n    let month = parseInt(b[0].value);\n    let year = parseInt(c);\n\n    // Get today's date\n    let today = new Date();\n    let todayDay = today.getDate();\n    let todayMonth = today.getMonth() + 1; // JS months start from 0\n\n    // --- Replace 98 values with today's day/month ---\n    if (day === 98) {\n        day = todayDay;\n    }\n    if (month === 98) {\n        month = todayMonth;\n    }\n\n    // --- Rule: reject if input date > today ---\n    let inputDate = new Date(year, month - 1, day);\n    today.setHours(0, 0, 0, 0);\n\n    if (inputDate > today) {\n        correct = 0;\n    }\n}\n\ncorrect==0\n",
+      "message" : "Tanggal lahir maksimal adalah hari ini",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('date_val#'+getRowIndex(0))\n\na == '0'",
+      "message" : "Isian tidak sesuai",
+      "type" : 2
+    }, {
+      "test" : "function isValidDate(year, month, day) {\r\n    let date = new Date(year, month - 1, day); \r\n    return date && \r\n           date.getFullYear() === year && \r\n           date.getMonth() === (month - 1) && \r\n           date.getDate() === day;\r\n}\r\n\r\nlet tgl = getValue('r406_tanggal#'+getRowIndex(0))\r\nlet bln = getValue('r406_bulan#'+getRowIndex(0))\r\nlet thn = getValue('r406_tahun#'+getRowIndex(0))\r\n\r\n// if (tgl[0].value =='98'){\r\n//     tgl[0].value = today.getDate();\r\n// }\r\n// if (bln[0].value =='98'){\r\n//     bln[0].value = today.getMonth() + 1;\r\n// }\r\n\r\nif(tgl.length>0 && bln.length>0 && thn!=undefined && tgl[0].value !='98' && bln[0].value !='98'){\r\n    isValidDate(parseInt(thn), parseInt(bln[0].value), parseInt(tgl[0].value)) == false\r\n    \r\n}\r\n",
+      "message" : "Tanggal yang diinput tidak valid",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r407",
+    "componentValidation" : [ "r407", "r404", "jk_krt", "r403", "jk_pasangan", "hitung_umur" ],
+    "validations" : [ {
+      "test" : "let a = getValue('r407#'+getRowIndex(0))\nlet b = getValue('r404#'+getRowIndex(0))\n\nif(a.length > 0 && b.length > 0){\n    Number(a[0].value)<10 && b[0].value!='1'\n} ",
+      "message" : "Pernah kawin, tapi umur < 10 thn",
+      "type" : 1
+    }, {
+      "test" : "let row0 = getRowIndex(0); \r\nlet jk_krt = getValue('jk_krt'); \r\nlet a = getValue('r403#'+row0); \r\nlet b = getValue('r407#'+row0); \r\nif(a != '' && b != '' && jk_krt.length > 0) \r\n(a[0].value == '7') && \r\nNumber(b) - Number(jk_krt[0].umur) < 20 ",
+      "message" : "Hubungan adalah Orang Tua/ Mertua, tetapi selisih umur ART ini < 20 tahun dari KRT",
+      "type" : 1
+    }, {
+      "test" : "let a = getValue('r407#'+getRowIndex(0))\nlet b = getValue('r403#'+getRowIndex(0))\n\nif(a.length > 0 && b.length > 0){\n    Number(a[0].value)>4 && Number(a[0].value)<10 && b[0].value=='8'\n} ",
+      "message" : "pembantu/sopir tapi umur 5-9 tahun",
+      "type" : 1
+    }, {
+      "test" : "let row0 = getRowIndex(0); \r\nlet jk_pasangan = getValue('jk_pasangan'); \r\nlet a = getValue('r403#'+row0); \r\nlet b = getValue('r407#'+row0); \r\n\r\nif(a != '' && b != '' && jk_pasangan.length > 0) \r\n((a[0].value == '3' || a[0].value == '4' || \r\na[0].value == '5' || a[0].value == '6') && \r\nNumber(jk_pasangan[0].umur) < Number(b));",
+      "message" : "Rincian 403 = 3 (anak kandung) atau 4 (anak angkat/tiri) atau 5 (menantu) atau 6 (Cucu), tetapi umur ART ini lebih besar dari PasanganKRT",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('r407#'+getRowIndex(0))\nlet b = getValue('r403#'+getRowIndex(0))\n\nif(a.length > 0 && b.length > 0){\n    Number(a[0].value)<5 && b[0].value=='8'\n} ",
+      "message" : "pembantu/sopir tapi umur kurang dari 5 tahun",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('r403#'+getRowIndex(0));\nlet b = getValue('r407#'+getRowIndex(0));\n\nif (a != '')\n((a[0].value == '1' || a[0].value == '2'|| a[0].value == '5' || a[0].value == '7') && Number(b) < 10);",
+      "message" : "Rincian 403 = 1 atau 2 atau 5, atau 7, tetapi Umur kurang dari 10 th",
+      "type" : 1
+    }, {
+      "test" : "let row0 = getRowIndex(0); \r\nlet jk_pasangan = getValue('jk_pasangan'); \r\nlet a = getValue('r403#'+row0); \r\nlet b = getValue('r407#'+row0); \r\nif(a != '' && b != '' && jk_pasangan.length > 0) \r\n(a[0].value == '7') && \r\nNumber(jk_pasangan[0].umur) > Number(b)",
+      "message" : "Hubungan adalah Orang Tua/ Mertua, tetapi umur ART ini lebih kecil dari Pasangan KRT",
+      "type" : 2
+    }, {
+      "test" : "let umur = Number(getValue('r407#'+getRowIndex(0)));\nlet umurByTgl = Number(getValue('hitung_umur#'+getRowIndex(0)));\n\nif (umur >= 0 && umurByTgl<97) \n(umur != umurByTgl)",
+      "message" : "Isian umur tidak sesuai tanggal lahir",
+      "type" : 2
+    }, {
+      "test" : "let umur = parseInt(getValue('r407#'+getRowIndex(0)));\nlet umurByTgl = Number(getValue('hitung_umur#'+getRowIndex(0)));\n\nif (umur != \"\" && umur >= 0 && umurByTgl>=97) umur != 97",
+      "message" : "Isian umur maksimal 97",
+      "type" : 2
+    }, {
+      "test" : "let row0 = getRowIndex(0); \r\nlet jk_krt = getValue('jk_krt'); \r\nlet a = getValue('r403#'+row0); \r\nlet b = getValue('r407#'+row0); \r\nif(a != '' && b != '' && jk_krt.length > 0) \r\n(a[0].value == '3' || a[0].value == '4') && \r\nNumber(b) - Number(jk_krt[0].umur) < 10 ",
+      "message" : "Anak kandung/tiri, tapi selisih umur dgn krt < 10 thn",
+      "type" : 1
+    }, {
+      "test" : "let row0 = getRowIndex(0); \r\nlet jk_krt = getValue('jk_krt'); \r\nlet a = getValue('r403#'+row0); \r\nlet b = getValue('r407#'+row0); \r\n\r\nif(a != '' && b != '' && jk_krt.length > 0) \r\n((a[0].value == '3' || a[0].value == '4' || \r\na[0].value == '5' || a[0].value == '6') && \r\nNumber(jk_krt[0].umur) < Number(b));",
+      "message" : "Rincian 403 = 3 (anak kandung) atau 4 (anak angkat/tiri) atau 5 (menantu) atau 6 (Cucu), tetapi umur ART ini lebih besar dari KRT",
+      "type" : 2
+    }, {
+      "test" : "let row0 = getRowIndex(0); \r\nlet jk_krt = getValue('jk_krt'); \r\nlet a = getValue('r403#'+row0); \r\nlet b = getValue('r407#'+row0); \r\nif(a != '' && b != '' && jk_krt.length > 0) \r\n(a[0].value == '6') && \r\nNumber(b) - Number(jk_krt[0].umur) < 20 ",
+      "message" : "Cucu, tapi selisih umur dgn krt < 20 thn",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r408",
+    "componentValidation" : [ "r407", "r408" ],
+    "validations" : [ {
+      "test" : "// R407<16 & R408=5-8\nlet a = getValue('r407#'+getRowIndex(0))\nlet b = getValue('r408#'+getRowIndex(0))\nlet validR408 = ['6', '7', '8'];\n\nif(parseInt(a)>=0 && b.length>0){\n    parseInt(a) > 12 && parseInt(a) < 16 && validR408.includes(b[0].value)\n}",
+      "message" : "Usia 13-15 tahun namun Pendidikan tertinggi tamat Pendidikan Tinggi",
+      "type" : 2
+    }, {
+      "test" : "// R407<22 & R408=8\nlet a = getValue('r407#'+getRowIndex(0))\nlet b = getValue('r408#'+getRowIndex(0))\nlet validR408 = ['8'];\n\nif(parseInt(a)>=0 && b.length>0){\n    parseInt(a) < 22 && validR408.includes(b[0].value)\n}",
+      "message" : "Umur dibawah 22 Tahun untuk jenjang pendidikan yang dipilih",
+      "type" : 1
+    }, {
+      "test" : "// R407<18 & R408=6-8\nlet a = getValue('r407#'+getRowIndex(0))\nlet b = getValue('r408#'+getRowIndex(0))\nlet validR408 = ['7', '8'];\n\nif(parseInt(a)>=0 && b.length>0){\n    parseInt(a) > 15 && parseInt(a) < 18 && validR408.includes(b[0].value)\n}",
+      "message" : "Usia 16-17 tahun namun Pendidikan tertinggi tamat S1 ke atas",
+      "type" : 2
+    }, {
+      "test" : "// R407<20 & R408=7-8\nlet a = getValue('r407#'+getRowIndex(0))\nlet b = getValue('r408#'+getRowIndex(0))\nlet validR408 = ['7'];\n\nif(parseInt(a)>=0 && b.length>0){\n    parseInt(a) >17 && parseInt(a) < 20 && validR408.includes(b[0].value)\n}",
+      "message" : "Usia 18-19 tahun namun Pendidikan tertinggi tamat  S2",
+      "type" : 1
+    }, {
+      "test" : "// R407<10 & R408=3-8\nlet a = getValue('r407#'+getRowIndex(0))\nlet b = getValue('r408#'+getRowIndex(0))\nlet validR408 = ['4', '5', '6', '7', '8'];\n\nif(parseInt(a)>=0 && b.length>0){\n    parseInt(a) < 10 && validR408.includes(b[0].value)\n}",
+      "message" : "Usia kurang dari 10 tahun namun Pendidikan tertinggi tamat SMP ke atas",
+      "type" : 2
+    }, {
+      "test" : "// R407<20 & R408=7-8\nlet a = getValue('r407#'+getRowIndex(0))\nlet b = getValue('r408#'+getRowIndex(0))\nlet validR408 = ['8'];\n\nif(parseInt(a)>=0 && b.length>0){\n    parseInt(a) >17 && parseInt(a) < 20 && validR408.includes(b[0].value)\n}",
+      "message" : "Usia 18-19 tahun namun Pendidikan tertinggi tamat S3",
+      "type" : 2
+    }, {
+      "test" : "// R407<10 & R408=3-8\nlet a = getValue('r407#'+getRowIndex(0))\nlet b = getValue('r408#'+getRowIndex(0))\nlet validR408 = ['3'];\n\nif(parseInt(a)>=0 && b.length>0){\n    parseInt(a) < 10 && validR408.includes(b[0].value)\n}",
+      "message" : "Usia kurang dari 10 tahun namun Pendidikan tertinggi tamat SD",
+      "type" : 1
+    }, {
+      "test" : "// R407<18 & R408=6-8\nlet a = getValue('r407#'+getRowIndex(0))\nlet b = getValue('r408#'+getRowIndex(0))\nlet validR408 = ['6'];\n\nif(parseInt(a)>=0 && b.length>0){\n    parseInt(a) >15 && parseInt(a) < 18 && validR408.includes(b[0].value)\n}",
+      "message" : "Usia 16-17 tahun namun Pendidikan tertinggi tamat D1/D2/D3 ke atas",
+      "type" : 1
+    }, {
+      "test" : "// R407<13 & R408=4-8\nlet a = getValue('r407#'+getRowIndex(0))\nlet b = getValue('r408#'+getRowIndex(0))\nlet validR408 = ['5', '6', '7', '8'];\n\nif(parseInt(a)>=0 && b.length>0){\n    parseInt(a) > 9 && parseInt(a) < 13 && validR408.includes(b[0].value)\n}",
+      "message" : "Usia 10-12 tahun namun Pendidikan tertinggi tamat SMA ke atas",
+      "type" : 2
+    }, {
+      "test" : "// R407<13 & R408=4-8\nlet a = getValue('r407#'+getRowIndex(0))\nlet b = getValue('r408#'+getRowIndex(0))\nlet validR408 = ['4'];\n\nif(parseInt(a)>=0 && b.length>0){\n    parseInt(a) > 9 && parseInt(a) < 13 && validR408.includes(b[0].value)\n}",
+      "message" : "Usia 10-12 tahun namun Pendidikan tertinggi tamat SMP",
+      "type" : 1
+    }, {
+      "test" : "// R407<16 & R408=5-8\nlet a = getValue('r407#'+getRowIndex(0))\nlet b = getValue('r408#'+getRowIndex(0))\nlet validR408 = ['5'];\n\nif(parseInt(a)>=0 && b.length>0){\n    parseInt(a) > 12 && parseInt(a) < 16 && validR408.includes(b[0].value)\n}",
+      "message" : "Usia 13-15 tahun namun Pendidikan tertinggi tamat SMA",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "konfirmasi_art",
+    "componentValidation" : [ "konfirmasi_art" ],
+    "validations" : [ {
+      "test" : "let konfirmasi_art = getValue('konfirmasi_art')\nkonfirmasi_art.length<3",
+      "message" : "Konfirmasi harus terisi semua.",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "no_hp_terpilih",
+    "componentValidation" : [ "no_hp_terpilih" ],
+    "validations" : [ {
+      "test" : "let no_hp_terpilih = getValue('no_hp_terpilih');\n\nif(no_hp_terpilih.length > 1)\n{\n    no_hp_terpilih.length < 10;    \n}",
+      "message" : "telepon / HP minimal terisi 10 digit",
+      "type" : 2
+    }, {
+      "test" : "!(/^\\d+$/.test(getValue('no_hp_terpilih'))) && getValue('no_hp_terpilih').length > 1;",
+      "message" : "Nomor telepon hanya dapat diisi angka",
+      "type" : 2
+    }, {
+      "test" : "getValue('no_hp_terpilih').length == 1 && getValue('no_hp_terpilih') !== '-'",
+      "message" : "Jika telp/hp terisi 1 digit, isikan tanda setrip (-)",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r410",
+    "componentValidation" : [ "r410", "r203" ],
+    "validations" : [ {
+      "test" : "// R410=3-4 & R203?3\n\nlet r410 = getValue('r410');\nlet r203 = getValue('r203');\n\nr410.length>0 && r203.length>0 && (r410[0].value=='3' || r410[0].value=='4') && r203[0].value!='3'",
+      "message" : "Rincian 410 sama dengan 3 atau 4 tapi 203 tidak sama dengan 3",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('r410');\n\nif (a.length>0 ){\n    a[0].value==2 ;\n}",
+      "message" : "Silahkan kembali untuk memastikan kesedian wawancara",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r411",
+    "componentValidation" : [ "r411", "r405" ],
+    "validations" : [ {
+      "test" : "let valnik = getValue('r411');\nlet r405 = getValue('r405');\nconst digit7 = nik.slice(6, 7); // Ambil hanya karakter di indeks 6\nif(r405.length>0){\nr405[0].value=='1' && (digit7 =='4' || digit7 =='5' || digit7 =='6' || digit7 =='7')}",
+      "message" : "NIK 16 digit, jenis kelamin laki-laki, tapi nilai digit ketujuh antara 4-7",
+      "type" : 1
+    }, {
+      "test" : "let responden = getValue(\"getResponden\") \nlet R406B = responden[0].tanggal_lahir \nlet R411 = getValue('r411') \n\nconst nik_bln = R411.slice(8, 10) \n\nconst lahir_bln = R406B.slice(5, 7);\n\nR411.length == 16 && R406B !='98' && nik_bln != lahir_bln",
+      "message" : "Ketika Panjang NIK sudah 16 digit namun digit ke 9 dan 10 tidak sama dengan bulan lahir",
+      "type" : 1
+    }, {
+      "test" : "let valnik = getValue('r411'); \nif (valnik !== undefined && valnik.length > 4 ) \n{ (Number(valnik) < 1100000000000000 || Number(valnik) > 9999999999999999)}",
+      "message" : "NIK harus 16 digit angka",
+      "type" : 2
+    }, {
+      "test" : "let valnik = getValue('r411');\nlet r405 = getValue('r405');\nconst digit7 = nik.slice(6, 7); // Ambil hanya karakter di indeks 6\nif(r405.length>0){\nr405[0].value=='2' && digit7 !='4' && digit7 !='5' && digit7 !='6' && digit7 !='7'}",
+      "message" : "NIK 16 digit, jenis kelamin perempuan, tapi nilai digit ketujuh <4 dan > 7",
+      "type" : 1
+    }, {
+      "test" : "let validasi = /^\\d+$/; \nlet valnik = getValue('r411'); \nlet result = !validasi.test(valnik); \nif (valnik !== undefined && valnik.length > 1) { result }",
+      "message" : "Hanya boleh terisi angka",
+      "type" : 2
+    }, {
+      "test" : "// IF R405=1 AND R406A!=98 AND LENGTH(R411)=16 THEN MID(R411,7,8)!=R406A\nlet R405 = getValue('r405');\nlet responden = getValue(\"getResponden\")\nlet R406A = responden[0].tgl\n\nlet R411 = getValue('r411');\nconst nik_tgl = R411.slice(7, 8); // Indeks mulai dari 0\n\nR405.length > 0 && R405[0].value == 1 && R406A !='98' && R411.length == 16 && nik_tgl != R406A\n_",
+      "message" : "Ketika Panjang NIK sudah 16 digit namun digit ke 7-8 tidak sama dengan tanggal lahir",
+      "type" : 1
+    }, {
+      "test" : "// IF LENGTH(R411)=16 & R405=2 THEN DIGIT Ke-7 R411<4 atau R411>7\n\nlet R405 = getValue('r405');\nlet R411 = getValue('r411');\nconst nik_jk = R411.slice(7, 8); // Indeks mulai dari 0\n\nR411.length == 16 && R405.length > 0 && R405[0].value == 2 &&  Number(nik_jk) < 4 &&  Number(nik_jk) > 7",
+      "message" : "Ketika Panjang NIK sudah 16 digit dan Jenis Kelaminnya Perempuan Namun Digit ke-7 nya tidak bernilai 4-7",
+      "type" : 1
+    }, {
+      "test" : "// IF R405=2 AND R406A?98 AND LENGTH(R411)=16 THEN MID(R411,7,8)?(R406A+40)\n\nlet R405 = getValue('r405');\nlet responden = getValue(\"getResponden\")\nlet R406A = responden[0].tgl \n\nlet R411 = getValue('r411');\nconst nik_tgl = R411.slice(7, 9); // Indeks mulai dari 0\n\nR405.length > 0 && R405[0].value == 2 && R406A !='98' && R411.length == 16 && Number(nik_tgl) != (Number(R406A) + 40)\n_",
+      "message" : "Ketika Panjang NIK sudah 16 digit namun digit ke 7-8 tidak sama dengan tanggal lahir",
+      "type" : 1
+    }, {
+      "test" : "// IF LENGTH(R411)=16 & R405=1 THEN DIGIT Ke-7 R411>3\n\nlet R405 = getValue('r405');\nlet R411 = getValue('r411');\nconst nik_jk = R411.slice(7, 8); // Indeks mulai dari 0\n\nR411.length == 16 && R405.length > 0 && R405[0].value == 1 &&  Number(nik_jk) > 3",
+      "message" : "Ketika Panjang NIK sudah 16 digit dan Jenis Kelaminnya Laki-laki Namun Digit ke-7 nya tidak bernilai 1-3",
+      "type" : 1
+    }, {
+      "test" : "// Length(R411)<16 & R411?9998\n\nlet valnik = getValue('r411'); \nif (valnik !== undefined) {valnik.length < 16 &&  Number(valnik) !== 9998}",
+      "message" : "NIK responden terpilih kurang dari 16 digit Namun isinya bukan 9998",
+      "type" : 2
+    }, {
+      "test" : "// IF LENGTH(R411)=16 THEN MID(R411,11,12)?R406C\n\nlet valnik = getValue('r411');\nconst nik_tahun = valnik.slice(10, 12); // Indeks mulai dari 0\n\nlet responden = getValue(\"getResponden\")\nlet tanggal_lahir = responden[0].tanggal_lahir\nconst r406_tahun = tanggal_lahir.slice(2, 4); // Indeks mulai dari 0\n\nnik_tahun != r406_tahun_",
+      "message" : "Ketika Panjang NIK sudah 16 digit namun digit ke 11 dan 12 tidak sama dengan tahun lahir",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r412",
+    "componentValidation" : [ "r412" ],
+    "validations" : [ {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R407 = responden[0].umur\r\nlet R412 = getValue('r412')\r\n\r\nlet validValues = ['09'];\r\nlet r407Value = parseInt(R407);\r\nif (R407.length > 0 && R412.length ) {\r\n    r407Value < 50 && validValues.includes(R412[0].value)\r\n\r\n}",
+      "message" : "usia < 50 tahun Namun Pekerjaan Pensiunan/Purnawirawan ",
+      "type" : 1
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R407 = responden[0].umur\r\nlet R412 = getValue('r412')\r\n\r\nlet validValues = ['13'];\r\nlet r407Value = parseInt(R407);\r\nif (R407.length > 0 && R412.length ) {\r\n    r407Value > 59 && validValues.includes(R412[0].value)\r\n\r\n}",
+      "message" : "usia > 59 tahun Namun Pekerjaan Pelajar/Mahasiswa",
+      "type" : 1
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R408 = responden[0].pendidikan\r\nlet R412 = getValue('r412')\r\nlet validValues = ['08'];\r\n\r\nif (R412.length > 0 && R408.length > 0) {\r\n    parseInt(R408[0].value)<6 && validValues.includes(R412[0].value) \r\n\r\n}",
+      "message" : "Pendidikan tamat SMA ke bawah namun sebagai Guru/Dosen",
+      "type" : 2
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R405 = responden[0].jenis_kelamin\r\nlet R412 = getValue('r412')\r\n\r\nif (R412.length > 0 && R405.length > 0) {\r\n    (R405[0].value=='1' && R412[0].value === '14')\r\n\r\n}",
+      "message" : "Jenis Kelamin Laki-Laki tapi Pekerjaan IRT",
+      "type" : 2
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R407 = responden[0].umur\r\nlet R412 = getValue('r412')\r\n\r\nlet validValues = ['06'];\r\nlet r407Value = parseInt(R407);\r\nif (R407.length > 0 && R412.length ) {\r\n    r407Value < 17 && validValues.includes(R412[0].value)\r\n\r\n}",
+      "message" : "usia < 17 th Namun pekerjaan Profesional (Dokter, Pengacara, dll.)",
+      "type" : 2
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R404 = responden[0].kawin\r\nlet R412 = getValue('r412')\r\n\r\nif (R412.length > 0 && R404.length > 0) {\r\n    (R404[0].value=='1' && R412[0].value === '14')\r\n\r\n}",
+      "message" : "Status Perkawinan Belum Kawin tapi Pekerjaan IRT",
+      "type" : 2
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R408 = responden[0].pendidikan\r\nlet R412 = getValue('r412')\r\nlet validValues = ['13'];\r\n\r\nif (R412.length > 0 && R408.length > 0) {\r\n    parseInt(R408[0].value)<2 && validValues.includes(R412[0].value) \r\n\r\n}",
+      "message" : "Tidak/belum pernah sekolah namun sebagai Pelajar/Mahasiswa",
+      "type" : 2
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R403 = responden[0].hubungan\r\nlet R412 = getValue('r412')\r\n\r\nif (R412.length > 0 && R403.length > 0) {\r\n    (R403[0].value=='8' && R412[0].value != '12')\r\n\r\n}",
+      "message" : "Hubungan dengan KRT Pembantu/sopir tapi pekerjaan sehari-hari selain pekerjaan lainnya",
+      "type" : 1
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R408 = responden[0].pendidikan\r\nlet R412 = getValue('r412')\r\nlet validValues = ['03'];\r\n\r\nif (R412.length > 0 && R408.length > 0) {\r\n    parseInt(R408[0].value)<5 && validValues.includes(R412[0].value) \r\n\r\n}",
+      "message" : "Pendidikan tamat SMP ke bawah namun sebagai PNS",
+      "type" : 1
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R407 = responden[0].umur\r\nlet R412 = getValue('r412')\r\n\r\nlet validValues = ['08'];\r\nlet r407Value = parseInt(R407);\r\nif (R407.length > 0 && R412.length ) {\r\n    r407Value < 17 && validValues.includes(R412[0].value)\r\n\r\n}",
+      "message" : "usia < 17 th Namun pekerjaan Guru/Dosen",
+      "type" : 2
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R407 = responden[0].umur\r\nlet R412 = getValue('r412')\r\n\r\nlet validValues = ['03'];\r\nlet r407Value = parseInt(R407);\r\nif (R407.length > 0 && R412.length ) {\r\n    r407Value < 18 && validValues.includes(R412[0].value)\r\n\r\n}",
+      "message" : "usia < 18 th Namun pekerjaan PNS",
+      "type" : 2
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R407 = responden[0].umur\r\nlet R412 = getValue('r412')\r\n\r\nlet validValues = ['02'];\r\nlet r407Value = parseInt(R407);\r\nif (R407.length > 0 && R412.length ) {\r\n    r407Value < 17 && validValues.includes(R412[0].value)\r\n\r\n}",
+      "message" : "usia < 17 th Namun pekerjaan Pegawai/Karyawan BUMN/BUMD",
+      "type" : 1
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R407 = responden[0].umur\r\nlet R412 = getValue('r412')\r\n\r\nlet validValues = ['04'];\r\nlet r407Value = parseInt(R407);\r\nif (R407.length > 0 && R412.length ) {\r\n    r407Value < 17 && validValues.includes(R412[0].value)\r\n\r\n}",
+      "message" : "usia < 17 th Namun pekerjaan TNI/POLRI",
+      "type" : 2
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R408 = responden[0].pendidikan\r\nlet R412 = getValue('r412')\r\nlet validValues = ['06'];\r\n\r\nif (R412.length > 0 && R408.length > 0) {\r\n    parseInt(R408[0].value)<6 && validValues.includes(R412[0].value) \r\n\r\n}",
+      "message" : "Pendidikan tamat SMA ke bawah namun sebagai Profesional (Dokter, Pengacar)",
+      "type" : 2
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R408 = responden[0].pendidikan\r\nlet R412 = getValue('r412')\r\nlet validValues = ['09'];\r\n\r\nif (R412.length > 0 && R408.length > 0) {\r\n    parseInt(R408[0].value)<5 && validValues.includes(R412[0].value) \r\n\r\n}",
+      "message" : "Pendidikan tamat SMP ke bawah namun sebagai Pensiunan/Purnawirawan",
+      "type" : 1
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R408 = responden[0].pendidikan\r\nlet R412 = getValue('r412')\r\nlet validValues = ['04'];\r\n\r\nif (R412.length > 0 && R408.length > 0) {\r\n    parseInt(R408[0].value)<5 && validValues.includes(R412[0].value) \r\n\r\n}",
+      "message" : "Pendidikan tamat SMP ke bawah namun sebagai TNI/Polri",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r413",
+    "componentValidation" : [ "r412", "r413" ],
+    "validations" : [ {
+      "test" : "let R412 = getValue('r412')\r\nlet R413 = getValue('r413')\r\n\r\nif(R412.length>0 && R413.length>0){\r\n    (R412[0].value=='02' && parseInt(R413[0].value)<2) ||\r\n    (R412[0].value=='03' && parseInt(R413[0].value)<3) ||\r\n    (R412[0].value=='04' && parseInt(R413[0].value)<3) ||\r\n    (R412[0].value=='06' && parseInt(R413[0].value)<3) ||\r\n    (R412[0].value=='08' && parseInt(R413[0].value)<2) ||\r\n    (R412[0].value=='09' && parseInt(R413[0].value)<2)\r\n}",
+      "message" : "Apakah sudah sesuai dengan rincian 412 ?",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r414",
+    "componentValidation" : [ "r414", "r412" ],
+    "validations" : [ {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R414 = getValue('r414')\r\nlet a_len = R414.filter((l => l.value == 'C')).length\r\nlet R412 = getValue('r412')\r\nlet validValues = ['03','04','06','08','13'];\r\n\r\nif (R412.length > 0 && R414.length > 0) {\r\n    a_len == 1 && validValues.includes(R412[0].value) \r\n\r\n}",
+      "message" : "PNS/ TNI/ POLRI/ PROFESIONAL/ GURU/ DOSEN/ PELAJAR/MAHASISWA tapi menerima bantuan melalui PT POS",
+      "type" : 1
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R414 = getValue('r414')\r\nlet a_len = R414.filter((l => l.value == 'D')).length\r\nlet R412 = getValue('r412')\r\nlet validValues = ['03','04','06','08'];\r\n\r\nif (R412.length > 0 && R414.length > 0) {\r\n    a_len == 1 && validValues.includes(R412[0].value) \r\n\r\n}",
+      "message" : "PNS/ TNI/ POLRI/ PROFESIONAL/ GURU/ DOSEN tapi menerima bantuan melalui LKM Syariah/BMT",
+      "type" : 1
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R414 = getValue('r414')\r\nlet a_len = R414.filter((l => l.value == 'B')).length\r\nlet R412 = getValue('r412')\r\nlet validValues = ['03','04','06','08'];\r\n\r\nif (R412.length > 0 && R414.length > 0) {\r\n    a_len == 1 && validValues.includes(R412[0].value) \r\n\r\n}",
+      "message" : "PNS/ TNI/ POLRI/ PROFESIONAL/ GURU/ DOSEN tapi menerima bantuan BPJS PBI",
+      "type" : 1
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R408 = responden[0].pendidikan\r\nlet R414 = getValue('r414')\r\nlet a_len = R414.filter((l => l.value == 'D')).length\r\n\r\nif (R414.length > 0 && R408.length > 0) {\r\n    parseInt(R408[0].value)==8 && a_len == 1\r\n\r\n}",
+      "message" : "Tamat S2/S3 tapi menerima bantuan melalui LKM Syariah/BMT",
+      "type" : 1
+    }, {
+      "test" : "let r414 = getValue('r414')\nlet r414_len = r414.length\n\nlet x_len = r414.filter((l => l.value == 'X')).length\n\nx_len==1 && r414_len>1",
+      "message" : "Rincian 414 dapat dipilih lebih dari 1 kecuali jika jawabannya \"X\"",
+      "type" : 2
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R414 = getValue('r414')\r\nlet a_len = R414.filter((l => l.value == 'A')).length\r\nlet R412 = getValue('r412')\r\nlet validValues = ['03','04','06','08'];\r\n\r\nif (R412.length > 0 && R414.length > 0) {\r\n    a_len == 1 && validValues.includes(R412[0].value) \r\n\r\n}",
+      "message" : "PNS/ TNI/ POLRI/ PROFESIONAL/ GURU/ DOSEN tapi menerima bantuan melalui perbankan",
+      "type" : 1
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R408 = responden[0].pendidikan\r\nlet R414 = getValue('r414')\r\nlet a_len = R414.filter((l => l.value == 'C')).length\r\n\r\nif (R414.length > 0 && R408.length > 0) {\r\n    parseInt(R408[0].value)==8 && a_len == 1\r\n\r\n}",
+      "message" : "Tamat S2/S3 tapi menerima bantuan melalui PT POS",
+      "type" : 1
+    }, {
+      "test" : "let responden = getValue(\"getResponden\")\r\nlet R408 = responden[0].pendidikan\r\nlet R414 = getValue('r414')\r\nlet a_len = R414.filter((l => l.value == 'A')).length\r\n\r\nif (R414.length > 0 && R408.length > 0) {\r\n    parseInt(R408[0].value)==8 && a_len == 1\r\n\r\n}",
+      "message" : "Tamat S2/S3 tapi menerima bantuan melalui perbankan",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r501b",
+    "componentValidation" : [ "r501a", "r501b" ],
+    "validations" : [ {
+      "test" : "// R414_A=\"A\" & R504A=5 & R504B=5\n\nvar responden = getValue(\"r414\");\nlet a = getValue('r501a');\nlet b = getValue('r501b');\nlet x = [];\n\nif (responden.length > 0) {\n    x = responden.filter(item => item.value === \"A\");\n}\n\na && a.length > 0 && b && b.length > 0 && x.length > 0 && a[0].value == '5' && b[0].value == '5'\n\n",
+      "message" : "Menerima bantuan melalui Perbankan namun tidak mengetahui LJK Perbankan",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r503b",
+    "componentValidation" : [ "r503a", "r503b" ],
+    "validations" : [ {
+      "test" : "// R414_A=\"A\" & R504A=5 & R504B=5\n\nvar responden = getValue(\"r414\");\nlet a = getValue('r503a');\nlet b = getValue('r503b');\nlet x = [];\n\nif (responden.length > 0) {\n    x = responden.filter(item => item.value === \"A\");\n}\n\na && a.length > 0 && b && b.length > 0 && x.length > 0 && a[0].value == '5' && b[0].value == '5'\n\n",
+      "message" : "Menerima bantuan melalui Perbankan namun tidak mengetahui produk/layanan LJK Perbankan",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r505a",
+    "componentValidation" : [ "r504a", "r505a", "r501a" ],
+    "validations" : [ {
+      "test" : "// R1204B=1 & R1205B=5\n\nlet a = getValue('r504a');\nlet b = getValue('r505a');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "504A = 1 tapi 505A = 5",
+      "type" : 2
+    }, {
+      "test" : "// R501A=5 & R504A=1\t\n// Tidak mengetahui LJK Perbankan konvensional tapi menggunakan produk/layanan\n\nlet a = getValue('r504a');\nlet b = getValue('r501a');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "Tidak mengetahui LJK Perbankan konvensional tapi menggunakan produk/layanan",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r505b",
+    "componentValidation" : [ "r504b", "r505b", "r501b", "r505a", "r412", "r504a" ],
+    "validations" : [ {
+      "test" : "// R1204B=1 & R1205B=5\n\nlet a = getValue('r504b');\nlet b = getValue('r505b');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "504B = 1 tapi 505B = 5",
+      "type" : 2
+    }, {
+      "test" : "// R501A=5 & R504A=1\t\n// Tidak mengetahui LJK Perbankan konvensional tapi menggunakan produk/layanan\n\nlet a = getValue('r504b');\nlet b = getValue('r501b');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "Tidak mengetahui LJK Perbankan syariah tapi menggunakan produk/layanan",
+      "type" : 1
+    }, {
+      "test" : "// (R412=2 | R412=3 | R412=5 | R412=6) & (R505A=5 & R505B=5)\t\n// Pekerjaan/kegiatan sehari-hari sebagai pegawai karyawan BUMN/BUMD, Pegawai Negeri Sipil (PNS), TNI/POLRI, atau Profesional (dokter, pengacara, dll.), tetapi tidak menggunakan produk/layanan jasa keuangan perbankan\t\n// 0\n\nlet a = getValue('r505a');\nlet b = getValue('r505b');\n\n\nlet R412 = getValue('r412')\nlet validValues = ['02','03','04','06'];\n\na.length>0 && a[0].value==5 && b.length>0 && b[0].value==5 && R412.length > 0 && validValues.includes(R412[0].value) \n\n",
+      "message" : "Pekerjaan/kegiatan sehari-hari sebagai pegawai karyawan BUMN/BUMD, Pegawai Negeri Sipil (PNS), TNI/POLRI, atau Profesional (dokter, pengacara, dll.), tetapi tidak menggunakan produk/layanan jasa keuangan perbankan",
+      "type" : 1
+    }, {
+      "test" : "// R414_A=\"A\" & R505A=5 & R505B=5\n\nvar responden = getValue(\"r414\");\nlet a = getValue('r504a');\nlet b = getValue('r504b');\nlet c = getValue('r505a');\nlet d = getValue('r505b');\nlet x = [];\n\nif (responden.length > 0) {\n    x = responden.filter(item => item.value === \"A\");\n}\n\na && a.length > 0 && b && b.length > 0 && \nc && c.length > 0 && d && d.length > 0 &&\nx.length > 0 && a[0].value == '5' && b[0].value == '5' && \n(c[0].value == '1' || d[0].value == '1')\n\n",
+      "message" : "Apakah benar menerima bantuan melalui Perbankan dan menggunakan produk Perbankan namun tidak memiliki akun produk Perbankan?",
+      "type" : 1
+    }, {
+      "test" : "// (R412=2 | R412=3 | R412=5 | R412=6) & \r\n// ((R505A=5 | R505A=missing value) & (R505B=5 | R505B=missing value))\r\n\r\nlet a = getValue('r505a');\r\nlet b = getValue('r505b');\r\nlet R412 = getValue('r412')\r\nlet validValues = ['02','03','05','06'];\r\n\r\nif (a && a.length > 0 && b && b.length > 0 && R412.length > 0) {\r\n    a[0].value == '5' && b[0].value == '5' && validValues.includes(R412[0].value) \r\n\r\n}",
+      "message" : "Pekerjaan/kegiatan sehari-hari sebagai pegawai karyawan BUMN/BUMD, Pegawai Negeri Sipil (PNS), TNI/POLRI, atau Profesional (dokter, pengacara, dll.), tetapi tidak menggunakan produk/layanan jasa keuangan perbankan",
+      "type" : 1
+    }, {
+      "test" : "// R414_A=\"A\" & R505A=5 & R505B=5\n// R414_A=\"A\" & ([R505A=5 & R505B=5] | [R505A=NA & R505B=5] | [R505A=5 & R505B=NA])\n\nvar responden = getValue(\"r414\");\nlet a = getValue('r505a');\nlet b = getValue('r505b');\nlet x = [];\n\nif (responden.length > 0) {\n    x = responden.filter(item => item.value === \"A\");\n}\n\na && a.length > 0 && b && b.length > 0 && x.length > 0 && (\n(a[0].value == '5' && b[0].value == '5' ) ||\n(a[0].value == undefined && b[0].value == '5' ) ||\n(a[0].value == '5' && b[0].value == undefined )\n)\n\n",
+      "message" : "Menerima bantuan melalui Perbankan namun tidak menggunakan produk/layanan LJK Perbankan (karena kalo pake VA ga termasuk memiliki)",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r506avi",
+    "componentValidation" : [ "r503a", "r506ai", "r506aii", "r506aiii", "r506aiv", "r506av", "r506avi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r503a');\n\nlet a = getValue('r506ai');\nlet b = getValue('r506aii');\nlet c = getValue('r506aiii');\nlet d = getValue('r506aiv');\nlet e = getValue('r506av');\nlet f = getValue('r506avi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "Mengetahui produk/layanan tapi tidak tahu semua karakteristiknya ",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r506bvi",
+    "componentValidation" : [ "r503b", "r506bi", "r506bii", "r506biii", "r506biv", "r506bv", "r506bvi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r503b');\n\nlet a = getValue('r506bi');\nlet b = getValue('r506bii');\nlet c = getValue('r506biii');\nlet d = getValue('r506biv');\nlet e = getValue('r506bv');\nlet f = getValue('r506bvi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "Mengetahui produk/layanan tapi tidak tahu semua karakteristiknya ",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r507e",
+    "componentValidation" : [ "r503a", "r503b", "r507a", "r507b", "r507c", "r507d", "r507e" ],
+    "validations" : [ {
+      "test" : "// (R503A=1 | R503B=1) & R507A=5 & R507B=5 & \n// R507C=5 & R507D=5 & R507E=5\n\nlet aa = getValue('r503a');\nlet bb = getValue('r503b');\n\nlet a = getValue('r507a');\nlet b = getValue('r507b');\nlet c = getValue('r507c');\nlet d = getValue('r507d');\nlet e = getValue('r507e');\n\n\n(aa.length>0 || bb.length>0 ) && \na.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 &&\n(aa[0].value==1 ||bb[0].value==1) && \na[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && \ne[0].value==5 \n",
+      "message" : "mengetahui produk LEMBAGA PERBANKAN, namun tidak mengetahui sarana LEMBAGA PERBANKAN apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r508",
+    "componentValidation" : [ "r508", "r413" ],
+    "validations" : [ {
+      "test" : "// R413 < 5 & R508 > 7\t\r\n\r\nlet R508 = getValue('r508')\r\nlet R413 = getValue('r413')\r\n\r\nif(R508.length>0 && R413.length>0){\r\n    parseInt(R413[0].value)<5 &&\r\n    (R508[0].value=='08' || R508[0].value=='09' || R508[0].value=='10')\r\n}",
+      "message" : "kelompok pendapatan di bawah 3,5 juta namun total simpanan di atas 500 juta",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r604a",
+    "componentValidation" : [ "r604a" ],
+    "validations" : [ {
+      "test" : "// R407<17 & R1204a=1\n\nvar responden = getValue(\"getResponden\")\nlet a = getValue('r604a');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].umur;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '1' && x < 17;\n}\n\n",
+      "message" : "Isian 604a =Ya, tetapi umur responden < 17 tahun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r604b",
+    "componentValidation" : [ "r604b" ],
+    "validations" : [ {
+      "test" : "// R407<17 & R1204a=1\n\nvar responden = getValue(\"getResponden\")\nlet a = getValue('r604b');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].umur;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '1' && x < 17;\n}\n\n",
+      "message" : "Isian 604B =Ya, tetapi umur responden < 17 tahun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r605a",
+    "componentValidation" : [ "r603a", "r605a", "r604a" ],
+    "validations" : [ {
+      "test" : "// R1204B=1 & R1205B=5\r\n\r\nlet a = getValue('r603a');\r\nlet b = getValue('r605a');\r\n\r\na.length>0 && a[0].value==5 && b.length>0 && b[0].value==1",
+      "message" : "Apakah benar menggunakan tetapi tidak mengetahui produk/layanan? Periksa kembali isian R603A",
+      "type" : 1
+    }, {
+      "test" : "// R1204A=1 & R1205A=5\n\nlet a = getValue('r604a');\nlet b = getValue('r605a');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "604A = 1 tapi 605A = 5",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r605b",
+    "componentValidation" : [ "r603b", "r605b", "r604b" ],
+    "validations" : [ {
+      "test" : "// R1204B=1 & R1205B=5\r\n\r\nlet a = getValue('r603b');\r\nlet b = getValue('r605b');\r\n\r\na.length>0 && a[0].value==5 && b.length>0 && b[0].value==1",
+      "message" : "Apakah benar menggunakan tetapi tidak mengetahui produk/layanan? Periksa kembali isian R603B",
+      "type" : 1
+    }, {
+      "test" : "// R1204B=1 & R1205B=5\n\nlet a = getValue('r604b');\nlet b = getValue('r605b');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "604B = 1 tapi 605B = 5",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r606avi",
+    "componentValidation" : [ "r603a", "r606ai", "r606aii", "r606aiii", "r606aiv", "r606av", "r606avi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r603a');\n\nlet a = getValue('r606ai');\nlet b = getValue('r606aii');\nlet c = getValue('r606aiii');\nlet d = getValue('r606aiv');\nlet e = getValue('r606av');\nlet f = getValue('r606avi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "mengetahui produk SAHAM/REKSADANA/ OBLIGASI/URUN DANA/DLL, namun tidak mengetahui karakteristikSAHAM/REKSADANA/ OBLIGASI/URUN DANA/DLL apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r606bvi",
+    "componentValidation" : [ "r603b", "r606bi", "r606bii", "r606biii", "r606biv", "r606bv", "r606bvi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r603b');\n\nlet a = getValue('r606bi');\nlet b = getValue('r606bii');\nlet c = getValue('r606biii');\nlet d = getValue('r606biv');\nlet e = getValue('r606bv');\nlet f = getValue('r606bvi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "mengetahui produk SAHAM SYARIAH/REKSADANA SYARIAH/SUKUK/URUN DANA    SYARIAH/DLL, namun tidak mengetahui karakteristik SAHAM SYARIAH/REKSADANA SYARIAH/SUKUK/URUN DANA    SYARIAH/DLL apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r607c",
+    "componentValidation" : [ "r603a", "r603b", "r607a", "r607b", "r607c" ],
+    "validations" : [ {
+      "test" : "// (R603A=1 | R603B=1) & R607A=5 & R607B=5 & R607C=5\n\nlet aa = getValue('r603a');\nlet bb = getValue('r603b');\n\nlet a = getValue('r607a');\nlet b = getValue('r607b');\nlet c = getValue('r607c');\n\n\n(aa.length>0 || bb.length>0 ) && \na.length>0 && b.length>0 && c.length>0 &&\n(aa[0].value==1 ||bb[0].value==1) && \na[0].value==5 && b[0].value==5 && \nc[0].value==5 \n",
+      "message" : "mengetahui produk LEMBAGA PASAR MODAL, namun tidak mengetahui sarana LEMBAGA PASAR MODAL apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r701",
+    "componentValidation" : [ "r701" ],
+    "validations" : [ {
+      "test" : "// R414_D=\"D\" & R1205B=5\n\nvar responden = getValue(\"r414\");\nlet a = getValue('r701');\nlet x = [];\n\nif (responden.length > 0) {\n    x = responden.filter(item => item.value === \"B\");\n}\n\na && a.length > 0 && x.length > 0 && a[0].value == '5'\n\n",
+      "message" : "Cek kembali 701 dengan rincian 414 B",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r703",
+    "componentValidation" : [ "r703", "r412" ],
+    "validations" : [ {
+      "test" : "// R414_D=\"D\" & R1205B=5\n\nvar responden = getValue(\"r414\");\nlet a = getValue('r703');\nlet x = [];\n\nif (responden.length > 0) {\n    x = responden.filter(item => item.value === \"B\");\n}\n\na && a.length > 0 && x.length > 0 && a[0].value == '5'\n\n",
+      "message" : "Cek kembali 703 dengan rincian 414 B",
+      "type" : 2
+    }, {
+      "test" : "// (R412=3 | R412=4) & (R703=5)\n\nlet a = getValue('r412')\nlet b = getValue('r703')\n\na && a.length > 0 && b && b.length > 0 &&\n(a[0].value=='03' || a[0].value=='04') && \nb[0].value == '5'",
+      "message" : "Pekerjaan/kegiatan sehari-hari sebagai Pegawai Negeri Sipil (PNS), TNI/POLRI, tetapi tidak tahu produk/layanan jasa keuangan BPJS",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r704",
+    "componentValidation" : [ "r704" ],
+    "validations" : [ {
+      "test" : "// R414_D=\"D\" & R1205B=5\n\nvar responden = getValue(\"r414\");\nlet a = getValue('r704');\nlet x = [];\n\nif (responden.length > 0) {\n    x = responden.filter(item => item.value === \"B\");\n}\n\na && a.length > 0 && x.length > 0 && a[0].value == '5'\n\n",
+      "message" : "Cek kembali  704 dengan rincian 414 B",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r705",
+    "componentValidation" : [ "r705", "r412", "r704" ],
+    "validations" : [ {
+      "test" : "// (R412=3 | R412=4) & (R705=5 | R705=missing value)\t\n\nlet a = getValue('r705');\nlet R412 = getValue('r412')\nlet validValues = ['03','04'];\n\nif (a && a.length > 0 && R412.length > 0) {\n    a[0].value == '5' &&  validValues.includes(R412[0].value) \n\n}",
+      "message" : "Pekerjaan/kegiatan sehari-hari sebagai Pegawai Negeri Sipil (PNS), TNI/POLRI, tetapi tidak menggunakan produk/layanan jasa keuangan BPJS",
+      "type" : 1
+    }, {
+      "test" : "// R704=1 & R705=5\n\nlet a = getValue('r704');\nlet b = getValue('r705');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "memiliki akun BPJS dalam setahun terakhir tapi tidak menggunakan produk BPJS tsb",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r706vi",
+    "componentValidation" : [ "r703", "r706i", "r706ii", "r706iii", "r706iv", "r706v", "r706vi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r703');\n\nlet a = getValue('r706i');\nlet b = getValue('r706ii');\nlet c = getValue('r706iii');\nlet d = getValue('r706iv');\nlet e = getValue('r706v');\nlet f = getValue('r706vi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "mengetahui produk JAMINAN KESEHATAN/KECELAKAAN KERJA/KEMATIAN/HARI TUA/PENSIUN/KEHILANGAN PEKERJAAN, namun tidak mengetahui karakteristik JAMINAN KESEHATAN/KECELAKAAN KERJA/KEMATIAN/HARI TUA/PENSIUN/KEHILANGAN PEKERJAAN apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r707e",
+    "componentValidation" : [ "r703", "r707a", "r707b", "r707c", "r707d", "r707e" ],
+    "validations" : [ {
+      "test" : "// (R703=1) & R707A=5 & R707B=5 & \n// R707C=5 & R707D=5 & R707E=5\n\nlet aa = getValue('r703');\n\nlet a = getValue('r707a');\nlet b = getValue('r707b');\nlet c = getValue('r707c');\nlet d = getValue('r707d');\nlet e = getValue('r707e');\n\n\n(aa.length>0 ) && \na.length>0 && b.length>0 && c.length>0 &&\nd.length>0 && e.length>0 &&\n(aa[0].value==1 ) && \na[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && \ne[0].value==5 \n",
+      "message" : "mengetahui produk BPJS, namun tidak mengetahui sarana BPJS apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r803a",
+    "componentValidation" : [ "r412", "r803a" ],
+    "validations" : [ {
+      "test" : "// (R412=4) & R803A=5\t\n\nlet a = getValue('r412')\nlet b = getValue('r803a')\n\na && a.length > 0 && b && b.length > 0 &&\n(a[0].value=='04') && \nb[0].value == '5'",
+      "message" : "pekerjaan TNI Polri namun tidak mengetahui Produk Perasuransian (ada asuransi ASABRI)",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r804a",
+    "componentValidation" : [ "r412", "r804a" ],
+    "validations" : [ {
+      "test" : "// (R412=4) & R804A=5\n\nlet a = getValue('r412')\nlet b = getValue('r804a')\n\na && a.length > 0 && b && b.length > 0 &&\n(a[0].value=='04') && \nb[0].value == '5'",
+      "message" : "pekerjaan TNI Polri namun tidak memiliki Produk Perasuransian (ada asuransi ASABRI)",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r805a",
+    "componentValidation" : [ "r804a", "r805a" ],
+    "validations" : [ {
+      "test" : "// R1204A=1 & R1205A=5\n\nlet a = getValue('r804a');\nlet b = getValue('r805a');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "804A = 1 tapi 805A = 5",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r805b",
+    "componentValidation" : [ "r804b", "r805b" ],
+    "validations" : [ {
+      "test" : "// R1204B=1 & R1205B=5\n\nlet a = getValue('r804b');\nlet b = getValue('r805b');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "memiliki akun produk ke-B dalam setahun terakhir tapi tidak menggunakan produk ke-B tsb",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r806avi",
+    "componentValidation" : [ "r803a", "r806ai", "r806aii", "r806aiii", "r806aiv", "r806av", "r806avi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r803a');\n\nlet a = getValue('r806ai');\nlet b = getValue('r806aii');\nlet c = getValue('r806aiii');\nlet d = getValue('r806aiv');\nlet e = getValue('r806av');\nlet f = getValue('r806avi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "Seluruh isian 806a = 5 sedangkan 803a = 1",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r806bvi",
+    "componentValidation" : [ "r803b", "r806bi", "r806bii", "r806biii", "r806biv", "r806bv", "r806bvi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r803b');\n\nlet a = getValue('r806bi');\nlet b = getValue('r806bii');\nlet c = getValue('r806biii');\nlet d = getValue('r806biv');\nlet e = getValue('r806bv');\nlet f = getValue('r806bvi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "Seluruh isian 806b = 5 sedangkan 803b = 1",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r807e",
+    "componentValidation" : [ "r803a", "r803b", "r807a", "r807b", "r807c", "r807d", "r807e", "r807f" ],
+    "validations" : [ {
+      "test" : "// (R803A=1 | R803B=1) & R807A=5 & R807B=5 & R807C=5 & R807D=5 & R807E=5 & R807F=5\t\n\n\nlet aa = getValue('r803a');\nlet bb = getValue('r803b');\n\nlet a = getValue('r807a');\nlet b = getValue('r807b');\nlet c = getValue('r807c');\nlet d = getValue('r807d');\nlet e = getValue('r807e');\nlet f = getValue('r807f');\n\n\n(aa.length>0 || bb.length>0 ) && \na.length>0 && b.length>0 && c.length>0 &&\nd.length>0 && e.length>0 && f.length>0 &&\n(aa[0].value==1 || bb[0].value==1) && \na[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && \ne[0].value==5 && f[0].value==5 \n",
+      "message" : "mengetahui produk LEMBAGA PERASURANSIAN, namun tidak mengetahui sarana LEMBAGA PERASURANSIAN apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r904a",
+    "componentValidation" : [ "r904a" ],
+    "validations" : [ {
+      "test" : "// R407<17 & R1204a=1\n\nvar responden = getValue(\"getResponden\")\nlet a = getValue('r904a');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].umur;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '1' && x < 17;\n}\n\n",
+      "message" : "Isian 904a =Ya, tetapi umur responden < 17 tahun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r904b",
+    "componentValidation" : [ "r904b" ],
+    "validations" : [ {
+      "test" : "// R407<17 & R1204B=1\n\nvar responden = getValue(\"getResponden\")\nlet a = getValue('r904b');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].umur;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '1' && x < 17;\n}\n\n",
+      "message" : "Isian 1204B =Ya, tetapi umur responden < 17 tahun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r905a",
+    "componentValidation" : [ "r904a", "r905a" ],
+    "validations" : [ {
+      "test" : "// R1204A=1 & R1205A=5\n\nlet a = getValue('r904a');\nlet b = getValue('r905a');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "memiliki akun produk ke-A dalam setahun terakhir tapi tidak menggunakan produk ke-A tsb",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r905b",
+    "componentValidation" : [ "r904b", "r905b" ],
+    "validations" : [ {
+      "test" : "// R1204B=1 & R1205B=5\n\nlet a = getValue('r904b');\nlet b = getValue('r905b');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "904B = 1 tapi 905B = 5",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r906avi",
+    "componentValidation" : [ "r903a", "r906ai", "r906aii", "r906aiii", "r906aiv", "r906av", "r906avi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r903a');\n\nlet a = getValue('r906ai');\nlet b = getValue('r906aii');\nlet c = getValue('r906aiii');\nlet d = getValue('r906aiv');\nlet e = getValue('r906av');\nlet f = getValue('r906avi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "Seluruh isian 906a = 5 sedangkan 903a = 1",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r906bvi",
+    "componentValidation" : [ "r903b", "r906bi", "r906bii", "r906biii", "r906biv", "r906bv", "r906bvi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r903b');\n\nlet a = getValue('r906bi');\nlet b = getValue('r906bii');\nlet c = getValue('r906biii');\nlet d = getValue('r906biv');\nlet e = getValue('r906bv');\nlet f = getValue('r906bvi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "Seluruh isian 906b = 5 sedangkan 903b = 1",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r907e",
+    "componentValidation" : [ "r903a", "r903b", "r907a", "r907b", "r907c", "r907d", "r907e" ],
+    "validations" : [ {
+      "test" : "// (R903A=1 | R903B=1) & R907A=5 & R907B=5 & R907C=5 & R907D=5 & R907E=5\t\n\n\nlet aa = getValue('r903a');\nlet bb = getValue('r903b');\n\nlet a = getValue('r907a');\nlet b = getValue('r907b');\nlet c = getValue('r907c');\nlet d = getValue('r907d');\nlet e = getValue('r907e');\n\n(aa.length>0 || bb.length>0 ) && \na.length>0 && b.length>0 && c.length>0 &&\nd.length>0 && e.length>0 && \n(aa[0].value==1 || bb[0].value==1) && \na[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && \ne[0].value==5 ",
+      "message" : "mengetahui produk LEMBAGA PEMBIAYAAN, namun tidak mengetahui sarana LEMBAGA PEMBIAYAAN apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1003a",
+    "componentValidation" : [ "r1003a", "r412" ],
+    "validations" : [ {
+      "test" : "// (R412=3 | R412=4) & R1003A=5\t\n\nlet a = getValue('r1003a');\nlet R412 = getValue('r412')\nlet validValues = ['03','04'];\n\na.length>0 && a[0].value==5 && R412.length > 0 && validValues.includes(R412[0].value) \n\n",
+      "message" : "pekerjaan PNS/TNI Polri namun tidak mengetahui Produk Dana pensiun (ada taspen dan ASABRI)",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r1004a",
+    "componentValidation" : [ "r1004a", "r412" ],
+    "validations" : [ {
+      "test" : "// (R412=3 | R412=4) & R1004A=5\n\nlet a = getValue('r1004a');\nlet R412 = getValue('r412')\nlet validValues = ['03','04'];\n\na.length>0 && a[0].value==5 && R412.length > 0 && validValues.includes(R412[0].value) \n\n",
+      "message" : "pekerjaan PNS/TNI Polri namun tidak memiliki Produk Dana Pensiun (ada taspen dan ASABRI)",
+      "type" : 1
+    }, {
+      "test" : "// R407<17 & R1004A=1\n\nvar responden = getValue(\"getResponden\")\nlet a = getValue('r1004a');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].umur;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '1' && x < 17;\n}\n\n",
+      "message" : "umur kurang dari 17 tahun namun memiliki akun produk ke-A",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1004b",
+    "componentValidation" : [ "r1004b" ],
+    "validations" : [ {
+      "test" : "// R407<17 & R1004B=1\n\nvar responden = getValue(\"getResponden\")\nlet a = getValue('r1004b');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].umur;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '1' && x < 17;\n}\n\n",
+      "message" : "Isian 1004B =Ya, tetapi umur responden < 17 tahun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1005a",
+    "componentValidation" : [ "r1004a", "r1005a" ],
+    "validations" : [ {
+      "test" : "// R1004A=1 & R1005A=5\n\nlet a = getValue('r1004a');\nlet b = getValue('r1005a');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "memiliki akun produk ke-A dalam setahun terakhir tapi tidak menggunakan produk ke-A tsb",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r1005b",
+    "componentValidation" : [ "r1004b", "r1005b" ],
+    "validations" : [ {
+      "test" : "// R1004B=1 & R1005B=5\n\nlet a = getValue('r1004b');\nlet b = getValue('r1005b');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "memiliki akun produk ke-B dalam setahun terakhir tapi tidak menggunakan produk ke-B tsb",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r1006avi",
+    "componentValidation" : [ "r1003a", "r1006ai", "r1006aii", "r1006aiii", "r1006aiv", "r1006av", "r1006avi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r1003a');\n\nlet a = getValue('r1006ai');\nlet b = getValue('r1006aii');\nlet c = getValue('r1006aiii');\nlet d = getValue('r1006aiv');\nlet e = getValue('r1006av');\nlet f = getValue('r1006avi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "mengetahui produk PROGRAM PENSIUN MANFAAT PASTI/PROGRAM PENSIUN IURAN PASTI, namun tidak mengetahui karakteristik PROGRAM PENSIUN MANFAAT PASTI/PROGRAM PENSIUN IURAN PASTI apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1006bvi",
+    "componentValidation" : [ "r1003b", "r1006bi", "r1006bii", "r1006biii", "r1006biv", "r1006bv", "r1006bvi" ],
+    "validations" : [ {
+      "test" : "// R1003B=1 & R1006Bi=5 & R1006Bii=5 & R1006Biii=5 & R1006Biv=5 & R1006Bv=5 & R1006Bvi=5\n\nlet aa = getValue('r1003b');\n\nlet a = getValue('r1006bi');\nlet b = getValue('r1006bii');\nlet c = getValue('r1006biii');\nlet d = getValue('r1006biv');\nlet e = getValue('r1006bv');\nlet f = getValue('r1006bvi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "Seluruh isian 1006b = 5 sedangkan 1003b = 1",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1007d",
+    "componentValidation" : [ "r1003a", "r1003b", "r1007a", "r1007b", "r1007c", "r1007d" ],
+    "validations" : [ {
+      "test" : "// (1003A=1 | R1003B=1) & R1007A=5 & R1007B=5 & R1007C=5 & R1007D=5\t\n\nlet aa = getValue('r1003a');\nlet bb = getValue('r1003b');\n\nlet a = getValue('r1007a');\nlet b = getValue('r1007b');\nlet c = getValue('r1007c');\nlet d = getValue('r1007d');\n\n(aa.length>0 || bb.length>0 ) && \na.length>0 && b.length>0 && c.length>0 &&\nd.length>0 && \n(aa[0].value==1 || bb[0].value==1) && \na[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 \n",
+      "message" : "mengetahui produk LEMBAGA DANA PENSIUN, namun tidak mengetahui sarana LEMBAGA DANA PENSIUN apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1104a",
+    "componentValidation" : [ "r1104a" ],
+    "validations" : [ {
+      "test" : "// R407<17 & R1104A=1\n\nvar responden = getValue(\"getResponden\")\nlet a = getValue('r1104a');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].umur;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '1' && x < 17;\n}\n\n",
+      "message" : "Isian 1104a =Ya, tetapi umur responden < 17 tahun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1104b",
+    "componentValidation" : [ "r1104b" ],
+    "validations" : [ {
+      "test" : "// R407<17 & R1104B=1\n\nvar responden = getValue(\"getResponden\")\nlet a = getValue('r1104b');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].umur;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '1' && x < 17;\n}\n\n",
+      "message" : "Isian 1104b =Ya, tetapi umur responden < 17 tahun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1105a",
+    "componentValidation" : [ "r1104a", "r1105a" ],
+    "validations" : [ {
+      "test" : "// R1104A=1 & R1105A=5\n\nlet a = getValue('r1104a');\nlet b = getValue('r1105a');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "1104a = 1 tapi 1105a = 5",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r1105b",
+    "componentValidation" : [ "r1104b", "r1105b" ],
+    "validations" : [ {
+      "test" : "// R1104B=1 & R1105B=5\n\nlet a = getValue('r1104b');\nlet b = getValue('r1105b');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "memiliki akun produk ke-B dalam setahun terakhir tapi tidak menggunakan produk ke-B tsb",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r1106avi",
+    "componentValidation" : [ "r1103a", "r1106ai", "r1106aii", "r1106aiii", "r1106aiv", "r1106av", "r1106avi" ],
+    "validations" : [ {
+      "test" : "// R1103A=1 & R1106Ai=5 & R1106Aii=5 & R1106Aiii=5 & R1106Aiv=5 & R1106Av=5 & R1106Avi=5 \n\nlet aa = getValue('r1103a');\n\nlet a = getValue('r1106ai');\nlet b = getValue('r1106aii');\nlet c = getValue('r1106aiii');\nlet d = getValue('r1106aiv');\nlet e = getValue('r1106av');\nlet f = getValue('r1106avi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "mengetahui produk GADAI BARANG/TABUNGAN EMAS/BULION/DLL, namun tidak mengetahui karakteristik GADAI BARANG/TABUNGAN EMAS/BULION/DLL apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1106bvi",
+    "componentValidation" : [ "r1103b", "r1106bi", "r1106bii", "r1106biii", "r1106biv", "r1106bv", "r1106bvi" ],
+    "validations" : [ {
+      "test" : "// R1103B=1 & R1106Bi=5 & R1106Bii=5 & R1106Biii=5 & R1106Biv=5 & R1106Bv=5 & R1106Bvi=5\n\nlet aa = getValue('r1103b');\n\nlet a = getValue('r1106bi');\nlet b = getValue('r1106bii');\nlet c = getValue('r1106biii');\nlet d = getValue('r1106biv');\nlet e = getValue('r1106bv');\nlet f = getValue('r1106bvi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "mengetahui produk GADAI BARANG SYARIAH (RAHN)/TABUNGAN EMAS SYARIAH/DLL, namun tidak mengetahui karakteristik GADAI BARANG SYARIAH (RAHN)/TABUNGAN EMAS SYARIAH/DLL apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1107e",
+    "componentValidation" : [ "r1103a", "r1103b", "r1007a", "r1007b", "r1007c", "r1007d", "r1007e" ],
+    "validations" : [ {
+      "test" : "// (R1103A=1 | R1103B=1) & R1107A=5 & R1107B=5 & R1107C=5 & R1107D=5 & R1107E=5\t\n\nlet aa = getValue('r1103a');\nlet bb = getValue('r1103b');\n\nlet a = getValue('r1007a');\nlet b = getValue('r1007b');\nlet c = getValue('r1007c');\nlet d = getValue('r1007d');\nlet e = getValue('r1007e');\n\n(aa.length>0 || bb.length>0 ) && \na.length>0 && b.length>0 && c.length>0 &&\nd.length>0 && e.length>0 && \n(aa[0].value==1 || bb[0].value==1) && \na[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && \ne[0].value==5 ",
+      "message" : "mengetahui produk LEMBAGA PERGADAIAN , namun tidak mengetahui sarana LEMBAGA PERGADAIAN  apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1201b",
+    "componentValidation" : [ "r1201b" ],
+    "validations" : [ {
+      "test" : "// R414_D=\"D\" & R1201B=5\n\nvar responden = getValue(\"r414\");\nlet a = getValue('r1201b');\nlet x = [];\n\nif (responden.length > 0) {\n    x = responden.filter(item => item.value === \"D\");\n}\n\na && a.length > 0 && x.length > 0 && a[0].value == '5'\n\n",
+      "message" : "Cek kembali 1201B dengan rincian 414 D",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1203b",
+    "componentValidation" : [ "r1203b" ],
+    "validations" : [ {
+      "test" : "// R414_D=\"D\" & R1203B=5\n\nvar responden = getValue(\"r414\");\nlet a = getValue('r1203b');\nlet x = [];\n\nif (responden.length > 0) {\n    x = responden.filter(item => item.value === \"D\");\n}\n\na && a.length > 0 && x.length > 0 && a[0].value == '5'\n\n",
+      "message" : "menerima bantuan dari LKM Syariah atau BMT namun tidak mengetahui produk Syariah berupa simpanan atau pembiayaan",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r1204a",
+    "componentValidation" : [ "r1204a" ],
+    "validations" : [ {
+      "test" : "// R407<17 & R1204a=1\n\nvar responden = getValue(\"getResponden\")\nlet a = getValue('r1204a');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].umur;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '1' && x < 17;\n}\n\n",
+      "message" : "Isian 1204a =Ya, tetapi umur responden < 17 tahun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1204b",
+    "componentValidation" : [ "r1204b" ],
+    "validations" : [ {
+      "test" : "// R407<17 & R1204B=1\n\nvar responden = getValue(\"getResponden\")\nlet a = getValue('r1204b');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].umur;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '1' && x < 17;\n}\n\n",
+      "message" : "Isian 1204B =Ya, tetapi umur responden < 17 tahun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1205a",
+    "componentValidation" : [ "r1204a", "r1205a" ],
+    "validations" : [ {
+      "test" : "// R1204A=1 & R1205A=5\n\nlet a = getValue('r1204a');\nlet b = getValue('r1205a');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "memiliki akun produk ke-A dalam setahun terakhir tapi tidak menggunakan produk ke-A tsb",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r1205b",
+    "componentValidation" : [ "r1204b", "r1205b" ],
+    "validations" : [ {
+      "test" : "// R1204B=1 & R1205B=5\n\nlet a = getValue('r1204b');\nlet b = getValue('r1205b');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "memiliki akun produk ke-B dalam setahun terakhir tapi tidak menggunakan produk ke-B tsb",
+      "type" : 2
+    }, {
+      "test" : "// R414_D=\"D\" & R1205B=5\n\nvar responden = getValue(\"r414\");\nlet a = getValue('r1205b');\nlet x = [];\n\nif (responden.length > 0) {\n    x = responden.filter(item => item.value === \"D\");\n}\n\na && a.length > 0 && x.length > 0 && a[0].value == '5'\n\n",
+      "message" : "menerima bantuan dari LKM Syariah atau BMT namun tidak menggunakan produk ke-B tsb",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r1206avi",
+    "componentValidation" : [ "r1203a", "r1206ai", "r1206aii", "r1206aiii", "r1206aiv", "r1206av", "r1206avi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r1203a');\n\nlet a = getValue('r1206ai');\nlet b = getValue('r1206aii');\nlet c = getValue('r1206aiii');\nlet d = getValue('r1206aiv');\nlet e = getValue('r1206av');\nlet f = getValue('r1206avi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "mengetahui produk SIMPANAN/PINJAMAN, namun tidak mengetahui karakteristik SIMPANAN/PINJAMAN apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1206bvi",
+    "componentValidation" : [ "r1203b", "r1206bi", "r1206bii", "r1206biii", "r1206biv", "r1206bv", "r1206bvi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r1203b');\n\nlet a = getValue('r1206bi');\nlet b = getValue('r1206bii');\nlet c = getValue('r1206biii');\nlet d = getValue('r1206biv');\nlet e = getValue('r1206bv');\nlet f = getValue('r1206bvi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "mengetahui produk SIMPANAN SYARIAH/PEMBIAYAAN SYARIAH, namun tidak mengetahui karakteristik SIMPANAN SYARIAH/PEMBIAYAAN SYARIAH apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1207c",
+    "componentValidation" : [ "r1203a", "r1203b", "r1207a", "r1207b", "r1207c" ],
+    "validations" : [ {
+      "test" : "// (R1203A=1 | R1203B=1) & R1207A=5 & R1207B=5 & R1207C=5\t\n\nlet a = getValue('r1203a');\nlet b = getValue('r1203b');\nlet c = getValue('r1207a');\nlet d = getValue('r1207b');\nlet e = getValue('r1207c');\n\n((a.length>0 && a[0].value==1) || (b.length>0 && b[0].value==1))\n&& c.length>0 && c[0].value==5\n&& d.length>0 && d[0].value==5\n&& e.length>0 && e[0].value==5\n\n",
+      "message" : "mengetahui produk Lembaga Keuangan Mikro, namun tidak mengetahui sarana Lembaga Keuangan Mikro apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1304a",
+    "componentValidation" : [ "r1304a" ],
+    "validations" : [ {
+      "test" : "// R407<17 & R1404A=1\n\nvar responden = getValue(\"getResponden\")\nlet a = getValue('r1304a');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].umur;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '1' && x < 17;\n}\n\n",
+      "message" : "Isian 1304a =Ya, tetapi umur responden < 17 tahun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1304b",
+    "componentValidation" : [ "r1304b" ],
+    "validations" : [ {
+      "test" : "// R407<17 & R1404A=1\n\nvar responden = getValue(\"getResponden\")\nlet a = getValue('r1304b');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].umur;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '1' && x < 17;\n}\n\n",
+      "message" : "Isian 1304b =Ya, tetapi umur responden < 17 tahun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1305a",
+    "componentValidation" : [ "r1304a", "r1305a" ],
+    "validations" : [ {
+      "test" : "// R1404C=1 & R1405C=5\n\nlet a = getValue('r1304a');\nlet b = getValue('r1305a');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "memiliki akun produk ke-A dalam setahun terakhir tapi tidak menggunakan produk ke-A tsb",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r1305b",
+    "componentValidation" : [ "r1304b", "r1305b" ],
+    "validations" : [ {
+      "test" : "// R1404C=1 & R1405C=5\n\nlet a = getValue('r1304b');\nlet b = getValue('r1305b');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "memiliki akun produk ke-B dalam setahun terakhir tapi tidak menggunakan produk ke-B tsb",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r1306avi",
+    "componentValidation" : [ "r1303a", "r1306ai", "r1306aii", "r1306aiii", "r1306aiv", "r1306av", "r1306avi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r1303a');\n\nlet a = getValue('r1306ai');\nlet b = getValue('r1306aii');\nlet c = getValue('r1306aiii');\nlet d = getValue('r1306aiv');\nlet e = getValue('r1306av');\nlet f = getValue('r1306avi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "Seluruh isian 1306a = 5 sedangkan 1303a = 1",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1306bvi",
+    "componentValidation" : [ "r1303b", "r1306bi", "r1306bii", "r1306biii", "r1306biv", "r1306bv", "r1306bvi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r1303b');\n\nlet a = getValue('r1306bi');\nlet b = getValue('r1306bii');\nlet c = getValue('r1306biii');\nlet d = getValue('r1306biv');\nlet e = getValue('r1306bv');\nlet f = getValue('r1306bvi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "Seluruh isian 1306b = 5 sedangkan 1303b = 1",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1307c",
+    "componentValidation" : [ "r1303a", "r1303b", "r1307a", "r1307b", "r1307c" ],
+    "validations" : [ {
+      "test" : "// (R1303A=1 | R1303B=1) & R1307A=5 & R1307B=5 & R1307C=5\t\n\nlet aa = getValue('r1303a');\nlet bb = getValue('r1303b');\n\nlet a = getValue('r1307a');\nlet b = getValue('r1307b');\nlet c = getValue('r1307c');\n\n(aa.length>0 || bb.length>0 ) && \na.length>0 && b.length>0 && c.length>0 &&\n(aa[0].value==1 || bb[0].value==1) && \na[0].value==5 && b[0].value==5 && \nc[0].value==5 \n",
+      "message" : "mengetahui produk Fintech Lending, namun tidak mengetahui sarana Fintech Lending apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1401c",
+    "componentValidation" : [ "r1401c" ],
+    "validations" : [ {
+      "test" : "// R414_C=\"C\" & R1401B=5\n\nvar responden = getValue(\"r414\");\nlet a = getValue('r1401c');\nlet x = [];\n\nif (responden.length > 0) {\n    x = responden.filter(item => item.value === \"C\");\n}\n\na && a.length > 0 && x.length > 0 && a[0].value == '5'\n\n",
+      "message" : "R414 = C tetapi R1401C = 5",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1403c",
+    "componentValidation" : [ "r1403c" ],
+    "validations" : [ {
+      "test" : "// R414_C=\"C\" & R1401B=5\n\nvar responden = getValue(\"r414\");\nlet a = getValue('r1403c');\nlet x = [];\n\nif (responden.length > 0) {\n    x = responden.filter(item => item.value === \"C\");\n}\n\na && a.length > 0 && x.length > 0 && a[0].value == '5'\n\n",
+      "message" : "menerima bantuan dari Pos namun tidak mengetahui produk Pos",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r1404a",
+    "componentValidation" : [ "r1404a" ],
+    "validations" : [ {
+      "test" : "// R407<17 & R1404A=1\n\nvar responden = getValue(\"getResponden\")\nlet a = getValue('r1404a');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].umur;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '1' && x < 17;\n}\n\n",
+      "message" : "umur kurang dari 17 tahun namun memiliki akun produk ke-A",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1404b",
+    "componentValidation" : [ "r1404b" ],
+    "validations" : [ {
+      "test" : "// R407<17 & R1404B=1\t\r\n// umur kurang dari 17 tahun namun memiliki akun produk ke-B\t\r\n// 0\r\n\r\nlet responden = getValue(\"getResponden\")\r\nlet R407 = responden[0].umur\r\nlet R1404b = getValue('r1404b')\r\nlet r407Value = parseInt(R407);\r\n\r\nR407.length > 0 && R1404b.length > 0 &&r407Value < 17 && R1404b[0].value ==1\r\n",
+      "message" : "umur kurang dari 17 tahun namun memiliki akun produk ke-B",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1404c",
+    "componentValidation" : [ "r1404c" ],
+    "validations" : [ {
+      "test" : "// R407<17 & R1404A=1\n\nvar responden = getValue(\"getResponden\")\nlet a = getValue('r1404c');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].umur;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '1' && x < 17;\n}\n\n",
+      "message" : "umur kurang dari 17 tahun namun memiliki akun produk ke-C",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1404d",
+    "componentValidation" : [ "r1404d" ],
+    "validations" : [ {
+      "test" : "// R407<17 & R1404D=1\t\r\n// umur kurang dari 17 tahun namun memiliki akun produk ke-B\t\r\n// 0\r\n\r\nlet responden = getValue(\"getResponden\")\r\nlet R407 = responden[0].umur\r\nlet R1404b = getValue('r1404d')\r\nlet r407Value = parseInt(R407);\r\n\r\nR407.length > 0 && R1404b.length > 0 &&r407Value < 17 && R1404b[0].value ==1\r\n",
+      "message" : "umur kurang dari 17 tahun namun memiliki akun produk ke-D",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1405a",
+    "componentValidation" : [ "r1404a", "r1405a" ],
+    "validations" : [ {
+      "test" : "// R1404C=1 & R1405C=5\n\nlet a = getValue('r1404a');\nlet b = getValue('r1405a');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "memiliki akun produk ke-A dalam setahun terakhir tapi tidak menggunakan produk ke-A tsb",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r1405b",
+    "componentValidation" : [ "r1404b", "r1405b" ],
+    "validations" : [ {
+      "test" : "// R1404C=1 & R1405C=5\n\nlet a = getValue('r1404b');\nlet b = getValue('r1405b');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "memiliki akun produk ke-B dalam setahun terakhir tapi tidak menggunakan produk ke-B tsb",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r1405c",
+    "componentValidation" : [ "r1404c", "r1405c" ],
+    "validations" : [ {
+      "test" : "// R1404C=1 & R1405C=5\n\nlet a = getValue('r1404c');\nlet b = getValue('r1405c');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "memiliki akun produk ke-C dalam setahun terakhir tapi tidak menggunakan produk ke-C tsb",
+      "type" : 2
+    }, {
+      "test" : "// R414_C=\"C\" & R1401B=5\n\nvar responden = getValue(\"r414\");\nlet a = getValue('r1405c');\nlet x = [];\n\nif (responden.length > 0) {\n    x = responden.filter(item => item.value === \"C\");\n}\n\na && a.length > 0 && x.length > 0 && a[0].value == '5'\n\n",
+      "message" : "menerima bantuan via Pos namun tidak menggunakan produk ke-C (Pos) tsb",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r1405d",
+    "componentValidation" : [ "r1404d", "r1405d" ],
+    "validations" : [ {
+      "test" : "// R1404C=1 & R1405C=5\n\nlet a = getValue('r1404d');\nlet b = getValue('r1405d');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "memiliki akun produk ke-D dalam setahun terakhir tapi tidak menggunakan produk ke-D tsb",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r1406avi",
+    "componentValidation" : [ "r1403a", "r1406ai", "r1406aii", "r1406aiii", "r1406aiv", "r1406av", "r1406avi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r1403a');\n\nlet a = getValue('r1406ai');\nlet b = getValue('r1406aii');\nlet c = getValue('r1406aiii');\nlet d = getValue('r1406aiv');\nlet e = getValue('r1406av');\nlet f = getValue('r1406avi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n\n\n\n\n\n",
+      "message" : "mengetahui produk ASET KRIPTO/AGREGRASI JASA KEUANGAN/DLL, namun tidak mengetahui karakteristik ASET KRIPTO/AGREGRASI JASA KEUANGAN/DLL apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1406bvi",
+    "componentValidation" : [ "r1403b", "r1406bi", "r1406bii", "r1406biii", "r1406biv", "r1406bv", "r1406bvi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r1403b');\n\nlet a = getValue('r1406bi');\nlet b = getValue('r1406bii');\nlet c = getValue('r1406biii');\nlet d = getValue('r1406biv');\nlet e = getValue('r1406bv');\nlet f = getValue('r1406bvi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n",
+      "message" : "mengetahui produk PINJAMAN  ULAMM/KREDIT MEKAAR/ PEMBIAYAAN UMI/DLL, namun tidak mengetahui karakteristik PINJAMAN  ULAMM/KREDIT MEKAAR/ PEMBIAYAAN UMI/DLL apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1406cvi",
+    "componentValidation" : [ "r1403c", "r1406ci", "r1406cii", "r1406ciii", "r1406civ", "r1406cv", "r1406cvi" ],
+    "validations" : [ {
+      "test" : "// (R1403C=1) & R1406Ci=5 & R1406Cii=5 & \n// R1406Ciii=5 & R1406Civ=5 & R1406Cv=5 & R1406Cvi=5\n\nlet aa = getValue('r1403c');\n\nlet a = getValue('r1406ci');\nlet b = getValue('r1406cii');\nlet c = getValue('r1406ciii');\nlet d = getValue('r1406civ');\nlet e = getValue('r1406cv');\nlet f = getValue('r1406cvi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n\n",
+      "message" : "mengetahui produk SIMPANAN/PINJAMAN KOPERASI SIMPAN PINJAM (NON-LKM)/TABUNGAN POS/DLL, namun tidak mengetahui karakteristik SIMPANAN/PINJAMAN KOPERASI SIMPAN PINJAM (NON-LKM)/TABUNGAN POS/DLL apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1406dvi",
+    "componentValidation" : [ "r1403d", "r1406di", "r1406dii", "r1406diii", "r1406div", "r1406dv", "r1406dvi" ],
+    "validations" : [ {
+      "test" : "// (R1403C=1) & R1406Ci=5 & R1406Cii=5 & \n// R1406Ciii=5 & R1406Civ=5 & R1406Cv=5 & R1406Cvi=5\n\nlet aa = getValue('r1403d');\n\nlet a = getValue('r1406di');\nlet b = getValue('r1406dii');\nlet c = getValue('r1406diii');\nlet d = getValue('r1406div');\nlet e = getValue('r1406dv');\nlet f = getValue('r1406dvi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n\n",
+      "message" : "mengetahui atau memiliki produk, namun tidak mengetahui karakteristik PEMBIAYAAN ULAMM SYARIAH/MEKAAR SYARIAH/UMI SYARIAH/TABUNGAN ATAU PEMBIAYAAN KOSPIN SYARIAH/DLL apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1407c",
+    "componentValidation" : [ "r1403a", "r1403b", "r1403c", "r1403d", "r1407a", "r1407b", "r1407c" ],
+    "validations" : [ {
+      "test" : "// (R1403A=1 | R1403B=1 | R1403C=1 | R1403D=1) & R1407A=5 & R1407B=5 & R1407C=5\n\nlet aa = getValue('r1403a');\nlet bb = getValue('r1403b');\nlet cc = getValue('r1403c');\nlet dd = getValue('r1403d');\n\nlet a = getValue('r1407a');\nlet b = getValue('r1407b');\nlet c = getValue('r1407c');\n\n(aa.length>0 || bb.length>0 || cc.length>0 || dd.length>0) &&\na.length>0 && b.length>0 && c.length>0 && \n(aa[0].value==1 || bb[0].value==1 || cc[0].value==1 || dd[0].value==1) && \na[0].value==5 && b[0].value==5 && c[0].value==5 \n\n",
+      "message" : "mengetahui produk LJK lain, namun tidak mengetahui sarana LJK lain apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1501",
+    "componentValidation" : [ "r501a", "r501b", "r601a", "r601b", "r801a", "r801b", "r901a", "r901b", "r1001a", "r1001b", "r1101a", "r1101b", "r1201a", "r1201b", "r1301a", "r1301b", "r1401a", "r1401b", "r1401d", "r1501" ],
+    "validations" : [ {
+      "test" : "// (R501A=1 | R501B=1) & R1501=5\n\nlet a = getValue('r501a');\nlet b = getValue('r501b');\nlet c = getValue('r1501');\n\n((a.length>0 && a[0].value==1)||(b.length>0 && b[0].value==1)) && (c.length>0 && c[0].value==5)\n",
+      "message" : "Mengetahui LJK Perbankan Konven atau Syariah Namun Tidak tahu LJK PSP (padahal LJK PSP itu termasuk Perbankan dkk)",
+      "type" : 2
+    }, {
+      "test" : "// (R501A=5 & R501B=5) & (R601A=1 | R601B=1 | R801A=1 | R801B=1 | R901A=1 | R901B=1 | R1001A=1 | R1001B=1 | R1101A=1 | R1101B=1 | R1201A=1 | R1201B=1 | R1301A=1 | R1301B=1 | R1401A=1 | R1401B=1 | R1401D=1 | R1501=1)\t\n\nlet a = getValue('r501a');\nlet b = getValue('r501b');\n\nlet c = getValue('r601a');\nlet d = getValue('r601b');\n\nlet e = getValue('r801a');\nlet f = getValue('r801b');\n\nlet g = getValue('r901a');\nlet h = getValue('r901b');\n\nlet i = getValue('r1001a');\nlet j = getValue('r1001b');\n\nlet k = getValue('r1101a');\nlet l = getValue('r1101b');\n\nlet m = getValue('r1201a');\nlet n = getValue('r1201b');\n\nlet o = getValue('r1301a');\nlet p = getValue('r1301b');\n\nlet q = getValue('r1401a');\nlet r = getValue('r1401b');\nlet s = getValue('r1401d');\n\nlet t = getValue('r1501');\n\na.length>0 && b.length>0 && c.length>0 && d.length>0 &&\ne.length>0 && f.length>0 && g.length>0 && h.length>0 &&\ni.length>0 && j.length>0 && k.length>0 && l.length>0 &&\nm.length>0 && n.length>0 && o.length>0 && p.length>0 &&\nq.length>0 && r.length>0 && s.length>0 && t.length>0 &&\na[0].value==5 && b[0].value==5 && (\nc[0].value==1 || d[0].value==1 || e[0].value==1 || f[0].value==1 ||\ng[0].value==1 || h[0].value==1 || i[0].value==1 || j[0].value==1 ||\nk[0].value==1 || l[0].value==1 || m[0].value==1 || n[0].value==1 ||\no[0].value==1 || p[0].value==1 || q[0].value==1 || r[0].value==1 ||\ns[0].value==1 || t[0].value==1 \n\n)\n",
+      "message" : "Tidak mengetahui LJK Perbankan tetapi mengetahui LJK selain Perbankan (Pasar Modal, Perasuransian, Lembaga Pembiayaan, Dana Pensiun, Pergadaian, Lembaga Keuangan Mikro, Pinjaman Online, LJK Lainnya, Penyelenggara Sistem Pembayaran)",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1503",
+    "componentValidation" : [ "r501a", "r501b", "r603a", "r603b", "r803a", "r803b", "r903a", "r903b", "r1003a", "r1003b", "r1103a", "r1103b", "r1203a", "r1203b", "r1303a", "r1303b", "r1403a", "r1403b", "r1403d", "r1503" ],
+    "validations" : [ {
+      "test" : "// (R501A=5 & R501B=5) & (R601A=1 | R601B=1 | R801A=1 | R801B=1 | R901A=1 | R901B=1 | R1001A=1 | R1001B=1 | R1101A=1 | R1101B=1 | R1201A=1 | R1201B=1 | R1301A=1 | R1301B=1 | R1401A=1 | R1401B=1 | R1401D=1 | R1501=1)\t\n\nlet a = getValue('r501a');\nlet b = getValue('r501b');\n\nlet c = getValue('r603a');\nlet d = getValue('r603b');\n\nlet e = getValue('r803a');\nlet f = getValue('r803b');\n\nlet g = getValue('r903a');\nlet h = getValue('r903b');\n\nlet i = getValue('r1003a');\nlet j = getValue('r1003b');\n\nlet k = getValue('r1103a');\nlet l = getValue('r1103b');\n\nlet m = getValue('r1203a');\nlet n = getValue('r1203b');\n\nlet o = getValue('r1303a');\nlet p = getValue('r1303b');\n\nlet q = getValue('r1403a');\nlet r = getValue('r1403b');\nlet s = getValue('r1403d');\n\nlet t = getValue('r1503');\n\na.length>0 && b.length>0 && c.length>0 && d.length>0 &&\ne.length>0 && f.length>0 && g.length>0 && h.length>0 &&\ni.length>0 && j.length>0 && k.length>0 && l.length>0 &&\nm.length>0 && n.length>0 && o.length>0 && p.length>0 &&\nq.length>0 && r.length>0 && s.length>0 && t.length>0 &&\na[0].value==5 && b[0].value==5 && (\nc[0].value==1 || d[0].value==1 || e[0].value==1 || f[0].value==1 ||\ng[0].value==1 || h[0].value==1 || i[0].value==1 || j[0].value==1 ||\nk[0].value==1 || l[0].value==1 || m[0].value==1 || n[0].value==1 ||\no[0].value==1 || p[0].value==1 || q[0].value==1 || r[0].value==1 ||\ns[0].value==1 || t[0].value==1 \n\n)\n",
+      "message" : "Tidak mengetahui LJK Perbankan tetapi mengetahui produk/layanan LJK selain Perbankan (Pasar Modal, Perasuransian, Lembaga Pembiayaan, Dana Pensiun, Pergadaian, Lembaga Keuangan Mikro, Pinjaman Online, LJK Lainnya, Penyelenggara Sistem Pembayaran)",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1505",
+    "componentValidation" : [ "r1504", "r1505" ],
+    "validations" : [ {
+      "test" : "// R1504=1 & R1505=5\n\nlet a = getValue('r1504');\nlet b = getValue('r1505');\n\na.length>0 && a[0].value==1 && b.length>0 && b[0].value==5",
+      "message" : "dalam setahun terakhir memiliki akun namun tidak menggunakan produk layanan",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r1506vi",
+    "componentValidation" : [ "r1503", "r1506i", "r1506ii", "r1506iii", "r1506iv", "r1506v", "r1506vi" ],
+    "validations" : [ {
+      "test" : "let aa = getValue('r1503');\n\nlet a = getValue('r1506i');\nlet b = getValue('r1506ii');\nlet c = getValue('r1506iii');\nlet d = getValue('r1506iv');\nlet e = getValue('r1506v');\nlet f = getValue('r1506vi');\n\n\naa.length>0 && a.length>0 && b.length>0 && c.length>0 && \nd.length>0 && e.length>0 && f.length>0 && \naa[0].value==1 && a[0].value==5 && b[0].value==5 && \nc[0].value==5 && d[0].value==5 && e[0].value==5 && f[0].value==5 \n\n\n\n\n\n",
+      "message" : "Seluruh isian 1506 = 5 sedangkan 1503 = 1",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1507e",
+    "componentValidation" : [ "r1503", "r1507a", "r1507b", "r1507c", "r1507d", "r1507e" ],
+    "validations" : [ {
+      "test" : "// (R1503=1) & R1507A=5 & R1507B=5 & R1507C=5 & R1507D=5 & R1507E=5\n\nlet aa = getValue('r1503');\n\nlet a = getValue('r1507a');\nlet b = getValue('r1507b');\nlet c = getValue('r1507c');\nlet d = getValue('r1507d');\nlet e = getValue('r1507e');\n\n\n(aa.length>0 ) && \na.length>0 && b.length>0 && c.length>0 && d.length>0 && e.length>0 &&\n(aa[0].value==1 ) && \na[0].value==5 && b[0].value==5 && c[0].value==5 && d[0].value==5 && e[0].value==5 \n",
+      "message" : "mengetahui produk PSP, namun tidak mengetahui sarana PSP apapun",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1601aviii",
+    "componentValidation" : [ "r503a", "r603a", "r803a", "r903a", "r1003a", "r1103a", "r1203a", "r1303a", "r1403a", "r1403b", "r1503a", "r505a", "r605a", "r805a", "r905a", "r1005a", "r1105a", "r1205a", "r1305a", "r1405a", "r1405b", "r1505a", "r1601ai", "r1601aii", "r1601aiii", "r1601aiv", "r1601av", "r1601avi", "r1601avii", "r1601aviii" ],
+    "validations" : [ {
+      "test" : "// [(R503A=1 | RR603A=1 | R803A =1 | R903A =1 | R1003A =1 | R1103A =1 | R1203A =1 | \n// R1303A =1 | R1403A =1 | R1403B =1 | R1503=1) dan \n// (R505A=5 & R605A=5 & R805A=5 & R905A=5 & R1005A=5 & R1105A=5 & R1205A=5 & \n// R1305A=5 & R1405A =5 & R1405B =5 & R1505=5)] & \n// R1601Ai=5 & R1601Aii=5 & \n// R1601Aiii=5 & R1601Aiv=5 & R1601Av=5 & R1601Avi=5 & R1601Avii=5 & R1601Aviii=5\n// Collect groups of related variables into arrays\n\nconst g1 = [\n  getValue('r503a'), getValue('r603a'), getValue('r803a'), getValue('r903a'),\n  getValue('r1003a'), getValue('r1103a'), getValue('r1203a'), getValue('r1303a'),\n  getValue('r1403a'), getValue('r1403b'), getValue('r1503a')\n];\n\nconst g2 = [\n  getValue('r505a'), getValue('r605a'), getValue('r805a'), getValue('r905a'),\n  getValue('r1005a'), getValue('r1105a'), getValue('r1205a'), getValue('r1305a'),\n  getValue('r1405a'), getValue('r1405b'), getValue('r1505a')\n];\n\nconst g3 = [\n  getValue('r1601ai'), getValue('r1601aii'), getValue('r1601aiii'), getValue('r1601aiv'),\n  getValue('r1601av'), getValue('r1601avi'), getValue('r1601avii'), getValue('r1601aviii')\n];\n\n// Helpers\nconst hasAnyValueGroup1 = g1.some(x => x.length > 0);        // at least one > 0\nconst allFilledGroup2 = g2.every(x => x.length > 0);         // all must be filled\nconst allFilledGroup3 = g3.every(x => x.length > 0);         // all must be filled\n\nconst anyValueEquals1 = g1.some(x => x[0].value == 1);       // any == 1\nconst allValueEquals5g2 = g2.every(x => x[0].value == 5);    // all == 5\nconst allValueEquals5g3 = g3.every(x => x[0].value == 5);    // all == 5\n\n// Final condition result (true/false)\nconst result =\n  hasAnyValueGroup1 &&\n  allFilledGroup2 &&\n  allFilledGroup3 &&\n  anyValueEquals1 &&\n  allValueEquals5g2 &&\n  allValueEquals5g3;\n\nresult;\n",
+      "message" : "Mengetahui dan tidak menggunakan produk/layanan konvensional, Apakah benar tidak ada alasan yang berkode 1?",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1601bviii",
+    "componentValidation" : [ "r503b", "r603b", "r803b", "r903b", "r1003b", "r1103b", "r1203b", "r1303b", "r1403b", "r1503b", "r505b", "r605b", "r805b", "r905b", "r1005b", "r1105b", "r1205b", "r1305b", "r1405b", "r1505b", "r1601bi", "r1601bii", "r1601biii", "r1601biv", "r1601bv", "r1601bvi", "r1601bvii", "r1601bviii" ],
+    "validations" : [ {
+      "test" : "// [(R503B=1 | RR603B=1 | R803B =1 | R903B =1 | R1003B =1 | R1103B =1 | R1203B =1 | \n// R1303B =1 | R1403D =1) dan \n// (R505B=5 & R605B=5 & R805B=5 & R905B=5 & R1005B=5 & R1105B=5 & R1205B=5 & R1305B=5 & \n// R1405D=5)] & R1601Bi=5 & R1601Bii=5 & R1601Biii=5 & R1601Biv=5 & R1601Bv=5 & R1601Bvi=5 & \n// R1601Bvii=5 & R1601Bviii=5\n\nconst g1 = [\n  getValue('r503b'), getValue('r603b'), getValue('r803b'), getValue('r903b'),\n  getValue('r1003b'), getValue('r1103b'), getValue('r1203b'), getValue('r1303b'),\n  getValue('r1403b'), getValue('r1403b'), getValue('r1503b')\n];\n\nconst g2 = [\n  getValue('r505b'), getValue('r605b'), getValue('r805b'), getValue('r905b'),\n  getValue('r1005b'), getValue('r1105b'), getValue('r1205b'), getValue('r1305b'),\n  getValue('r1405b'), getValue('r1405b'), getValue('r1505b')\n];\n\nconst g3 = [\n  getValue('r1601bi'), getValue('r1601bii'), getValue('r1601biii'), getValue('r1601biv'),\n  getValue('r1601bv'), getValue('r1601bvi'), getValue('r1601bvii'), getValue('r1601bviii')\n];\n\n// Helpers\nconst hasAnyValueGroup1 = g1.some(x => x.length > 0);        // at least one > 0\nconst allFilledGroup2 = g2.every(x => x.length > 0);         // all must be filled\nconst allFilledGroup3 = g3.every(x => x.length > 0);         // all must be filled\n\nconst anyValueEquals1 = g1.some(x => x[0].value == 1);       // any == 1\nconst allValueEquals5g2 = g2.every(x => x[0].value == 5);    // all == 5\nconst allValueEquals5g3 = g3.every(x => x[0].value == 5);    // all == 5\n\n// Final condition result (true/false)\nconst result =\n  hasAnyValueGroup1 &&\n  allFilledGroup2 &&\n  allFilledGroup3 &&\n  anyValueEquals1 &&\n  allValueEquals5g2 &&\n  allValueEquals5g3;\n\nresult;\n\n",
+      "message" : "Mengetahui dan tidak menggunakan produk/layanan syariah, Apakah benar tidak ada alasan yang berkode 1?",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1701a",
+    "componentValidation" : [ "r1701a" ],
+    "validations" : [ {
+      "test" : "var responden = getValue(\"getResponden\")\nlet a = getValue('r1701a');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].pendidikan[0].value;\n    x = parseInt(x)\n}\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '5' && x > 5;\n}\n\n",
+      "message" : "pendidikan sudah D1 ke atas namun tidak paham menghitung bunga, bagi hasil, margin",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1701b",
+    "componentValidation" : [ "r1701b" ],
+    "validations" : [ {
+      "test" : "var responden = getValue(\"getResponden\")\nlet a = getValue('r1701b');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].pendidikan[0].value;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '5' && x > 5;\n}\n\n",
+      "message" : "pendidikan sudah D1 ke atas namun tidak paham menghitung angsuran",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1701c",
+    "componentValidation" : [ "r1701c" ],
+    "validations" : [ {
+      "test" : "var responden = getValue(\"getResponden\")\nlet a = getValue('r1701c');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].pendidikan[0].value;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '5' && x > 5;\n}\n\n",
+      "message" : "pendidikan sudah D1 ke atas namun tidak paham menghitung hasil investasi",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1701d",
+    "componentValidation" : [ "r1701d" ],
+    "validations" : [ {
+      "test" : "var responden = getValue(\"getResponden\")\nlet a = getValue('r1701d');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].pendidikan[0].value;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '5' && x > 5;\n}\n\n",
+      "message" : "pendidikan sudah D1 ke atas namun tidak paham menghitung biaya penggunaan produk/layanan",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1701e",
+    "componentValidation" : [ "r1701e" ],
+    "validations" : [ {
+      "test" : "var responden = getValue(\"getResponden\")\nlet a = getValue('r1701e');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].pendidikan[0].value;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '5' && x > 5;\n}\n\n",
+      "message" : "pendidikan sudah D1 ke atas namun tidak paham menghitung denda",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1701f",
+    "componentValidation" : [ "r1701f", "r1701a", "r1701b", "r1701c", "r1701d", "r1701e", "r412" ],
+    "validations" : [ {
+      "test" : "var responden = getValue(\"getResponden\")\nlet a = getValue('r1701f');\nlet x = 0;\n\nif (responden.length > 0) {\n    x = responden[0].pendidikan[0].value;\n    x = parseInt(x)\n}\n\n\n\nif (a[0] != undefined && x>0 ){\n    a[0].value == '5' && x > 5;\n}\n\n",
+      "message" : "pendidikan sudah D1 ke atas namun tidak paham menghitung inflasi",
+      "type" : 1
+    }, {
+      "test" : "// R408>5 & R1701A=5 & R1701B=5 & R1701C=5 & R1701D=5 & R1701E=5 & R1701F=5\r\n\r\nlet a = getValue('r1701a');\r\nlet b = getValue('r1701b');\r\nlet c = getValue('r1701c');\r\nlet d = getValue('r1701d');\r\nlet e = getValue('r1701e');\r\nlet f = getValue('r1701f');\r\n\r\nlet responden = getValue(\"getResponden\")\r\nlet R408 = responden[0].pendidikan\r\n\r\na.length>0 && b.length>0 && c.length>0 && d.length>0 && \r\ne.length>0 && f.length>0 && R408.length > 0 &&\r\na[0].value==5 && b[0].value==5 && c[0].value==5 && d[0].value==5 &&\r\ne[0].value==5 && f[0].value==5 && parseInt(R408[0].value) > 5\r\n",
+      "message" : "Tamat pendidikan tinggi namun sama sekali tidak bisa menghitung bunga/bagi hasil/margin, angsuran, hasil investasi, biaya penggunaan produk/layanan, denda, nilai mata uang/inflasi",
+      "type" : 1
+    }, {
+      "test" : "// R412=3,6,8 & R1701A=5 & R1701B=5 & R1701C=5 & R1701D=5 & R1701E=5 & R1701F=5\t\n\nlet a = getValue('r1701a');\nlet b = getValue('r1701b');\nlet c = getValue('r1701c');\nlet d = getValue('r1701d');\nlet e = getValue('r1701e');\nlet f = getValue('r1701f');\n\nlet R412 = getValue('r412')\nlet validValues = ['03','06','08'];\n\na.length>0 && b.length>0 && c.length>0 && d.length>0 && \ne.length>0 && f.length>0 && R412.length>0 &&\na[0].value==5 && b[0].value==5 && c[0].value==5 && d[0].value==5 &&\ne[0].value==5 && f[0].value==5 && validValues.includes(R412[0].value) \n",
+      "message" : "Sebagai PNS/Profesional/Guru/Dosen namun sama sekali tidak bisa menghitung bunga/bagi hasil/margin, angsuran, hasil investasi, biaya penggunaan produk/layanan, denda, nilai mata uang/inflasi",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r1702",
+    "componentValidation" : [ "r1702" ],
+    "validations" : [ {
+      "test" : "// R408>5 & R1702<>2\r\n\r\nlet responden = getValue(\"getResponden\")\r\nlet R408 = responden[0].pendidikan\r\n\r\nlet R1702 = getValue('r1702')\r\n\r\nif (R408.length > 0 && R1702.length > 0) {\r\n    parseInt(R408[0].value)>5 && R1702[0].value != 2\r\n\r\n}",
+      "message" : "Tamat pendidikan tinggi namun tidak bisa aritmatika sederhana",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r203",
+    "componentValidation" : [ "bersedia", "r203", "r410" ],
+    "validations" : [ {
+      "test" : "let a = getValue('bersedia');\nlet b = getValue('r203');\nlet c = getValue('r410');\n\nif (a.length>0  && b.length>0 && c.length>0 ){\n    a[0].value==1 && c[0].value==1 && (b[0].value==3||b[0].value==4||b[0].value==5);\n}",
+      "message" : "Hasil pencacahan seharusnya terisi lengkap atau terisi tidak lengkap",
+      "type" : 2
+    }, {
+      "test" : "let b = getValue('r203');\n\nif (b.length>0 ){\n   (b[0].value==4||b[0].value==5||b[0].value==6);\n}",
+      "message" : "JANGAN LUPA LAMPIRKAN BERITA ACARA NONRESPON RUMAH TANGGA!",
+      "type" : 1
+    }, {
+      "test" : "let a = getValue('bersedia');\nlet b = getValue('r203');\nlet c = getValue('r410');\n\nif (a.length>0  && b.length>0 && c.length>0 ){\n    a[0].value==1 && c[0].value==3 && (b[0].value==1||b[0].value==2);\n}",
+      "message" : "Hasil pencacahan seharusnya tidak boleh berisi terisi lengkap atau terisi tidak lengkap",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('bersedia');\nlet b = getValue('r203');\n\nif (a.length>0  && b.length>0 ){\n    a[0].value==3 && (b[0].value==1||b[0].value==2);\n}",
+      "message" : "Hasil pencacahan seharusnya tidak boleh berisi terisi lengkap atau terisi tidak lengkap",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('bersedia');\nlet b = getValue('r203');\nlet c = getValue('r410');\n\nif (a.length>0  && b.length>0&& c.length==0 ){\n    a[0].value==1 && (b[0].value==3||b[0].value==4||b[0].value==5);\n}",
+      "message" : "Hasil pencacahan seharusnya terisi lengkap atau terisi tidak lengkap",
+      "type" : 2
+    } ]
+  } ]
+}

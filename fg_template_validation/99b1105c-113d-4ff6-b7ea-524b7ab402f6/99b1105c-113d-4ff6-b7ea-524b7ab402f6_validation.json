@@ -1,0 +1,164 @@
+{
+  "version" : "2.1.2",
+  "testFunctions" : [ {
+    "dataKey" : "tambahan",
+    "componentValidation" : [ "tambahan" ],
+    "validations" : [ {
+      "test" : "let array1 = getPrincipalCollection(['data8', 'data7']);\nlet tambahan = getValue('tambahan');\nlet result = false;\n\nif (tambahan > 0 && tambahan == 1) { \n    let found = array1.data8.filter((val, index) => parseInt(val) > 1);  // Filter nilai di data8 yang lebih besar dari 1\n    if (found.length > 0) {\n        result = true;\n        for (let i = 0; i < array1.data8.length; i++) {\n            let data8Value = parseInt(array1.data8[i]);\n            if (data8Value > 1) {\n                // Jika nilai data8 lebih besar dari 1, pastikan jumlah kemunculan data7 sesuai dengan nilai data8\n                let countMatching = array1.data7.filter(val => val == array1.data7[i]).length;\n                if (data8Value !== countMatching) {\n                    result = false; // Jika jumlahnya tidak sesuai, set result ke false\n                    break; // Keluar dari loop karena sudah ada ketidakcocokan\n                }\n            }\n        }\n    }\n}\nresult;\n",
+      "message" : "Belum ada keluarga dengan pengelolaan makan/minum lebih dari 1",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r502_input",
+    "componentValidation" : [ "r502_input" ],
+    "validations" : [ {
+      "test" : "let array1 = getPrincipalCollection(['data7']);\nlet nomer = String(getValue('r502_input')).trim();\nlet result = false;\n\nlet data7 = (array1?.data7 || [])\n    .map(v => String(v).trim())\n    .filter(v => v !== '');\n\n// cek apakah ini DATA BARU\n// data baru = nomer BELUM ADA di data7\nlet isNewEntry = !data7.includes(nomer);\n\nif (nomer !== '' && isNewEntry) {\n    // validasi duplikat HANYA untuk data baru\n    let found = data7.includes(nomer);\n    if (found) {\n        result = true; // INVALID\n    }\n}\n\nresult;",
+      "message" : "Nomer urut keluarga yang anda masukkan sudah ada sebelumnya",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "nik",
+    "componentValidation" : [ "nik", "tambahan" ],
+    "validations" : [ {
+      "test" : "let valnik = getValue('nik'); \nlet tambah = getValue('tambahan'); \nif (tambah !== undefined && tambah.length > 0 && tambah[0].value =='2') \n{ valnik.length > 1 && (Number(valnik) < 1100000000000000 || Number(valnik) > 9999999999999999)}",
+      "message" : "NIK harus 16 digit angka",
+      "type" : 2
+    }, {
+      "test" : "let pattern = /^[0-9\\-]+$/;\r\nlet result = pattern.test(getValue('nik'));\r\nlet nilai =getValue('nik')\r\nif(nilai.length>0)\r\nresult==false",
+      "message" : "Isian harus angka sebanyak 16 digit atau '9999999999999998' jika tidak tahu/tidak memiliki",
+      "type" : 2
+    }, {
+      "test" : "let validasi = /^\\d+$/; \nlet valnik = getValue('nik'); \nlet tambah = getValue('tambahan'); \nlet result = !validasi.test(valnik); \nif (tambah !== undefined && tambah.length > 0 && tambah[0].value =='2') \n{ valnik.length > 1 && result }",
+      "message" : "Hanya boleh terisi angka",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r503_input",
+    "componentValidation" : [ "r503_input" ],
+    "validations" : [ {
+      "test" : "let nama = getValue('r503_input');\nlet hasil = false;\nif (/[a-zA-Z]/.test(nama)) {\n    hasil = false;\n} else {\n    hasil = true;\n}\nhasil;",
+      "message" : "Nama tidak boleh hanya menulis angka",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r503b_input",
+    "componentValidation" : [ "r503b_input" ],
+    "validations" : [ {
+      "test" : "let nama = getValue('r503b_input');\nlet hasil = true;\n\n// Cek kondisi\nif (nama.length == 1 && nama === \"-\") {\n    hasil = false; // Hanya boleh \"-\" jika panjangnya 1 karakter\n} else if (nama.length > 1 && /[a-zA-Z]/.test(nama)) {\n    hasil = false; // Nama panjangnya lebih dari 1 karakter dan bukan hanya angka\n}\n\nhasil;",
+      "message" : "Hanya boleh mengisi \"-\" dan tidak boleh hanya menulis angka",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r504_prelist",
+    "componentValidation" : [ "r504_prelist" ],
+    "validations" : [ {
+      "test" : "let nama = getValue('r504_prelist');\nlet hasil = false;\nif (/[a-zA-Z]/.test(nama)) {\n    hasil = false;\n} else {\n    hasil = true;\n}\nhasil;",
+      "message" : "Apakah benar alamatnya hanya angka",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r504_input",
+    "componentValidation" : [ "r504_input" ],
+    "validations" : [ {
+      "test" : "let nama = getValue('r504_input');\nlet hasil = false;\nif (/[a-zA-Z]/.test(nama)) {\n    hasil = false;\n} else {\n    hasil = true;\n}\nhasil;",
+      "message" : "Apakah benar alamatnya hanya angka",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "r505_prelist",
+    "componentValidation" : [ "r506", "r505_prelist" ],
+    "validations" : [ {
+      "test" : "var a = getValue('r506');\nvar b = getValue('r505_prelist');\na[0]?.value == '0' && b != 0",
+      "message" : "Bila Tidak Ditemukan maka No Urut Bangunan diisi 0",
+      "type" : 2
+    }, {
+      "test" : "var a = getValue('r506');\nvar b = getValue('r505_prelist');\na[0]?.value !== '0' && b == 0",
+      "message" : "Bila Ditemukan maka No Urut Bangunan tidak boleh 0",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r505_input",
+    "componentValidation" : [ "r506", "r505_input" ],
+    "validations" : [ {
+      "test" : "var a = getValue('r506');\nvar b = getValue('r505_input');\na[0]?.value !== '0' && b == 0",
+      "message" : "Bila Keluarga Baru maka No Urut Bangunan tidak boleh 0",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r507",
+    "componentValidation" : [ "r507", "r502", "tambahan", "r506" ],
+    "validations" : [ {
+      "test" : "let jmlN = getValue('r507'); \njmlN >10",
+      "message" : "Apakah yakin lebih dari 10?",
+      "type" : 1
+    }, {
+      "test" : "let array1 =  getPrincipalCollection(['data7']); \nlet makanan = getValue('r507'); // Mendapatkan nilai makanan\nlet nomerKeluarga = getValue('r502'); // Mendapatkan nomor keluarga\n\n// Memeriksa apakah 'nomerKeluarga' tidak null dan 'makanan' lebih dari 1\nif(nomerKeluarga !== null && makanan > 1){ \n    // Filter untuk mendapatkan elemen yang sesuai dengan 'nomerKeluarga' di data7\n    let found = array1.data7.filter((element) => element == nomerKeluarga); \n    \n    // Memeriksa apakah jumlah makanan lebih dari 1 dan jumlah 'found' tidak sama dengan 'makanan'\n    if(makanan > 1 && (found.length != makanan)){\n        true;}\n}",
+      "message" : "Bila pengelolaan makanan lebih dari 1 maka anda harus menambahkan ruta baru",
+      "type" : 2
+    }, {
+      "test" : "let tambahan = getValue('tambahan'); \nlet makanan = getValue('r507'); \nlet keberadaan = getValue('r506');\nlet view = false;\nif (tambahan && makanan !== '' && keberadaan) {\nif (tambahan[0]?.value === '2' && ![0, 1].includes(makanan)) {\n        view = true;\n    }\n}\nview;",
+      "message" : "Bila keluarga baru maka pengelolaan makanan yang diperbolehkan hanya 0 atau 1.",
+      "type" : 2
+    }, {
+      "test" : "let array1 =  getPrincipalCollection(['data7']); \nlet makanan = getValue('r507'); // Mendapatkan nilai makanan\nlet nomerKeluarga = getValue('r502'); // Mendapatkan nomor keluarga\n\n// Memeriksa apakah 'nomerKeluarga' tidak null dan 'makanan' lebih dari 1\nif(nomerKeluarga !== null && makanan > 1){ \n    // Filter untuk mendapatkan elemen yang sesuai dengan 'nomerKeluarga' di data7\n    let found = array1.data7.filter((element) => element == nomerKeluarga); \n    \n    // Memeriksa apakah jumlah makanan lebih dari 1 dan jumlah 'found' tidak sama dengan 'makanan'\n    if(found.length != makanan){ \n        true;}\n    \n}",
+      "message" : "Rumah tangga baru belum di-daftarkan semua",
+      "type" : 2
+    }, {
+      "test" : "let tambahan = getValue('tambahan'); \nlet makanan = getValue('r507');\nlet keberadaan = getValue('r506');\nlet view = false;\n\nif (tambahan && makanan !== '' && keberadaan) {\nif (tambahan[0]?.value === '1' && makanan != 1) {\n        view = true;\n    }\n}\nview;",
+      "message" : "Bila rumah tangga tambahan maka pengelolaan makanan harus 1",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r508_input",
+    "componentValidation" : [ "r508", "r502", "r507" ],
+    "validations" : [ {
+      "test" : "var array1 = getPrincipalCollection(['data4', 'data8', 'data7']);\nvar nomer = getValue('r508'); // Nilai 'nomer' diharapkan numerik\nvar nuKel = getValue('r502'); // Nilai 'nuKel' diharapkan numerik\nvar mamin = getValue('r507'); // Nilai 'mamin' diharapkan numerik\nvar result = false;\n\n// Cari elemen yang sesuai dengan 'nomer' dalam 'data4'\nlet found = array1.data4\n    .map((value, index) => ({\n        data4: value,\n        index: index\n    }))\n    .filter(element => element.data4 == Number(nomer));\n\n// Logika untuk menentukan nilai 'result'\nif (nomer > 0 && found.length >= 1) {\n    // Filter elemen dalam 'found' untuk data8 yang nilainya \"0\"\n\n    result = true;\n\n    // Jika mamin adalah 0, hasil diatur ke false\n    if (mamin == 0) {\n        result = false;\n    }\n        // Cek apakah data7 pada indeks pertama dari found sesuai dengan nuKel\n    for (let i = 0; i < found.length; i++) {\n        let currentIndex = found[i].index; // Ambil index langsung dari found\n        if (array1.data8[currentIndex] === '0') { // Periksa apakah nilai data8 di indeks tersebut adalah 0\n            result = false; // Jika ya, ubah hasil menjadi false\n            break; // Hentikan perulangan karena kondisi terpenuhi\n        }\n    }\n    // Cek apakah data7 pada indeks pertama dari found sesuai dengan nuKel\n    let firstFoundIndex = array1.data4.indexOf(found[0].data4);\n    if (array1.data7[firstFoundIndex] == nuKel) {\n        result = false;\n    }\n}\n\nresult;\n",
+      "message" : "Nomer urut rumah tangga yang anda masukkan sudah ada sebelumnya",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "r510_input",
+    "componentValidation" : [ "r510_input" ],
+    "validations" : [ {
+      "test" : "let nama = getValue('r510_input');\nlet hasil = false;\nif (/[a-zA-Z]/.test(nama)) {\n    hasil = false;\n} else {\n    hasil = true;\n}\nhasil;",
+      "message" : "Nama tidak boleh hanya menulis angka",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "cp_nama",
+    "componentValidation" : [ "cp_nama" ],
+    "validations" : [ {
+      "test" : "let nama = getValue('cp_nama');\nlet hasil = false;\nif (/[a-zA-Z]/.test(nama)) {\n    hasil = false;\n} else {\n    hasil = true;\n}\nhasil;",
+      "message" : "Nama tidak boleh hanya menulis angka",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "cp_email",
+    "componentValidation" : [ "cp_email" ],
+    "validations" : [ {
+      "test" : "getValue('cp_email').length == 1 && getValue('cp_email') !== '-'",
+      "message" : "Jika email terisi 1 digit, isikan tanda setrip (-)",
+      "type" : 2
+    }, {
+      "test" : "getValue('cp_email').length > 1 && !getValue('cp_email').match(\r\n    /^(([^<>()[\\]\\\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/\r\n  )",
+      "message" : "Isian tidak sesuai dengan format email",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "cp_telp",
+    "componentValidation" : [ "cp_telp" ],
+    "validations" : [ {
+      "test" : "!(/^\\d+$/.test(getValue('cp_telp'))) && getValue('cp_telp').length > 1;",
+      "message" : "Nomor telepon hanya dapat diisi angka",
+      "type" : 2
+    }, {
+      "test" : "let r514_telp_ssgi = getValue('cp_telp');\n\nif(r514_telp_ssgi.length > 1)\n{\n    r514_telp_ssgi.length < 10;    \n}",
+      "message" : "telepon / HP minimal terisi 10 digit",
+      "type" : 2
+    }, {
+      "test" : "getValue('cp_telp').length == 1 && getValue('cp_telp') !== '-'",
+      "message" : "Jika telp/hp terisi 1 digit, isikan tanda setrip (-)",
+      "type" : 2
+    } ]
+  } ]
+}

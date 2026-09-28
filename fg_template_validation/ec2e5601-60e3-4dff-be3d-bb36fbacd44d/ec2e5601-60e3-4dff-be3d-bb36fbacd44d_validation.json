@@ -1,0 +1,884 @@
+{
+  "version" : "0.0.89",
+  "testFunctions" : [ {
+    "dataKey" : "alamat_kodepos",
+    "componentValidation" : [ "alamat_kodepos" ],
+    "validations" : [ {
+      "test" : "let result = getValue('alamat_kodepos');\nlet regex = /^[0-9]+$/;\n\nif (result.length > 0 && result != undefined){\n    !regex.test(result)\n}",
+      "message" : "Isian Kode Pos harus Angka",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('alamat_kodepos'); a.length != 5\n",
+      "message" : "Kode Pos harus 5 karakter",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "alamat_kodesls",
+    "componentValidation" : [ "alamat_kodesls" ],
+    "validations" : [ {
+      "test" : "let a = getValue('alamat_kodesls'); a.length == 1 && a !== '-'",
+      "message" : "Jika tidak tahu, isikan tanda strip \"-\"",
+      "type" : 2
+    }, {
+      "test" : "let result = getValue('alamat_kodesls');\r\nlet regex = /^[0-9]+$/;\r\n\r\nif (result.length > 1 && result != undefined){\r\n    !regex.test(result)\r\n}\r\n\r\n",
+      "message" : "Kode SLS harus angka",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('alamat_kodesls'); a.length > 1 && a.length != 4 && a.length != 6",
+      "message" : "Kode SLS harus 4 atau 6 karakter",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "alamat_jalan",
+    "componentValidation" : [ "alamat_jalan" ],
+    "validations" : [ {
+      "test" : "let isi = getValue('alamat_jalan');\nconst letterCount = (isi.match(/[a-zA-Z]/g) || []).length;\n\nletterCount < 10 && isi !== '-'",
+      "message" : "Minimal terisi 10 huruf. Tuliskan alamat selengkapnya (Contoh: jalan, gang, nomor rumah, kavling)",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "alamat_nomor",
+    "componentValidation" : [ "nomor_domisili", "alamat_nomor" ],
+    "validations" : [ {
+      "test" : "//let val = getValue('nomor_domisili');\n//let str = val ? val?.toString() : '';\n//str != '-' &&  str != '';\n\nlet val = getValue('alamat_nomor');\nlet str = val !== null && val !== undefined ? val.toString() : '';\n\nlet valid =\n    str !== '' && (\n        str === '-' ||                    // boleh hanya \"-\"\n        (/^[A-Za-z0-9 /]+$/.test(str) &&     // selain itu hanya huruf & angka\n         /[0-9]/.test(str))                // dan harus ada minimal 1 angka\n    );\n\nvalid == false;\n",
+      "message" : "Jika tidak ada nomor rumah, tulis strip (-) ",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "lat_manual",
+    "componentValidation" : [ "lat_manual", "lokasi" ],
+    "validations" : [ {
+      "test" : "let b = getValue('lat_manual')\nlet c = getValue('lokasi')\n\n!b  &&\n!c \n",
+      "message" : "Latitude Manual harus isi jika Geotag Langsung tidak terisi",
+      "type" : 2
+    }, {
+      "test" : "let result = getValue('lat_manual');\r\nlet regex  = /^-?\\d+(\\.\\d+)?$/;\r\n\r\nif (result.length > 0 && result != undefined){\r\n    !regex.test(result)\r\n}\r\n",
+      "message" : "Isian harus desimal",
+      "type" : 2
+    }, {
+      "test" : "let r202a = getValue('lat_manual');\r\nNumber(r202a) < -11 || Number(r202a) > 6\r\n",
+      "message" : "Range -11 sd 6",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "long_manual",
+    "componentValidation" : [ "long_manual", "lokasi", "lat_manual" ],
+    "validations" : [ {
+      "test" : "let r202a = getValue('long_manual');\r\nNumber(r202a) > 0 && (Number(r202a) < 95 || Number(r202a) > 141)\r\n\r\n",
+      "message" : "Range 95 sd 141",
+      "type" : 2
+    }, {
+      "test" : "let b = getValue('long_manual')\nlet c = getValue('lokasi')\n\n!b  &&\n!c ",
+      "message" : "Longitude Manual harus isi jika Geotag Langsung tidak terisi",
+      "type" : 2
+    }, {
+      "test" : "let result = getValue('long_manual');\r\nlet regex  = /^-?\\d+(\\.\\d+)?$/;\r\n\r\nif (result.length > 0 && result != undefined){\r\n    !regex.test(result)\r\n}\r\n",
+      "message" : "Isian harus desimal",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('lat_manual')\nlet b = getValue('long_manual')\n\nif(b.length > 0 && b != undefined)\n!a",
+      "message" : "Jika Longitude terisi, maka Latitude juga harus isi",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('lat_manual')\nlet b = getValue('long_manual')\n\nif(a.length > 0 && a != undefined)\n!b",
+      "message" : "Jika Latitude terisi, maka Longitude juga harus isi",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "domisili_kodepos",
+    "componentValidation" : [ "domisili_kodepos" ],
+    "validations" : [ {
+      "test" : "let a = getValue('domisili_kodepos'); a.length != 5\n",
+      "message" : "Kode Pos harus 5 karakter",
+      "type" : 2
+    }, {
+      "test" : "let result = getValue('domisili_kodepos');\r\nlet regex = /^[0-9]+$/;\r\n\r\nif (result.length > 0 && result != undefined){\r\n    !regex.test(result)\r\n}\r\n\r\n",
+      "message" : "Isian Kode Pos harus Angka",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "jml_kk",
+    "componentValidation" : [ "jml_kk" ],
+    "validations" : [ {
+      "test" : "Number(getValue('jml_kk')) < 1 ||\r\nNumber(getValue('jml_kk')) > 99",
+      "message" : "Rentang isian 1 - 99",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "nomor_kk_lain",
+    "componentValidation" : [ "nomor_kk_lain@$ROW$", "kartu_keluarga" ],
+    "validations" : [ {
+      "test" : "let val = getValue('nomor_kk_lain@$ROW$')?? '';\nlet str = val ? val?.toString() : '';\nstr == '0000000000000000' ;",
+      "message" : "Nomor KK tidak boleh isi 0000000000000000",
+      "type" : 2
+    }, {
+      "test" : "let val = getValue('nomor_kk_lain@$ROW$')?? '';\nlet str = val ? val?.toString() : '';\nstr.length > 0 && /^\\d+$/.test(str) && str.split('').every(char => char === str[0]) && str != '9999'  && str != '7777' && str != '8888' \n",
+      "message" : "Apakah benar No KK Lain berdigit sama semua? NIK tidak boleh kosong. Isikan 7777 untuk KK/NIK lebih dr 16 digit, 8888 untuk keluarga baru, 9999 untuk lainnya",
+      "type" : 2
+    }, {
+      "test" : "let val = getValue('nomor_kk_lain@$ROW$');\nlet val2 = getValue('kartu_keluarga');\nval == val2;\n\n",
+      "message" : "No KK tidak boleh sama dengan Nomor KK Prelist",
+      "type" : 2
+    }, {
+      "test" : "let result = getValue('nomor_kk_lain@$ROW$');\nlet regex = /^[0-9]+$/;\n\nif (result.length > 0 && result != undefined){\n    !regex.test(result)\n}\n\n",
+      "message" : "Isian Nomor KK harus Angka",
+      "type" : 2
+    }, {
+      "test" : "let val = getValue('nomor_kk_lain@$ROW$')?? '';\nlet str = val ? val?.toString() : '';\nstr.length !== 16 && str != '9999' && str != '7777' && str != '8888' &&  str != '';\n\n",
+      "message" : "No KK tidak boleh kosong. Isikan 7777 untuk KK lebih dr 16 digit, 8888 untuk belum memiliki KK sendiri, 9999 untuk lainnya, 8888 ",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "sewa_sendiri",
+    "componentValidation" : [ "sewa_sendiri" ],
+    "validations" : [ {
+      "test" : "Number(getValue('sewa_sendiri')) < 50000 ||\r\nNumber(getValue('sewa_sendiri')) > 80000000\r\n",
+      "message" : "Rentang isian 50000 - 80000000",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "sewa_kontrak",
+    "componentValidation" : [ "sewa_kontrak" ],
+    "validations" : [ {
+      "test" : "Number(getValue('sewa_kontrak')) < 50000 ||\r\nNumber(getValue('sewa_kontrak')) > 80000000\r\n",
+      "message" : "Rentang isian 50000 - 80000000",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "sewa_dinas",
+    "componentValidation" : [ "sewa_dinas" ],
+    "validations" : [ {
+      "test" : "Number(getValue('sewa_dinas')) < 50000 ||\r\nNumber(getValue('sewa_dinas')) > 80000000\r\n",
+      "message" : "Rentang isian 50000 - 80000000",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "luas_lantai",
+    "componentValidation" : [ "luas_lantai" ],
+    "validations" : [ {
+      "test" : "Number(getValue('luas_lantai')) < 2 ||\r\nNumber(getValue('luas_lantai')) > 999\r\n",
+      "message" : "Rentang isian 2 - 999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "jumlah_meteran",
+    "componentValidation" : [ "jumlah_meteran" ],
+    "validations" : [ {
+      "test" : "let a = getValue('jumlah_meteran'); \na < 1 || a > 9",
+      "message" : "Jumlah meteran dalam rentang 1 - 9",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "id_pelanggan_pln",
+    "componentValidation" : [ "id_pelanggan_pln@$ROW$" ],
+    "validations" : [ {
+      "test" : "let val = getValue('id_pelanggan_pln@$ROW$')?? '';\nlet str = val ? val?.toString() : '';\nstr.length < 11 && str != '9999' &&  str != '';\n\n",
+      "message" : "ID Pelanggan PLN harus 11-12 digit, atau isi 9999",
+      "type" : 2
+    }, {
+      "test" : "let val = getValue('id_pelanggan_pln@$ROW$')?? '';\nlet str = val ? val?.toString() : '';\n(str.length > 4 && str.length < 11) || str.length > 12;\n\n",
+      "message" : "ID Pelanggan PLN harus 11-12 digit, atau isi 9999",
+      "type" : 2
+    }, {
+      "test" : "let val = getValue('id_pelanggan_pln@$ROW$')?? '';\nlet str = val ? val?.toString() : '';\nstr == '00000000000' || str == '000000000000' ;",
+      "message" : "ID Pelanggan PLN tidak boleh isi 0 semua",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "pengeluaran_listrik",
+    "componentValidation" : [ "pengeluaran_listrik" ],
+    "validations" : [ {
+      "test" : "Number(getValue('pengeluaran_listrik')) < 0 ||\r\nNumber(getValue('pengeluaran_listrik')) > 9999999\r\n",
+      "message" : "Rentang isian 0 - 9999999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "pengeluaran_pulsa",
+    "componentValidation" : [ "pengeluaran_pulsa" ],
+    "validations" : [ {
+      "test" : "Number(getValue('pengeluaran_pulsa')) < 0 ||\r\nNumber(getValue('pengeluaran_pulsa')) > 9999999\r\n",
+      "message" : "Rentang isian 0 - 9999999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "pengeluaran_internet",
+    "componentValidation" : [ "pengeluaran_internet" ],
+    "validations" : [ {
+      "test" : "Number(getValue('pengeluaran_internet')) < 0 ||\r\nNumber(getValue('pengeluaran_internet')) > 9999999",
+      "message" : "Rentang isian 0 - 9999999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "gas_3kg",
+    "componentValidation" : [ "gas_3kg" ],
+    "validations" : [ {
+      "test" : "Number(getValue('gas_3kg')) < 0 ||\r\nNumber(getValue('gas_3kg')) > 99\r\n",
+      "message" : "Rentang isian 0 - 99",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "gas_5kg",
+    "componentValidation" : [ "gas_5kg" ],
+    "validations" : [ {
+      "test" : "Number(getValue('gas_5kg')) < 0 ||\r\nNumber(getValue('gas_5kg')) > 99\r\n",
+      "message" : "Rentang isian 0 - 99",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "lemaries_kulkas",
+    "componentValidation" : [ "lemaries_kulkas" ],
+    "validations" : [ {
+      "test" : "Number(getValue('lemaries_kulkas')) < 0 ||\r\nNumber(getValue('lemaries_kulkas')) > 99\r\n",
+      "message" : "Rentang isian 0 - 99",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ac",
+    "componentValidation" : [ "ac" ],
+    "validations" : [ {
+      "test" : "Number(getValue('ac')) < 0 ||\r\nNumber(getValue('ac')) > 99",
+      "message" : "Rentang isian 0 - 99",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "emas_perhiasan",
+    "componentValidation" : [ "emas_perhiasan" ],
+    "validations" : [ {
+      "test" : "Number(getValue('emas_perhiasan')) < 0 ||\r\nNumber(getValue('emas_perhiasan')) > 999",
+      "message" : "Rentang isian 0 - 999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "komputer_laptop",
+    "componentValidation" : [ "komputer_laptop" ],
+    "validations" : [ {
+      "test" : "Number(getValue('komputer_laptop')) < 0 ||\r\nNumber(getValue('komputer_laptop')) > 99",
+      "message" : "Rentang isian 0 - 99",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "sepeda_motor",
+    "componentValidation" : [ "sepeda_motor" ],
+    "validations" : [ {
+      "test" : "Number(getValue('sepeda_motor')) < 0 ||\r\nNumber(getValue('sepeda_motor')) > 99",
+      "message" : "Rentang isian 0 - 99",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "aset_sepedamotor",
+    "componentValidation" : [ "aset_sepedamotor" ],
+    "validations" : [ {
+      "test" : "Number(getValue('aset_sepedamotor')) < 500000 ||\r\nNumber(getValue('aset_sepedamotor')) > 999999999\r\n",
+      "message" : "Rentang isian 500000 - 999999999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "mobil",
+    "componentValidation" : [ "mobil" ],
+    "validations" : [ {
+      "test" : "Number(getValue('mobil')) < 0 ||\r\nNumber(getValue('mobil')) > 99",
+      "message" : "Rentang isian 0 - 99",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "aset_mobil",
+    "componentValidation" : [ "aset_mobil" ],
+    "validations" : [ {
+      "test" : "Number(getValue('aset_mobil')) < 10000000 ||\r\nNumber(getValue('aset_mobil')) > 9999999999",
+      "message" : "Rentang isian 10000000 - 9999999999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "jumlah_lahan_lain",
+    "componentValidation" : [ "jumlah_lahan_lain" ],
+    "validations" : [ {
+      "test" : "Number(getValue('jumlah_lahan_lain')) < 0 ||\r\nNumber(getValue('jumlah_lahan_lain')) > 99",
+      "message" : "Rentang isian 0 - 99",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "hargajual_lahanlain",
+    "componentValidation" : [ "hargajual_lahanlain" ],
+    "validations" : [ {
+      "test" : "Number(getValue('hargajual_lahanlain')) < 1000000 ||\r\nNumber(getValue('hargajual_lahanlain')) > 9999999999\r\n",
+      "message" : "Rentang isian Rp.1.000.000 – Rp.9.999.999.999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "jumlah_bangunan_lain",
+    "componentValidation" : [ "jumlah_bangunan_lain" ],
+    "validations" : [ {
+      "test" : "Number(getValue('jumlah_bangunan_lain')) < 0 ||\r\nNumber(getValue('jumlah_bangunan_lain')) > 99",
+      "message" : "Rentang isian 0 - 99",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "hargajual_bangunanlain",
+    "componentValidation" : [ "hargajual_bangunanlain" ],
+    "validations" : [ {
+      "test" : "Number(getValue('hargajual_bangunanlain')) < 20000000 ||\r\nNumber(getValue('hargajual_bangunanlain')) > 9999999999\r\n",
+      "message" : "Rentang isian 20000000 – 9999999999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_tambah",
+    "componentValidation" : [ "ak_gabung", "ak_hubungan_kk" ],
+    "validations" : [ {
+      "test" : "const art = getValue('ak_gabung');\n\nconst KRT = art?.map(a => getValue('ak_hubungan_kk#' + a.value))\n    .filter(a => a?.[0]?.value === '1')\nif (KRT !== undefined)    \n(KRT?.length > 1)",
+      "message" : "Jumlah Kepala keluarga dalam satu keluarga tidak boleh lebih dari 1",
+      "type" : 2
+    }, {
+      "test" : "const art = getValue('ak_gabung');\n\nconst KRT = art?.map(a => getValue('ak_hubungan_kk#' + a.value))\n    .filter(a => a?.[0]?.value === '1')\nif (KRT !== undefined)    \n(KRT?.length < 1)",
+      "message" : "Tidak ada Kepala keluarga dalam keluarga ini",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_tambah1",
+    "componentValidation" : [ "ak_gabung", "ak_hubungan_kk" ],
+    "validations" : [ {
+      "test" : "const art = getValue('ak_gabung');\n\nconst KRT = art?.map(a => getValue('ak_hubungan_kk#' + a.value))\n    .filter(a => a?.[0]?.value === '1')\nif (KRT !== undefined)    \n(KRT?.length > 1)",
+      "message" : "Jumlah Kepala keluarga dalam satu keluarga tidak boleh lebih dari 1",
+      "type" : 2
+    }, {
+      "test" : "const art = getValue('ak_gabung');\n\nconst KRT = art?.map(a => getValue('ak_hubungan_kk#' + a.value))\n    .filter(a => a?.[0]?.value === '1')\nif (KRT !== undefined)    \n(KRT?.length < 1)",
+      "message" : "Tidak ada Kepala keluarga dalam keluarga ini",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_nik_new",
+    "componentValidation" : [ "ak_nik@$ROW$" ],
+    "validations" : [ {
+      "test" : "let result = getValue('ak_nik@$ROW$');\nlet regex = /^[0-9]+$/;\n\nif (result.length > 0 && result != undefined){\n    !regex.test(result)\n}",
+      "message" : "Isian NIK harus Angka",
+      "type" : 2
+    }, {
+      "test" : "let val = getValue('ak_nik@$ROW$')?? '';\nlet str = val ? val?.toString() : '';\nstr == '0000000000000000' ;",
+      "message" : "NIK tidak boleh diisi 0000000000000000",
+      "type" : 2
+    }, {
+      "test" : "let val = getValue('ak_nik@$ROW$')?? '';\nlet str = val ? val?.toString() : '';\nstr.length !== 16 && str != '9999' && str != '7777' &&  str != '';",
+      "message" : "NIK tidak boleh kosong. Isikan 7777 untuk KK/NIK lebih dr 16 digit, 9999 untuk lainnya",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_nik@$ROW$'); a.length > 16",
+      "message" : "NIK tidak boleh lebih dari 16 karakter",
+      "type" : 2
+    }, {
+      "test" : "let val = getValue('ak_nik@$ROW$')?? '';\nlet str = val ? val?.toString() : '';\nstr.length > 0 && /^\\d+$/.test(str) && str.split('').every(char => char === str[0]) && str != '9999'  && str != '7777' ",
+      "message" : "Apakah benar NIK berdigit sama semua? NIK tidak boleh kosong. Isikan 7777 untuk KK/NIK lebih dr 16 digit, 9999 untuk lainnya",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_hp",
+    "componentValidation" : [ "ak_hp@$ROW$" ],
+    "validations" : [ {
+      "test" : "let a = getValue('ak_hp@$ROW$'); a.length == 1 && a !== '-'\r\n\r\n",
+      "message" : "Jika tidak ada, isikan tanda strip \"-\"",
+      "type" : 2
+    }, {
+      "test" : "let result = getValue('ak_hp@$ROW$');\r\nlet regex = /^(?:\\08|02|03|04|05|06|07|08|09)[0-9-]*$/;\r\n\r\nif (result.length > 1 && result != undefined){\r\n    !regex.test(result)\r\n}\r\n\r\n",
+      "message" : "Isian tidak sesuai format",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_hp@$ROW$'); a.length > 13",
+      "message" : "Maksimal 13 karakter",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_hp@$ROW$'); a.length > 1 && a.length < 7",
+      "message" : "Minimal 7 karakter",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_jk",
+    "componentValidation" : [ "ak_nik@$ROW$", "ak_jk@$ROW$", "ak_jk_pre_gab@$ROW$", "ak_nik_new@$ROW$" ],
+    "validations" : [ {
+      "test" : "//R504 = 1 & R505 != 0 & R505  != 9998 & INT(MID(R505,6,1)) >= 8 & INT(MID(R505,6,1)) <= 9 & R506 != 5\t\r\n\r\nlet r205c = String(getValue('ak_nik@$ROW$')); \r\nlet b = r205c?.substring(6, 7); // (angka pertama, jml digt)\r\nlet r208 = getValue('ak_jk@$ROW$');\r\nlet jk_pre = String(getValue('ak_jk_pre_gab@$ROW$')); \r\nlet c = jk_pre?.substring(0, 1); // (angka pertama, jml digt)\r\n\r\nif (r208?.length > 0 ) \r\n\r\n(b == '0' || b == '1'  || b == '2'  || b == '3') &&\r\nr208[0]?.value != 1 && c !== '1' && c !== '2'",
+      "message" : "1. NIK digit ke-7 = 0,1,2,3 tapi Jenis Kelamin tidak isi 1. Isikan Remark jika sudah sesuai",
+      "type" : 1
+    }, {
+      "test" : "//R504 = 1 & R505 != 0 & R505  != 9998 & INT(MID(R505,6,1)) >= 8 & INT(MID(R505,6,1)) <= 9 & R506 != 5\t\r\n\r\nlet r205c = String(getValue('ak_nik@$ROW$')); \r\nlet b = r205c?.substring(6, 7); // (angka pertama, jml digt)\r\nlet r208 = getValue('ak_jk@$ROW$');\r\nlet jk_pre = String(getValue('ak_jk_pre_gab@$ROW$')); \r\nlet c = jk_pre?.substring(0, 1); // (angka pertama, jml digt)\r\n\r\nif (r208?.length > 0 && jk_pre !== undefined) \r\n\r\n(b == '0' || b == '1'  || b == '2'  || b == '3') &&\r\nc == '1' && r208[0]?.value != 1",
+      "message" : "2. NIK digit ke-7 = 0,1,2,3 tapi Jenis Kelamin tidak isi 1. Isikan Remark jika sudah sesuai",
+      "type" : 1
+    }, {
+      "test" : "let r205c = String(getValue('ak_nik_new@$ROW$')); \r\nlet b = r205c?.substring(6, 7); // (angka pertama, jml digt)\r\nlet r208 = getValue('ak_jk@$ROW$');\r\nlet jk_pre = String(getValue('ak_jk_pre_gab@$ROW$')); \r\nlet c = jk_pre?.substring(0, 1); // (angka pertama, jml digt)\r\n\r\nif (r208?.length > 0) \r\n(b == '4' || b == '5'  || b == '6'  || b == '7') &&\r\nr208[0]?.value != 2 && c !== '1' && c !== '2'",
+      "message" : "3. NIK digit ke-7 = 4,5,6,7 tapi Jenis Kelamin tidak isi 2. Isikan Remark jika sudah sesuai",
+      "type" : 1
+    }, {
+      "test" : "let r205c = String(getValue('ak_nik_new@$ROW$')); \r\nlet b = r205c?.substring(6, 7); // (angka pertama, jml digt)\r\nlet r208 = getValue('ak_jk@$ROW$');\r\nlet jk_pre = String(getValue('ak_jk_pre_gab@$ROW$')); \r\nlet c = jk_pre?.substring(0, 1); // (angka pertama, jml digt)\r\n\r\nif (r208?.length > 0 && jk_pre !== undefined) \r\n(b == '4' || b == '5'  || b == '6'  || b == '7') &&\r\nc == '2' && r208[0]?.value != 2",
+      "message" : "4. NIK digit ke-7 = 4,5,6,7 tapi Jenis Kelamin tidak isi 2. Isikan Remark jika sudah sesuai",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "ak_tgl_lahir",
+    "componentValidation" : [ "ak_tgl_lahir@$ROW$", "ak_nik@$ROW$", "ak_jk@$ROW$", "ak_lahir_pre_gab@$ROW$" ],
+    "validations" : [ {
+      "test" : "let tgl = getValue('ak_tgl_lahir@$ROW$');\r\nif (tgl !== undefined)\r\nNumber(tgl) < 1 || (Number(tgl) > 31 && Number(tgl) < 98) || Number(tgl) > 98;",
+      "message" : "Tanggal lahir harus terisi dalam range 1-31, 98",
+      "type" : 2
+    }, {
+      "test" : "let ak_nik = getValue('ak_nik@$ROW$');\nlet ak_jk = getValue('ak_jk@$ROW$');\nlet ak_tgl_lahir = getValue('ak_tgl_lahir@$ROW$');\nlet jk_pre = String(getValue('ak_lahir_pre_gab@$ROW$')); \n\nif (ak_nik?.length == 16 && ak_jk !== undefined && ak_tgl_lahir !== undefined)\nak_nik !== '9999999999999998' && ak_jk?.[0]?.value == '2' && \n(Number(ak_nik?.substring(6,8)) - 40) !== Number(ak_tgl_lahir) && \nNumber(ak_tgl_lahir) !==98\n&& Number(ak_tgl_lahir) !== Number(c) && Number(c) > 0;",
+      "message" : "4. Jenis kelamin perempuan, tetapi tanggal lahir dan digit 7 dan 8 NIK tidak sesuai Tanggal Lahir atau Predefined. Isikan remark, jika sudah sesuai ",
+      "type" : 1
+    }, {
+      "test" : "let a = getValue('ak_tgl_lahir@$ROW$'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    }, {
+      "test" : "let dem_nik = getValue('ak_nik@$ROW$');\nlet dem_sex = getValue('ak_jk@$ROW$');\nlet dem_bth_d = getValue('ak_tgl_lahir@$ROW$');\nlet jk_pre = String(getValue('ak_lahir_pre_gab@$ROW$')); \n\nif (dem_nik?.length == 16 && dem_sex !== undefined && dem_bth_d !== undefined)\ndem_nik !== '9999999999999998' && dem_sex?.[0]?.value == '1' && \nNumber(dem_nik?.substring(6,8)) !== Number(dem_bth_d) && \nNumber(dem_bth_d) !==98\n&& (jk_pre == '' || jk_pre.length < 1 || jk_pre == undefined);",
+      "message" : "1. Jenis kelamin laki-laki, tetapi digit 7 dan 8 NIK tidak sesuai tanggal lahir. Isikan remark, jika sudah sesuai ",
+      "type" : 1
+    }, {
+      "test" : "let dem_nik = getValue('ak_nik@$ROW$');\nlet dem_sex = getValue('ak_jk@$ROW$');\nlet dem_bth_d = getValue('ak_tgl_lahir@$ROW$');\nlet jk_pre = String(getValue('ak_lahir_pre_gab@$ROW$')); \nlet c = jk_pre.split(\"-\")[2]; // (angka pertama, jml digt)\n\nif (dem_nik?.length == 16 && dem_sex !== undefined && dem_bth_d !== undefined)\ndem_nik !== '9999999999999998' && dem_sex?.[0]?.value == '1' && \nNumber(dem_nik?.substring(6,8)) !== Number(dem_bth_d) && \nNumber(dem_bth_d) !==98\n&& Number(dem_bth_d) !== Number(c) && Number(c) > 0;",
+      "message" : "2. Jenis kelamin laki-laki, tetapi digit 7 dan 8 NIK tidak sesuai tanggal lahir atau Predefined. Isikan remark, jika sudah sesuai ",
+      "type" : 1
+    }, {
+      "test" : "let ak_nik = getValue('ak_nik@$ROW$');\nlet ak_jk = getValue('ak_jk@$ROW$');\nlet ak_tgl_lahir = getValue('ak_tgl_lahir@$ROW$');\nlet jk_pre = String(getValue('ak_lahir_pre_gab@$ROW$')); \n\nif (ak_nik?.length == 16 && ak_jk !== undefined && ak_tgl_lahir !== undefined)\nak_nik !== '9999999999999998' && ak_jk?.[0]?.value == '2' && \n(Number(ak_nik?.substring(6,8)) - 40) !== Number(ak_tgl_lahir) && \nNumber(ak_tgl_lahir) !==98\n&& (jk_pre == '' || jk_pre.length < 1 || jk_pre == undefined);",
+      "message" : "3. Jenis kelamin perempuan, tetapi tanggal lahir dan digit 7 dan 8 NIK tidak sesuai. Isikan remark, jika sudah sesuai ",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "ak_bln_lahir",
+    "componentValidation" : [ "ak_bln_lahir", "ak_tgl_lahir", "ak_nik@$ROW$", "ak_bln_lahir@$ROW$", "ak_lahir_pre_gab@$ROW$" ],
+    "validations" : [ {
+      "test" : "let row0 = getRowIndex(0); \r\nlet bulan = getValue('ak_bln_lahir#'+row0)\r\nlet tanggal = getValue('ak_tgl_lahir#'+row0)\r\nif(bulan?.length > 0)\r\n(bulan[0].value == '02' &&\r\n(tanggal == '30' || \r\n tanggal == '31')\r\n);",
+      "message" : "Bulan lahir: Februari tapi Tanggal lahir lebih dari 29",
+      "type" : 2
+    }, {
+      "test" : "let row0 = getRowIndex(0); \r\nlet bulan = getValue('ak_bln_lahir#'+row0)\r\nlet tanggal = getValue('ak_tgl_lahir#'+row0)\r\nif(bulan?.length > 0)\r\n((bulan[0].value == '04' ||\r\n bulan[0].value == '06' ||\r\n bulan[0].value == '09' ||\r\n bulan[0].value == '11') &&\r\n tanggal == '31'\r\n);\r\n",
+      "message" : "Bulan lahir: April/Juni/September/November tapi Tanggal lahir lebih dari 30",
+      "type" : 2
+    }, {
+      "test" : "let dem_nik = getValue('ak_nik@$ROW$');\nlet dem_bth_m = getValue('ak_bln_lahir@$ROW$');\nlet jk_pre = String(getValue('ak_lahir_pre_gab@$ROW$')); \nlet c = jk_pre?.substring(5, 7); // (angka pertama, jml digt)\n\nif (dem_nik?.length == 16 && dem_bth_m !== undefined)\ndem_nik !== '9999999999999998' && Number(dem_bth_m?.[0]?.value) !== 98 && \nNumber(dem_bth_m?.[0]?.value) !== Number(dem_nik?.substring(8,10))\n&& Number(dem_bth_m?.[0]?.value) !== Number(c) && Number(c) > 0;;",
+      "message" : "2. Digit 9 dan 10 tidak sesuai dengan bulan lahir. Isikan remark jika sudah sesuai",
+      "type" : 1
+    }, {
+      "test" : "let dem_nik = getValue('ak_nik@$ROW$');\nlet dem_bth_m = getValue('ak_bln_lahir@$ROW$');\nlet jk_pre = String(getValue('ak_lahir_pre_gab@$ROW$')); \n\nif (dem_nik?.length == 16 && dem_bth_m !== undefined)\ndem_nik !== '9999999999999998' && Number(dem_bth_m?.[0]?.value) !== 98 && \nNumber(dem_bth_m?.[0]?.value) !== Number(dem_nik?.substring(8,10))\n&& (jk_pre == '' || jk_pre.length < 1 || jk_pre == undefined);",
+      "message" : "1. Digit 9 dan 10 tidak sesuai dengan bulan lahir. Isikan remark jika sudah sesuai",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "ak_thn_lahir",
+    "componentValidation" : [ "ak_nik@$ROW$", "ak_thn_lahir@$ROW$", "ak_lahir_pre_gab@$ROW$", "ak_thn_lahir", "ak_bln_lahir", "ak_tgl_lahir", "bln_w", "tgl_w", "thn_w" ],
+    "validations" : [ {
+      "test" : "let dem_nik = getValue('ak_nik@$ROW$');\nlet dem_bth_y = getValue('ak_thn_lahir@$ROW$');\nlet jk_pre = String(getValue('ak_lahir_pre_gab@$ROW$')); \nlet c = jk_pre?.substring(0, 4); // (angka pertama, jml digt)\n\nif (dem_nik?.length == 16 && dem_bth_y !== undefined)\ndem_nik !== '9999999999999998' && Number(dem_bth_y) !== 9997 && \nNumber(dem_bth_y.substring(2,4)) !== Number(dem_nik?.substring(10,12))\n&& (jk_pre == '' || jk_pre.length < 1 || jk_pre == undefined);",
+      "message" : "1. Digit 11 dan 12 di NIK tidak sesuai dengan tahun lahir. Isikan remark jika sudah sesuai.",
+      "type" : 1
+    }, {
+      "test" : "let dem_bth_y = getValue('ak_thn_lahir@$ROW$'); \ndem_bth_y.length !== 4\n",
+      "message" : "Isian harus 4 digit",
+      "type" : 2
+    }, {
+      "test" : "let row0 = getRowIndex(0); \r\nlet tahun = getValue('ak_thn_lahir#'+row0)\r\nlet bulan = getValue('ak_bln_lahir#'+row0)\r\nlet tanggal = getValue('ak_tgl_lahir#'+row0)\r\n\r\nif( tahun > 0) \r\ntahun % 4 != 0  && \r\nbulan[0].value == 2 && Number(tanggal) > 28 && Number(tanggal) < 98\r\n",
+      "message" : "Tahun lahir bukan tahun kabisat, tapi Tanggal lahir lebih dari 28",
+      "type" : 2
+    }, {
+      "test" : "let row0 = getRowIndex(0); \r\nlet tahun = getValue('ak_thn_lahir#'+row0)\r\nlet bulan = getValue('ak_bln_lahir#'+row0)\r\nlet tanggal = getValue('ak_tgl_lahir#'+row0)\r\nlet bln_w = getValue('bln_w')\r\nlet tgl_w = getValue('tgl_w')\r\nlet thn_w = getValue('thn_w')\r\n\r\nif(tahun > 0 && Number(bulan[0].value) < 98)\r\n(Number(tahun) == Number(thn_w) && \r\nNumber(bulan[0].value) > Number(bln_w)\r\n);\r\n\r\n\r\n",
+      "message" : "Bulan lahir tidak boleh lebih dari Bulan Mulai Wawancara",
+      "type" : 2
+    }, {
+      "test" : "let row0 = getRowIndex(0); \r\nlet tahun = getValue('ak_thn_lahir#'+row0)\r\nlet thn_w = getValue('thn_w')\r\n\r\nif(tahun > 0)\r\n(Number(tahun) > Number(thn_w));\r\n",
+      "message" : "Tahun lahir tidak boleh lebih dari Tahun Mulai Wawancara",
+      "type" : 2
+    }, {
+      "test" : "let dem_nik = getValue('ak_nik@$ROW$');\nlet dem_bth_y = getValue('ak_thn_lahir@$ROW$');\nlet jk_pre = String(getValue('ak_lahir_pre_gab@$ROW$')); \nlet c = jk_pre?.substring(0, 4); // (angka pertama, jml digt)\n\nif (dem_nik?.length == 16 && dem_bth_y !== undefined)\ndem_nik !== '9999999999999998' && Number(dem_bth_y) !== 9997 && \nNumber(dem_bth_y.substring(2,4)) !== Number(dem_nik?.substring(10,12))\n&& Number(dem_bth_y) !== Number(c) && Number(c) > 0;",
+      "message" : "2. Digit 11 dan 12 di NIK tidak sesuai dengan tahun lahir. Isikan remark jika sudah sesuai.",
+      "type" : 1
+    }, {
+      "test" : "let row0 = getRowIndex(0); \r\nlet tahun = getValue('ak_thn_lahir#'+row0)\r\nlet bulan = getValue('ak_bln_lahir#'+row0)\r\nlet tanggal = getValue('ak_tgl_lahir#'+row0)\r\nlet bln_w = getValue('bln_w')\r\nlet tgl_w = getValue('tgl_w')\r\nlet thn_w = getValue('thn_w')\r\n\r\nif(tahun > 0 && Number(tanggal) < 98 && Number(bulan[0].value) < 98)\r\n(Number(tahun) == Number(thn_w) && \r\nNumber(bulan[0].value) == Number(bln_w) &&\r\nNumber(tanggal) > Number(tgl_w)\r\n);\r\n\r\n\r\n",
+      "message" : "Tanggal lahir tidak boleh lebih dari Tanggal Mulai Wawancara",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_umur",
+    "componentValidation" : [ "ak_hubungan_kk@$ROW$", "ak_umur@$ROW$", "ak_tgl_lahir", "ak_bln_lahir", "ak_thn_lahir", "ak_umur", "value_ak_c", "value_umurmin", "value_umurmax", "thn_w" ],
+    "validations" : [ {
+      "test" : "let dem_rel = getValue('ak_hubungan_kk@$ROW$');\nlet dem_age = getValue('ak_umur@$ROW$');\nif (dem_rel !== undefined && dem_age !== undefined)\n(dem_rel?.[0]?.value == '09' || dem_rel?.[0]?.value == '10') && Number(dem_age) < 5;",
+      "message" : "Isian tanggal lahir lebih dari tanggal pencacahan namun isian umur belum sesuai",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_tgl_lahir#'+getRowIndex(0))[0]?.value;\r\nlet b = getValue('ak_bln_lahir#'+getRowIndex(0))[0]?.value;\r\nlet c = getValue('ak_thn_lahir#'+getRowIndex(0));\r\nlet d = getValue('ak_umur#'+getRowIndex(0));\r\nlet e = getValue('value_ak_c#'+getRowIndex(0));\r\nlet f =  getValue('value_umurmin#'+getRowIndex(0));\r\nlet h =  getValue('value_umurmax#'+getRowIndex(0));\r\nlet m = getValue('thn_w');\r\nif (a != '' && b != '' && c != '' && d != '')\r\nNumber(c) == Number(m) - 1 && \r\n(Number(b) == 98 || \r\n(Number(e) == 1))\r\n&& d != 0 && d != 1\r\n\r\n",
+      "message" : "Umur harus isi 0-1 th",
+      "type" : 2
+    }, {
+      "test" : "let dem_rel = getValue('ak_hubungan_kk@$ROW$');\nlet dem_age = getValue('ak_umur@$ROW$');\nif (dem_rel !== undefined && dem_age !== undefined)\n(dem_rel?.[0]?.value == '01' || dem_rel?.[0]?.value == '02' || dem_rel?.[0]?.value == '04' || dem_rel?.[0]?.value == '07') && Number(dem_age) < 10;",
+      "message" : "Kepala Rumah Tangga (KRT), istri/suami, menantu, dan orang tua/mertua namun umur kurang dari 10 tahun",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_tgl_lahir#'+getRowIndex(0))[0]?.value;\r\nlet b = getValue('ak_bln_lahir#'+getRowIndex(0))[0]?.value;\r\nlet c = getValue('ak_thn_lahir#'+getRowIndex(0));\r\nlet d = getValue('ak_umur#'+getRowIndex(0));\r\nlet e = getValue('value_ak_c#'+getRowIndex(0));\r\nlet f =  getValue('value_umurmin#'+getRowIndex(0));\r\nlet h =  getValue('value_umurmax#'+getRowIndex(0));\r\nif (a != '' && b != '' && c != '' && d != '')\r\nNumber(e) != 1 && Number(f) > 0 && Number(b) < 98 \r\n&& Number(d) !== Number(f)\r\n\r\n",
+      "message" : "1. Umur tidak sama dengan perhitungan tanggal lahir, mohon cek kembali",
+      "type" : 2
+    }, {
+      "test" : "let d = getValue('ak_umur#'+getRowIndex(0));\r\nlet f =  getValue('value_umurmin#'+getRowIndex(0));\r\nNumber(f) > 0 \r\n&& d === 0\r\n\r\n",
+      "message" : "Umur tidak boleh 0 th",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_tgl_lahir#'+getRowIndex(0))[0]?.value;\r\nlet b = getValue('ak_bln_lahir#'+getRowIndex(0))[0]?.value;\r\nlet c = getValue('ak_thn_lahir#'+getRowIndex(0));\r\nlet d = getValue('ak_umur#'+getRowIndex(0));\r\nlet e = getValue('value_ak_c#'+getRowIndex(0));\r\nlet f =  getValue('value_umurmin#'+getRowIndex(0));\r\nlet h =  getValue('value_umurmax#'+getRowIndex(0));\r\nlet m = getValue('thn_w');\r\nif (a != '' && b != '' && c != '' && d != '' && f != '')\r\nNumber(e) == 1 && Number(c) < Number(m) - 1 &&\r\nNumber(d) !== Number(f) &&\r\nNumber(d) !== Number(h)\r\n\r\n",
+      "message" : "2. Umur tidak sama dengan perhitungan tanggal lahir, mohon cek kembali",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_tgl_lahir#'+getRowIndex(0))[0]?.value;\r\nlet b = getValue('ak_bln_lahir#'+getRowIndex(0))[0]?.value;\r\nlet c = getValue('ak_thn_lahir#'+getRowIndex(0));\r\nlet d = getValue('ak_umur#'+getRowIndex(0));\r\nlet e = getValue('value_ak_c#'+getRowIndex(0));\r\nlet f =  getValue('value_umurmin#'+getRowIndex(0));\r\nlet h =  getValue('value_umurmax#'+getRowIndex(0));\r\nlet m = getValue('thn_w');\r\nif (a != '' && b != '' && c != '' && d != '')\r\n((Number(c) == Number(m) - 1 && Number(e) != 1 && Number(b) != 98 && Number(f) < 1) \r\n|| Number(c) == Number(m))\r\n&& d != 0\r\n\r\n",
+      "message" : "Umur harus isi 0 th",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_umur@$ROW$'); \nif (a !== undefined)\n!Number.isInteger(Number(a)) == true;",
+      "message" : "Nilai harus bilangan bulat",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_status_kawin",
+    "componentValidation" : [ "ak_hubungan_kk@$ROW$", "ak_status_kawin@$ROW$", "ak_umur@$ROW$" ],
+    "validations" : [ {
+      "test" : "let dem_rel = getValue('ak_hubungan_kk@$ROW$'); \r\nlet dem_mrt = getValue('ak_status_kawin@$ROW$'); \r\ndem_rel?.[0]?.value == '2' && dem_mrt?.[0]?.value !== '2' ",
+      "message" : "Istri/suami tetapi status perkawinan bukan kawin",
+      "type" : 2
+    }, {
+      "test" : "let dem_rel = getValue('ak_hubungan_kk@$ROW$'); \r\nlet dem_mrt = getValue('ak_status_kawin@$ROW$'); \r\ndem_rel?.[0]?.value == '4' && (dem_mrt?.[0]?.value == '1' || dem_mrt?.[0]?.value == '3');",
+      "message" : "Menantu tetapi status perkawinan belum kawin atau cerai hidup",
+      "type" : 2
+    }, {
+      "test" : "let dem_rel = getValue('ak_hubungan_kk@$ROW$'); \r\nlet dem_mrt = getValue('ak_status_kawin@$ROW$'); \r\n(dem_rel?.[0]?.value == '6' || dem_rel?.[0]?.value == '7') && dem_mrt?.[0]?.value == '1';",
+      "message" : "Orang tua/mertua tetapi status perkawinan belum kawin",
+      "type" : 2
+    }, {
+      "test" : "let dem_mrt = getValue('ak_status_kawin@$ROW$');\nlet dem_age = getValue('ak_umur@$ROW$');\nif (dem_mrt !== undefined && dem_age !== undefined)\n(dem_mrt?.[0]?.value == '2' || dem_mrt?.[0]?.value == '3' || dem_mrt?.[0]?.value == '4') && Number(dem_age) < 10;",
+      "message" : "Usia dibawah 10 tahun, tapi berstatus kawin/cerai hidup/cerai mati",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_hubungan_kk",
+    "componentValidation" : [ "ak_hubungan_kk@$ROW$", "ak_umur@$ROW$" ],
+    "validations" : [ {
+      "test" : "let dem_mrt = getValue('ak_hubungan_kk@$ROW$');\nlet dem_age = getValue('ak_umur@$ROW$');\nif (dem_mrt !== undefined && dem_age !== undefined)\n(dem_mrt?.[0]?.value == '1' || dem_mrt?.[0]?.value == '2' || dem_mrt?.[0]?.value == '4' || dem_mrt?.[0]?.value == '6' || dem_mrt?.[0]?.value == '7') && Number(dem_age) < 10;",
+      "message" : "Status hubungan dengan kepala keluarga terisi kode 1/2/4/6/7 maka umur harus 10 tahun ke atas",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_sekolah",
+    "componentValidation" : [ "ak_sekolah@$ROW$", "ak_umur@$ROW$" ],
+    "validations" : [ {
+      "test" : "let dem_sklh = getValue('ak_sekolah@$ROW$');\nlet dem_age = getValue('ak_umur@$ROW$');\nif (dem_sklh !== undefined && dem_age !== undefined)\ndem_sklh?.[0]?.value == '1' && Number(dem_age) > 65;",
+      "message" : "Umur lebih dari 65 tahun tetapi masih sekolah",
+      "type" : 1
+    }, {
+      "test" : "let dem_sklh = getValue('ak_sekolah@$ROW$');\nlet dem_age = getValue('ak_umur@$ROW$');\nif (dem_sklh !== undefined && dem_age !== undefined)\ndem_sklh?.[0]?.value == '2' && Number(dem_age) < 7;",
+      "message" : "Umur = 5-6 tahun tetapi Tidak bersekolah lagi",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_ijazah",
+    "componentValidation" : [ "ak_ijazah@$ROW$", "ak_umur@$ROW$" ],
+    "validations" : [ {
+      "test" : "let dem_edl = getValue('ak_ijazah@$ROW$')?.[0]?.value;\r\nlet dem_age = getValue('ak_umur@$ROW$');\r\nif (dem_edl !== undefined && dem_age !== undefined)\r\n(Number(dem_edl) == 4) && \r\n Number(dem_age) >= 16 && Number(dem_age) <= 17 \r\n",
+      "message" : "7. Usia 16-17 tahun namun Pendidikan tertinggi tamat D1/D2/D3",
+      "type" : 1
+    }, {
+      "test" : "let dem_edl = getValue('ak_ijazah@$ROW$')?.[0]?.value;\r\nlet dem_age = getValue('ak_umur@$ROW$');\r\nif (dem_edl !== undefined && dem_age !== undefined)\r\n(Number(dem_edl) == 6) && \r\n Number(dem_age) >= 18 && Number(dem_age) <= 19 \r\n",
+      "message" : "10. Usia 18-19 tahun namun Pendidikan tertinggi tamat S2/S3",
+      "type" : 2
+    }, {
+      "test" : "let dem_edl = getValue('ak_ijazah@$ROW$')?.[0]?.value;\nlet dem_age = getValue('ak_umur@$ROW$');\nif (dem_edl !== undefined && dem_age !== undefined)\n(Number(dem_edl) >= 3 && Number(dem_edl) <= 6) && \n Number(dem_age) >= 10 && Number(dem_age) <= 12 \n\n",
+      "message" : "4. Usia 10-12 tahun namun Pendidikan tertinggi tamat SMA ke atas",
+      "type" : 2
+    }, {
+      "test" : "let dem_edl = getValue('ak_ijazah@$ROW$')?.[0]?.value;\r\nlet dem_age = getValue('ak_umur@$ROW$');\r\nif (dem_edl !== undefined && dem_age !== undefined)\r\n(Number(dem_edl) == 5) && \r\n Number(dem_age) >= 18 && Number(dem_age) <= 19 \r\n",
+      "message" : "9. Usia 18-19 tahun namun Pendidikan tertinggi tamat D4/S1/Profesi",
+      "type" : 1
+    }, {
+      "test" : "let dem_edl = getValue('ak_ijazah@$ROW$');\nlet dem_age = getValue('ak_umur@$ROW$');\nif (dem_edl !== undefined && dem_age !== undefined)\n(dem_edl?.[0]?.value == '1') && Number(dem_age) >= 5 && Number(dem_age) < 10 \n",
+      "message" : "1. Usia kurang dari 10 tahun namun Pendidikan tertinggi tamat SD",
+      "type" : 1
+    }, {
+      "test" : "let dem_edl = getValue('ak_ijazah@$ROW$')?.[0]?.value;\r\nlet dem_age = getValue('ak_umur@$ROW$');\r\nif (dem_edl !== undefined && dem_age !== undefined)\r\n(Number(dem_edl) >= 5 && Number(dem_edl) <= 6) && \r\n Number(dem_age) >= 16 && Number(dem_age) <= 17 \r\n",
+      "message" : "8. Usia 16-17 tahun namun Pendidikan tertinggi tamat D4/S1 ke atas",
+      "type" : 2
+    }, {
+      "test" : "let dem_edl = getValue('ak_ijazah@$ROW$')?.[0]?.value;\r\nlet dem_age = getValue('ak_umur@$ROW$');\r\nif (dem_edl !== undefined && dem_age !== undefined)\r\n(Number(dem_edl) == 3) && \r\n Number(dem_age) >= 13 && Number(dem_age) <= 15 \r\n",
+      "message" : "5. Usia 13-15 tahun namun Pendidikan tertinggi tamat SMA",
+      "type" : 1
+    }, {
+      "test" : "let dem_edl = getValue('ak_ijazah@$ROW$')?.[0]?.value;\nlet dem_age = getValue('ak_umur@$ROW$');\nif (dem_edl !== undefined && dem_age !== undefined)\n(Number(dem_edl) >= 4 && Number(dem_edl) <= 6) && \n Number(dem_age) >= 13 && Number(dem_age) <= 15 \n\n",
+      "message" : "6. Usia 13-15 tahun namun Pendidikan tertinggi tamat Pendidikan Tinggi",
+      "type" : 2
+    }, {
+      "test" : "let dem_edl = getValue('ak_ijazah@$ROW$')?.[0]?.value;\nlet dem_age = getValue('ak_umur@$ROW$');\nif (dem_edl !== undefined && dem_age !== undefined)\n(Number(dem_edl) >= 2 && Number(dem_edl) <= 6) && Number(dem_age) >= 5 && Number(dem_age) < 10 \n",
+      "message" : "2. Usia kurang dari 10 tahun namun Pendidikan tertinggi tamat SMP ke atas",
+      "type" : 2
+    }, {
+      "test" : "let dem_edl = getValue('ak_ijazah@$ROW$')?.[0]?.value;\nlet dem_age = getValue('ak_umur@$ROW$');\nif (dem_edl !== undefined && dem_age !== undefined)\n(Number(dem_edl) == 2) && \n Number(dem_age) >= 10 && Number(dem_age) <= 12 \n",
+      "message" : "3. Usia 10-12 tahun namun Pendidikan tertinggi tamat SMP",
+      "type" : 1
+    } ]
+  }, {
+    "dataKey" : "ak_pendapatan_pekerjaan",
+    "componentValidation" : [ "ak_keberadaan@$ROW$", "ak_pendapatan_pekerjaan@$ROW$" ],
+    "validations" : [ {
+      "test" : "let a = getValue('ak_keberadaan@$ROW$');\nlet b = getValue('ak_pendapatan_pekerjaan@$ROW$');\nif (a !== undefined && b !== undefined)\n(a?.[0]?.value == '1' || a?.[0]?.value == '5') && b?.[0]?.value == '9'",
+      "message" : "Anggota keluarga tinggal di rumah, tetapi berkode Tidak Tahu",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_nilai_gaji",
+    "componentValidation" : [ "ak_nilai_gaji@$ROW$", "ak_status_kerja@$ROW$" ],
+    "validations" : [ {
+      "test" : "let val = Number(getValue('ak_nilai_gaji@$ROW$') ?? '0');\nval > 0 && val < 100000;\n",
+      "message" : "Isian harus dalam range Rp 100.000 sd Rp 999.999.999",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_nilai_gaji@$ROW$');\nlet b = getValue('ak_status_kerja@$ROW$');\nif (a !== undefined && b !== undefined)\nNumber(a) == 0 && b?.[0]?.value == '4'",
+      "message" : "Gaji PNS (ASN/TNI/Polri/BUMN/BUMD/pejabat negara/kades) tidak boleh Rp. 0",
+      "type" : 2
+    }, {
+      "test" : "let val = Number(getValue('ak_nilai_gaji@$ROW$') ?? '0');\nval < 0 || val > 999999999;\n",
+      "message" : "Isian harus dalam range Rp 0 sd Rp 999.999.999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_nilai_tunjangan",
+    "componentValidation" : [ "ak_nilai_tunjangan@$ROW$" ],
+    "validations" : [ {
+      "test" : "let val = Number(getValue('ak_nilai_tunjangan@$ROW$') ?? '0');\nval < 0 || val > 999999999;\n",
+      "message" : "Isian harus dalam range  Rp 0 sampai dengan Rp 999.999.999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_nilai_uang_makan",
+    "componentValidation" : [ "ak_nilai_uang_makan@$ROW$" ],
+    "validations" : [ {
+      "test" : "let val = Number(getValue('ak_nilai_uang_makan@$ROW$') ?? '0');\nval < 0 || val > 999999999;\n",
+      "message" : "Isian harus dalam range  Rp 0 sampai dengan Rp 999.999.999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_nilai_honor",
+    "componentValidation" : [ "ak_nilai_honor@$ROW$" ],
+    "validations" : [ {
+      "test" : "let val = Number(getValue('ak_nilai_honor@$ROW$') ?? '0');\nval < 0 || val > 999999999;\n",
+      "message" : "Isian harus dalam range  Rp 0 sampai dengan Rp 999.999.999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_nilai_lembur",
+    "componentValidation" : [ "ak_nilai_lembur@$ROW$" ],
+    "validations" : [ {
+      "test" : "let val = Number(getValue('ak_nilai_lembur@$ROW$') ?? '0');\nval < 0 || val > 999999999;\n",
+      "message" : "Isian harus dalam range  Rp 0 sampai dengan Rp 999.999.999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_nilai_lainnya",
+    "componentValidation" : [ "ak_nilai_lainnya@$ROW$", "ak_pendapatan_pekerjaan@$ROW$", "ak_nilai_gaji@$ROW$", "ak_nilai_tunjangan@$ROW$", "ak_nilai_uang_makan@$ROW$", "ak_nilai_honor@$ROW$", "ak_nilai_lembur@$ROW$" ],
+    "validations" : [ {
+      "test" : "let val = Number(getValue('ak_nilai_lainnya@$ROW$') ?? '0');\nval < 0 || val > 999999999;\n",
+      "message" : "Isian harus dalam range  Rp 0 sampai dengan Rp 999.999.999",
+      "type" : 2
+    }, {
+      "test" : "let x = getValue('ak_pendapatan_pekerjaan@$ROW$');\nlet a = getValue('ak_nilai_gaji@$ROW$') ?? 0;\nlet b = getValue('ak_nilai_tunjangan@$ROW$') ?? 0;\nlet c = getValue('ak_nilai_uang_makan@$ROW$') ?? 0;\nlet d = getValue('ak_nilai_honor@$ROW$') ?? 0;\nlet e = getValue('ak_nilai_lembur@$ROW$') ?? 0;\nlet f = getValue('ak_nilai_lainnya@$ROW$') ?? 0;\n\n\nlet jumlah = (a !== 9999 ? a : 0) + \n             (b !== 9999 ? b : 0) + \n             (c !== 9999 ? c : 0) + \n             (d !== 9999 ? d : 0) + \n             (e !== 9999 ? e : 0) +\n             (f !== 9999 ? f : 0)  ;\n             \nif (x !== undefined && jumlah !== undefined)\nx?.[0]?.value == '1' && Number(jumlah) > 100000000\n",
+      "message" : "Total pendapatan dari pekerjaan Rp. 100.000.000?",
+      "type" : 1
+    }, {
+      "test" : "let x = getValue('ak_pendapatan_pekerjaan@$ROW$');\nlet a = getValue('ak_nilai_gaji@$ROW$') ?? 0;\nlet b = getValue('ak_nilai_tunjangan@$ROW$') ?? 0;\nlet c = getValue('ak_nilai_uang_makan@$ROW$') ?? 0;\nlet d = getValue('ak_nilai_honor@$ROW$') ?? 0;\nlet e = getValue('ak_nilai_lembur@$ROW$') ?? 0;\nlet f = getValue('ak_nilai_lainnya@$ROW$') ?? 0;\n\n\nlet jumlah = (a !== 9999 ? a : 0) + \n             (b !== 9999 ? b : 0) + \n             (c !== 9999 ? c : 0) + \n             (d !== 9999 ? d : 0) + \n             (e !== 9999 ? e : 0) +\n             (f !== 9999 ? f : 0)  ;\n             \nif (x !== undefined && jumlah !== undefined)\nx?.[0]?.value == '1' && Number(jumlah) == 0\n\n",
+      "message" : "Terdapat pendapatan dari pekerjaan, tapi total pendapatan 0",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_pendapatan_usaha",
+    "componentValidation" : [ "ak_keberadaan@$ROW$", "ak_pendapatan_usaha@$ROW$" ],
+    "validations" : [ {
+      "test" : "let a = getValue('ak_keberadaan@$ROW$');\nlet b = getValue('ak_pendapatan_usaha@$ROW$');\nif (a !== undefined && b !== undefined)\n(a?.[0]?.value == '1' || a?.[0]?.value == '5') && b?.[0]?.value == '9'",
+      "message" : "Anggota keluarga tinggal di rumah, tetapi berkode Tidak Tahu",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_total_pend_usaha",
+    "componentValidation" : [ "ak_total_pend_usaha@$ROW$", "ak_pendapatan_usaha@$ROW$" ],
+    "validations" : [ {
+      "test" : "let val = getValue('ak_total_pend_usaha@$ROW$');\nlet digit = val.toString().slice(-2)\ndigit !== '00'",
+      "message" : "Dua digit terakhir harus nol",
+      "type" : 2
+    }, {
+      "test" : "let val = Number(getValue('ak_total_pend_usaha@$ROW$') ?? '0');\nval < 10000 || val > 999999999;",
+      "message" : "Rentang pendapatan antara Rp 10.000 s.d Rp 999.999.999",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_pendapatan_usaha@$ROW$');\nlet b = getValue('ak_total_pend_usaha@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && Number(b) == 0",
+      "message" : "Terdapat pendapatan dari usaha, tapi total pendapatan 0",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_pendapatan_lain",
+    "componentValidation" : [ "ak_keberadaan@$ROW$", "ak_pendapatan_lain@$ROW$" ],
+    "validations" : [ {
+      "test" : "let a = getValue('ak_keberadaan@$ROW$');\nlet b = getValue('ak_pendapatan_lain@$ROW$');\nif (a !== undefined && b !== undefined)\n(a?.[0]?.value == '1' || a?.[0]?.value == '5') && b?.[0]?.value == '9'",
+      "message" : "Anggota keluarga tinggal di rumah, tetapi berkode Tidak Tahu",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_total_pend_lain",
+    "componentValidation" : [ "ak_pendapatan_lain@$ROW$", "ak_total_pend_lain@$ROW$" ],
+    "validations" : [ {
+      "test" : "let a = getValue('ak_pendapatan_lain@$ROW$');\nlet b = getValue('ak_total_pend_lain@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && Number(b) == 0",
+      "message" : "Terdapat pendapatan dari lainnya, tapi total pendapatan 0",
+      "type" : 2
+    }, {
+      "test" : "let val = getValue('ak_total_pend_lain@$ROW$');\nlet digit = val.toString().slice(-2)\ndigit !== '00'\n",
+      "message" : "Dua digit terakhir harus nol",
+      "type" : 2
+    }, {
+      "test" : "let val = Number(getValue('ak_total_pend_lain@$ROW$') ?? '0');\nval < 10000 || val > 999999999;",
+      "message" : "Rentang pendapatan antara Rp 10.000 s.d Rp 999.999.999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_profesi",
+    "componentValidation" : [ "ak_pendapatan_pekerjaan@$ROW$", "ak_pendapatan_usaha@$ROW$", "ak_profesi@$ROW$", "ak_status_kerja@$ROW$", "ak_nama@$ROW$", "ak_keberadaan@$ROW$" ],
+    "validations" : [ {
+      "test" : "let pekerjaan = getValue('ak_pendapatan_pekerjaan@$ROW$')?.[0].value;\nlet usaha = getValue('ak_pendapatan_usaha@$ROW$')?.[0].value;\nlet profesi = getValue('ak_profesi@$ROW$')\nlet status = getValue('ak_status_kerja@$ROW$')\nif (profesi !== undefined && status !== undefined)\n(profesi?.[0]?.value !== '000' && status?.[0]?.value !== '6' && pekerjaan == '2' && usaha == '2')",
+      "message" : "Pastikan kembali apakah responden bekerja tanpa memperoleh pendapatan dari gaji atau usaha. ",
+      "type" : 1
+    }, {
+      "test" : "let nama = getValue('ak_nama@$ROW$');\nlet profesi = getValue('ak_profesi@$ROW$')?.[0].value;\nif (nama !== undefined)\nprofesi == '115' && nama !== 'PRABOWO SUBIANTO';",
+      "message" : "Presiden Indonesia hanya boleh terisi 1 dan bernama Prabowo Subianto",
+      "type" : 2
+    }, {
+      "test" : "let nama = getValue('ak_nama@$ROW$');\nlet profesi = getValue('ak_profesi@$ROW$')?.[0].value;\nif (nama !== undefined)\nprofesi == '151' && nama !== 'GIBRAN RAKABUMING RAKA';",
+      "message" : "Wakil Presiden Indonesia hanya boleh terisi 1 dan bernama Gibran Rakabuming Raka",
+      "type" : 2
+    }, {
+      "test" : "let pekerjaan = getValue('ak_pendapatan_pekerjaan@$ROW$')?.[0].value;\nlet usaha = getValue('ak_pendapatan_usaha@$ROW$')?.[0].value;\nlet profesi = getValue('ak_profesi@$ROW$')?.[0].value;\n(profesi == '000' && (pekerjaan == '1' || usaha == '1'))",
+      "message" : "R35a atau R35b terisi kode 1 (Ya), maka  profesi pekerjaan utama harus terisi selain kode 00. Tidak bekerja",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_keberadaan@$ROW$');\nlet b = getValue('ak_profesi@$ROW$');\nif (a !== undefined && b !== undefined)\n(a?.[0]?.value == '1' || a?.[0]?.value == '5') && b?.[0]?.value == '999'\n",
+      "message" : "Anggota keluarga tinggal di rumah, tetapi rincian Kode Profesi = 999",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_status_kerja",
+    "componentValidation" : [ "ak_ijazah@$ROW$", "ak_status_kerja@$ROW$", "ak_keberadaan@$ROW$", "ak_pendapatan_pekerjaan@$ROW$", "ak_sekolah@$ROW$", "ak_profesi_filter@$ROW$", "ak_pendapatan_usaha@$ROW$" ],
+    "validations" : [ {
+      "test" : "let ijazah = getValue('ak_ijazah@$ROW$')?.[0].value;\nlet kedudukan = getValue('ak_status_kerja@$ROW$')?.[0].value;\nijazah == '00' && kedudukan == '4'",
+      "message" : "Tidak memiliki ijazah SD tapi kedudukannya ASN/TNI/Polri/BUMN/BUMD/pejabat negara/kades",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_keberadaan@$ROW$');\nlet b = getValue('ak_status_kerja@$ROW$');\nif (a !== undefined && b !== undefined)\n(a?.[0]?.value == '1' || a?.[0]?.value == '5') && b?.[0]?.value == '9'",
+      "message" : "Anggota keluarga tinggal di rumah, tetapi berkode Tidak Tahu",
+      "type" : 2
+    }, {
+      "test" : "let pekerjaan = getValue('ak_pendapatan_usaha@$ROW$')?.[0].value;\nlet kedudukan = getValue('ak_status_kerja@$ROW$')?.[0].value;\n(kedudukan == '1' || kedudukan == '2') && (pekerjaan == '2' || pekerjaan == '9');",
+      "message" : "Status Berusaha sendiri atau Berusaha dibantu buruh, harus memiliki salah satu pendapatan pada pertanyaan 35.b",
+      "type" : 2
+    }, {
+      "test" : "let pekerjaan = getValue('ak_pendapatan_pekerjaan@$ROW$')?.[0].value;\nlet usaha = getValue('ak_pendapatan_usaha@$ROW$')?.[0].value;\nlet kedudukan = getValue('ak_status_kerja@$ROW$')?.[0].value;\nkedudukan == '6' && (pekerjaan == '1' || usaha == '1');",
+      "message" : "Status Pekerja keluarga/tidak dibayar, tidak boleh memiliki pendapatan.",
+      "type" : 2
+    }, {
+      "test" : "let pekerjaan = getValue('ak_pendapatan_pekerjaan@$ROW$')?.[0].value;\nlet kedudukan = getValue('ak_status_kerja@$ROW$')?.[0].value;\n(kedudukan == '4' && pekerjaan == 2)",
+      "message" : "R37 terisi kode 4 (PNS/TNI/Polri/BUMN/BUMD/pejabat negara Pendapatan dari pekerjaan baik berupa uang maupun barang/jasa (gaji, tunjangan, uang makan, honor, lembur, dll)) maka sumber pendapatan dan total pendapatan pada R35a) harus terisi",
+      "type" : 2
+    }, {
+      "test" : "let sekolah = getValue('ak_sekolah@$ROW$')?.[0].value;\nlet kedudukan = getValue('ak_status_kerja@$ROW$')?.[0].value;\nsekolah == '00' && kedudukan == '4'",
+      "message" : "Tidak pernah sekolah tapi kedudukannya ASN/TNI/Polri/BUMN/BUMD/pejabat negara/kades",
+      "type" : 2
+    }, {
+      "test" : "let kedudukan = getValue('ak_status_kerja@$ROW$')?.[0].value;\ngetValue('ak_profesi_filter@$ROW$') && kedudukan !== '4'",
+      "message" : "R37 WAJIB = 4  jika R36 = PNS/TNI/Polri/BUMN/BUMD/Pejabat negara/kades",
+      "type" : 2
+    }, {
+      "test" : "let pekerjaan = getValue('ak_pendapatan_pekerjaan@$ROW$')?.[0].value;\nlet kedudukan = getValue('ak_status_kerja@$ROW$')?.[0].value;\n(kedudukan == '3' || kedudukan == '5') && (pekerjaan == '2' || pekerjaan == '9');",
+      "message" : "Status Buruh/karyawan/pegawai swasta atau Pekerja bebas, harus memiliki salah satu pendapatan pada pertanyaan 35.a",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_sakit_tidaktahu",
+    "componentValidation" : [ "ak_sakit_stroke@$ROW$", "ak_sakit_tidaktahu@$ROW$", "ak_sakit_tbc@$ROW$", "ak_sakit_hiv@$ROW$", "ak_sakit_hipertensi@$ROW$", "ak_sakit_jantung@$ROW$", "ak_sakit_hemofilia@$ROW$", "ak_sakit_asma@$ROW$", "ak_sakit_lainnya@$ROW$", "ak_sakit_alzheimer@$ROW$", "ak_sakit_diabetes@$ROW$", "ak_sakit_leukemia@$ROW$", "ak_sakit_hati@$ROW$", "ak_sakit_kanker@$ROW$", "ak_sakit_talasemia@$ROW$", "ak_sakit_rematik@$ROW$", "ak_keberadaan@$ROW$", "ak_sakit_ginjal@$ROW$", "ak_sakit_kolesterol@$ROW$" ],
+    "validations" : [ {
+      "test" : "let a = getValue('ak_sakit_stroke@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "g. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_sakit_tbc@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "f. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_sakit_hiv@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "k. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_sakit_hipertensi@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "a. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_sakit_jantung@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "d. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_sakit_hemofilia@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "j. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_sakit_asma@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "c. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_sakit_lainnya@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "q. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_sakit_alzheimer@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "p. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_sakit_diabetes@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "e. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_sakit_leukemia@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "o. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 0
+    }, {
+      "test" : "let a = getValue('ak_sakit_hati@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "m. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_sakit_kanker@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "h. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_sakit_talasemia@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "n. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_sakit_rematik@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "b. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_keberadaan@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\n(a?.[0]?.value == '1' || a?.[0]?.value == '5') && b?.[0]?.value == '1'",
+      "message" : "Anggota keluarga tinggal di rumah, tetapi rincian Tidak Tahu berkode Ya",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_sakit_ginjal@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "i. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('ak_sakit_kolesterol@$ROW$');\nlet b = getValue('ak_sakit_tidaktahu@$ROW$');\nif (a !== undefined && b !== undefined)\na?.[0]?.value == '1' && b?.[0]?.value == '1'",
+      "message" : "l. Rincian Tidak tahu tidak boleh berkode Ya jika ada keluhan kesehatan lain",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "ak_dompet_digital",
+    "componentValidation" : [ "ak_keberadaan@$ROW$", "ak_dompet_digital@$ROW$" ],
+    "validations" : [ {
+      "test" : "let a = getValue('ak_keberadaan@$ROW$');\nlet b = getValue('ak_dompet_digital@$ROW$');\nif (a !== undefined && b !== undefined)\n(a?.[0]?.value == '1' || a?.[0]?.value == '5') && b?.[0]?.value == '9'",
+      "message" : "Anggota keluarga tinggal di rumah, tetapi berkode Tidak Tahu",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "catatan",
+    "componentValidation" : [ "catatan" ],
+    "validations" : [ {
+      "test" : "let r504 = String(getValue('catatan'));  \nif (r504?.length > 0 && r504 !== '-') \n{\n    /[a-zA-Z]/.test(r504) == false;\n}",
+      "message" : "Isian tidak boleh angka semua, harus ada huruf",
+      "type" : 2
+    } ]
+  } ]
+}

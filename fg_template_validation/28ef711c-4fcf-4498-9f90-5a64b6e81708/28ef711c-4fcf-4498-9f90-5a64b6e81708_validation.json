@@ -1,0 +1,442 @@
+{
+  "description" : "Survei Ubinan Padi Tahun 2026",
+  "dataKey" : "validationDataKey",
+  "version" : "0.0.48",
+  "testFunctions" : [ {
+    "dataKey" : "bulan",
+    "componentValidation" : [ "subround", "bulan" ],
+    "validations" : [ {
+      "test" : "let a = getValue('subround');\nlet b = getValue('bulan');\nif (a != undefined && b != undefined && Number(a[0].value) == 1) Number(b[0].value) > 4;",
+      "message" : "Subround I, maka isian bulan ubinan harus antara Januari sd Arpril",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('subround');\nlet b = getValue('bulan');\nif (a != undefined && b != undefined && Number(a[0].value) == 3) Number(b[0].value) < 9;",
+      "message" : "Subround III, maka isian bulan ubinan harus antara September sd Desember",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('subround');\nlet b = getValue('bulan');\nif (a != undefined && b != undefined && Number(a[0].value) == 2) !(Number(b[0].value) > 4 && Number(b[0].value) < 9);",
+      "message" : "Subround II, maka isian bulan ubinan harus antara Mei sd Agustus",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "tanpang",
+    "componentValidation" : [ "tanpang", "tipe_kues", "tanpang_pre" ],
+    "validations" : [ {
+      "test" : "let a= getValue('tanpang');\nNumber(getValue('tipe_kues')) == 2 &&\nNumber(a[0].value) < 3\n",
+      "message" : "Wilayah sampel adalah SLS, maka jenis tanaman pangan tidak boleh 1 atau 2",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('tanpang');\nlet b = getValue('tanpang_pre');\nlet angka = parseInt(b);\nNumber(angka) > 2 &&\nNumber(angka) !== Number(a[0].value)\n",
+      "message" : "Jenis tanaman pangan tidak boleh diubah",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('tanpang');\nlet b = getValue('tanpang_pre');\nlet angka = parseInt(b);\nNumber(angka) < 3 &&\nNumber(a[0].value) > 2\n",
+      "message" : "Jenis tanaman pangan tidak boleh diubah dari Padi menjadi Palawija",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "namakk",
+    "componentValidation" : [ "namakk" ],
+    "validations" : [ {
+      "test" : "(/^\\s+$/.test(getValue('namakk'))) && getValue('namakk').length > 0 ;\r\n",
+      "message" : "Isian Nama Kepala Keluarga hanya karakter spasi",
+      "type" : 2
+    }, {
+      "test" : "let result = getValue('namakk');\nlet regex  = /^[A-Za-zÀ-ÿ'/. ]{1,100}$/;\n\nif (result.length > 0 && result != undefined){\n    !regex.test(result)\n}",
+      "message" : "Format Nama tidak sesuai",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "nikkk",
+    "componentValidation" : [ "nikkk" ],
+    "validations" : [ {
+      "test" : "let result = getValue('nikkk');\nlet regex = /^[0-9]+$/;\n\nif (result.length > 0 && result != undefined){\n    !regex.test(result)\n}",
+      "message" : "Isian NIK harus Angka",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('nikkk'); a.length < 16 \r\n\r\n",
+      "message" : "NIK Harus 16 karakter",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('nikkk'); a.length > 16 \r\n\r\n",
+      "message" : "NIK Harus 16 karakter",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "domisili",
+    "componentValidation" : [ "r111" ],
+    "validations" : [ {
+      "test" : "let validasi = /^[a-zA-Z.]+(?:\\s[a-zA-Z.]+)*$/;\nlet nama = getValue('r111');\nlet result = !validasi.test(nama);\nnama.length>0 && result;",
+      "message" : "Rincian ini tidak boleh mengandung angka.",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "namautp",
+    "componentValidation" : [ "namautp" ],
+    "validations" : [ {
+      "test" : "let result = getValue('namautp');\nlet regex  = /^[A-Za-zÀ-ÿ'/. ]{1,100}$/;\n\nif (result.length > 0 && result != undefined){\n    !regex.test(result)\n}",
+      "message" : "Format Nama tidak sesuai",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "nikutp",
+    "componentValidation" : [ "nikutp" ],
+    "validations" : [ {
+      "test" : "let a = getValue('nikutp'); a.length < 16\r\n\r\n",
+      "message" : "NIK harus 16 karakter",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('nikutp'); a.length > 16\r\n\r\n",
+      "message" : "NIK harus 16 karakter",
+      "type" : 2
+    }, {
+      "test" : "let result = getValue('nikutp');\nlet regex = /^[0-9]+$/;\n\nif (result.length > 0 && result != undefined){\n    !regex.test(result)\n}",
+      "message" : "Isian NIK harus Angka",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "nokk",
+    "componentValidation" : [ "nokk" ],
+    "validations" : [ {
+      "test" : "let a = getValue('nokk'); a.length < 16\r\n\r\n",
+      "message" : "No KK harus 16 karakter",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('nokk'); a.length > 16\r\n\r\n",
+      "message" : "No KK harus 16 karakter",
+      "type" : 2
+    }, {
+      "test" : "let result = getValue('nokk');\nlet regex = /^[0-9]+$/;\n\nif (result.length > 0 && result != undefined){\n    !regex.test(result)\n}",
+      "message" : "Isian No KK harus Angka",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "umur",
+    "componentValidation" : [ "umur" ],
+    "validations" : [ {
+      "test" : "Number(getValue('umur')) > 97",
+      "message" : "Umur Maksimal 97 thn",
+      "type" : 2
+    }, {
+      "test" : "Number(getValue('umur')) < 10",
+      "message" : "Umur Minimal 10 thn",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "no_hp",
+    "componentValidation" : [ "no_hp" ],
+    "validations" : [ {
+      "test" : "let a = getValue('no_hp'); a.length > 1 && a.length < 10\r\n\r\n",
+      "message" : "Minimal 10 karakter",
+      "type" : 2
+    }, {
+      "test" : "let result = getValue('no_hp');\r\nlet regex = /^(?:\\08|08)[0-9-]*$/;\r\n\r\nif (result.length > 1 && result != undefined){\r\n    !regex.test(result)\r\n}\r\n\r\n",
+      "message" : "Isian tidak sesuai format Telepon ",
+      "type" : 2
+    }, {
+      "test" : "let a = getValue('no_hp'); a.length == 1 && a !== '-'\r\n\r\n",
+      "message" : "Jika tidak ada, isikan tanda strip \"-\"",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "jmlbidang",
+    "componentValidation" : [ "jmlbidang" ],
+    "validations" : [ {
+      "test" : "Number(getValue('jmlbidang')) < 1 ||Number(getValue('jmlbidang')) > 99",
+      "message" : "Range 1-99",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "jmlpetak",
+    "componentValidation" : [ "jmlpetak", "jmlbidang" ],
+    "validations" : [ {
+      "test" : "Number(getValue('jmlpetak')) < 1 ||Number(getValue('jmlpetak')) > 99",
+      "message" : "Range 1-99",
+      "type" : 2
+    }, {
+      "test" : "\nNumber(getValue('jmlpetak')) < Number(getValue('jmlbidang'))",
+      "message" : "Isi R302 harus lebih besar atau sama dengan R301",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "nobidang",
+    "componentValidation" : [ "nobidang", "jmlbidang" ],
+    "validations" : [ {
+      "test" : "\nNumber(getValue('nobidang')) > Number(getValue('jmlbidang'))",
+      "message" : "R401 harus kurang atau sama dengan R301",
+      "type" : 2
+    }, {
+      "test" : "Number(getValue('nobidang')) < 1 ||Number(getValue('nobidang')) > 99",
+      "message" : "Range 1-99",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "luaspetak",
+    "componentValidation" : [ "luaspetak" ],
+    "validations" : [ {
+      "test" : "Number(getValue('luaspetak')) < 4 ||\nNumber(getValue('luaspetak')) > 50000",
+      "message" : "Range 4-50000",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "waktuubin",
+    "componentValidation" : [ "hitung_tgl_ubin", "waktuubin" ],
+    "validations" : [ {
+      "test" : "let hitung_tgl_ubin = getValue('hitung_tgl_ubin')\nlet z = getValue('waktuubin'); \n\nif (z.length > 0) { Number(hitung_tgl_ubin) > 5 } ",
+      "message" : "Waktu pelaksanaan ubinan tidak boleh lebih dari 5 hari sejak Jam Mulai Pendataan",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "umur_ubin",
+    "componentValidation" : [ "umur_ubin" ],
+    "validations" : [ {
+      "test" : "Number(getValue('umur_ubin')) < 1 ||\nNumber(getValue('umur_ubin')) > 730",
+      "message" : "Range 1-730",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "beratwadah",
+    "componentValidation" : [ "beratwadah" ],
+    "validations" : [ {
+      "test" : "Number(getValue('beratwadah')) < 0.00 ||\nNumber(getValue('beratwadah')) > 9999.99",
+      "message" : "Range 0.00 - 9999.99",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "berattotal",
+    "componentValidation" : [ "berattotal" ],
+    "validations" : [ {
+      "test" : "Number(getValue('berattotal')) < 0.10 ||\nNumber(getValue('berattotal')) > 9999.99\n",
+      "message" : "Range 0.1 - 9999.99",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "beratbersih",
+    "componentValidation" : [ "beratbersih", "hitung_berat" ],
+    "validations" : [ {
+      "test" : "Number(getValue('beratbersih')) > 0\n&& \n(parseFloat(getValue('beratbersih')).toFixed(2) !== parseFloat(getValue('hitung_berat')).toFixed(2))\n",
+      "message" : "Isian R604c = R604b - R604a",
+      "type" : 2
+    }, {
+      "test" : "Number(getValue('beratbersih')) < 0.10 ||\nNumber(getValue('beratbersih')) > 9999.99\n",
+      "message" : "Range 0.1 - 9999.99",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "jenislahan",
+    "componentValidation" : [ "jenislahan" ],
+    "validations" : [ {
+      "test" : "let a = getValue('jenislahan')\nlet b = getvalue('tanpang')\n\nif(b != undefined && a != undefined)\n{b[0].value == '1' && a[0].value == '5'}",
+      "message" : "Jika R111 = 1 , maka R702 tidak boleh 5",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "banyakbenih",
+    "componentValidation" : [ "banyakbenih" ],
+    "validations" : [ {
+      "test" : "Number(getValue('banyakbenih')) < 0",
+      "message" : "Banyak benih harus lebih dari 0",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "benihhektar",
+    "componentValidation" : [ "benihhektar", "benihhektar_hitung" ],
+    "validations" : [ {
+      "test" : "Number(getValue('benihhektar')) > 0\r\n&& \r\n(parseFloat(getValue('benihhektar')).toFixed(2) !== parseFloat(getValue('benihhektar_hitung')).toFixed(2))",
+      "message" : "Benih per hektar = rincian 707.a / rincian 706 x 10.000",
+      "type" : 2
+    }, {
+      "test" : "Number(getValue('benihhektar')) < 0",
+      "message" : "Minimal 0",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "pupuk",
+    "componentValidation" : [ "pupuk" ],
+    "validations" : [ {
+      "test" : "let val610 = getValue('pupuk'); \nvar opsi1 = []; var opsi2 = []; \nif (val610 !== '' && val610.length > 0) \n{ opsi1=val610.filter((a=>a.value == '9')); opsi2=val610.filter((a=>Number(a.value) < 9)); (opsi1.length > 0 && opsi2.length > 0) }",
+      "message" : "Bila pilihan 'Tidak menggunakan pupuk' terpilih, maka pilihan lain tidak boleh ada yang terpilih.",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "urea_1",
+    "componentValidation" : [ "urea_1" ],
+    "validations" : [ {
+      "test" : "Number(getValue('urea_1')) < 0.1",
+      "message" : "Minimal 0.1",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "urea_2",
+    "componentValidation" : [ "urea_2", "urea_hitung" ],
+    "validations" : [ {
+      "test" : "Number(getValue('urea_2')) < 0.1\n",
+      "message" : "Minimal 0.1",
+      "type" : 2
+    }, {
+      "test" : "Number(getValue('urea_2')) > 0\r\n&& \r\n(parseFloat(getValue('urea_2')).toFixed(1) !== parseFloat(getValue('urea_hitung')).toFixed(1))",
+      "message" : "Pupuk per hektar = Rincian 708.b.1.a / Rincian 706 x 10.000",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "tsp_1",
+    "componentValidation" : [ "tsp_1" ],
+    "validations" : [ {
+      "test" : "Number(getValue('tsp_1')) < 0.1\n",
+      "message" : "Minimal 0.1",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "tsp_2",
+    "componentValidation" : [ "tsp_2", "tsp_hitung" ],
+    "validations" : [ {
+      "test" : "Number(getValue('tsp_2')) < 0.1\n",
+      "message" : "Minimal 0.1",
+      "type" : 2
+    }, {
+      "test" : "Number(getValue('tsp_2')) > 0\r\n&& \r\n(parseFloat(getValue('tsp_2')).toFixed(1) !== parseFloat(getValue('tsp_hitung')).toFixed(1))",
+      "message" : "Pupuk per hektar = Rincian 708.b.2.a / Rincian 706 x 10.000",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "kcl_1",
+    "componentValidation" : [ "kcl_1" ],
+    "validations" : [ {
+      "test" : "Number(getValue('kcl_1')) < 0.1\n",
+      "message" : "Minimal 0.1",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "kcl_2",
+    "componentValidation" : [ "kcl_2", "kcl_hitung" ],
+    "validations" : [ {
+      "test" : "Number(getValue('kcl_2')) > 0\r\n&& \r\n(parseFloat(getValue('kcl_2')).toFixed(1) !== parseFloat(getValue('kcl_hitung')).toFixed(1))",
+      "message" : "Pupuk per hektar = Rincian 708.b.3.a / Rincian 706 x 10.000",
+      "type" : 2
+    }, {
+      "test" : "Number(getValue('kcl_2')) < 0.1\n",
+      "message" : "Minimal 0.1",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "npk_1",
+    "componentValidation" : [ "npk_1" ],
+    "validations" : [ {
+      "test" : "Number(getValue('npk_1')) < 0.1\n",
+      "message" : "Minimal 0.1",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "npk_2",
+    "componentValidation" : [ "npk_2", "npk_hitung" ],
+    "validations" : [ {
+      "test" : "Number(getValue('npk_2')) > 0\r\n&& \r\n(parseFloat(getValue('npk_2')).toFixed(1) !== parseFloat(getValue('npk_hitung')).toFixed(1))",
+      "message" : "Pupuk per hektar = Rincian 708.b.4.a / Rincian 706 x 10.000",
+      "type" : 2
+    }, {
+      "test" : "Number(getValue('npk_2')) < 0.1\n",
+      "message" : "Minimal 0.1",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "organikpadat_1",
+    "componentValidation" : [ "organikpadat_1" ],
+    "validations" : [ {
+      "test" : "Number(getValue('organikpadat_1')) < 0.1\n",
+      "message" : "Minimal 0.1",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "organikpadat_2",
+    "componentValidation" : [ "organikpadat_2", "organikpadat_hitung" ],
+    "validations" : [ {
+      "test" : "Number(getValue('organikpadat_2')) > 0\r\n&& \r\n(parseFloat(getValue('organikpadat_2')).toFixed(1) !== parseFloat(getValue('organikpadat_hitung')).toFixed(1))",
+      "message" : "Pupuk per hektar = Rincian 708.b.5.a / Rincian 706 x 10.000",
+      "type" : 2
+    }, {
+      "test" : "Number(getValue('organikpadat_2')) < 0.1\n",
+      "message" : "Minimal 0.1",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "organikcair_1",
+    "componentValidation" : [ "organikcair_1" ],
+    "validations" : [ {
+      "test" : "Number(getValue('organikcair_1')) < 0.1\n",
+      "message" : "Minimal 0.1",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "organikcair_2",
+    "componentValidation" : [ "organikcair_2", "organikcair_hitung" ],
+    "validations" : [ {
+      "test" : "Number(getValue('organikcair_2')) < 0.1\n",
+      "message" : "Minimal 0.1",
+      "type" : 2
+    }, {
+      "test" : "Number(getValue('organikcair_2')) > 0\r\n&& \r\n(parseFloat(getValue('organikcair_2')).toFixed(1) !== parseFloat(getValue('organikcair_hitung')).toFixed(1))",
+      "message" : "Pupuk per hektar = Rincian 708.b.6.a / Rincian 706 x 10.000",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "za_1",
+    "componentValidation" : [ "za_1" ],
+    "validations" : [ {
+      "test" : "Number(getValue('za_1')) < 0.1\n",
+      "message" : "Minimal 0.1",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "za_2",
+    "componentValidation" : [ "za_2", "za_hitung" ],
+    "validations" : [ {
+      "test" : "Number(getValue('za_2')) < 0.1\n",
+      "message" : "Minimal 0.1",
+      "type" : 2
+    }, {
+      "test" : "Number(getValue('za_2')) > 0\r\n&& \r\n(parseFloat(getValue('za_2')).toFixed(1) !== parseFloat(getValue('za_hitung')).toFixed(1))",
+      "message" : "Pupuk per hektar = Rincian 708.b.7.a / Rincian 706 x 10.000",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "jmltanam",
+    "componentValidation" : [ "jmltanam" ],
+    "validations" : [ {
+      "test" : "Number(getValue('jmltanam')) < 1 ||\nNumber(getValue('jmltanam')) > 4",
+      "message" : "Range 1-4",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "jmlpanen",
+    "componentValidation" : [ "jmlpanen" ],
+    "validations" : [ {
+      "test" : "Number(getValue('jmlpanen')) < 0 ||\nNumber(getValue('jmlpanen')) > 4",
+      "message" : "Range 0-4",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "nohp_bps",
+    "componentValidation" : [ "nohp_bps" ],
+    "validations" : [ {
+      "test" : "let telp = getValue('nohp_bps');  \ntelp.length == 1 && telp !== '-'",
+      "message" : "Rincian ini terisi 1 digit namun tidak terisi kode -",
+      "type" : 2
+    }, {
+      "test" : "let result = getValue('nohp_bps');\nlet regex = /^(?:\\08|08)[0-9-]*$/;\n\nif (result.length > 1 && result != undefined){\n    !regex.test(result)\n}\n\n",
+      "message" : "Rincian ini ada hanya boleh terisi angka.",
+      "type" : 2
+    } ]
+  }, {
+    "dataKey" : "nohp_dinas",
+    "componentValidation" : [ "nohp_dinas" ],
+    "validations" : [ {
+      "test" : "let result = getValue('nohp_dinas');\nlet regex = /^(?:\\08|08)[0-9-]*$/;\n\nif (result.length > 1 && result != undefined){\n    !regex.test(result)\n}\n\n",
+      "message" : "Rincian ini ada hanya boleh terisi angka.",
+      "type" : 2
+    }, {
+      "test" : "let telp = getValue('nohp_dinas');  \ntelp.length == 1 && telp !== '-'",
+      "message" : "Rincian ini terisi 1 digit namun tidak terisi kode -",
+      "type" : 2
+    } ]
+  } ]
+}
