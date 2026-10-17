@@ -1,0 +1,2 @@
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{f as a,d as i}from"./excelService-Dpv2QukI.js";async function n(t){try{const e=await a();e.length>0?(await i(e),console.info(`[Print Studio] Berhasil membersihkan ${e.length} sheet staging sisa:`,e)):console.info("[Print Studio] Tidak ada sheet staging sisa yang ditemukan.")}catch(e){console.error("[Print Studio] Gagal membersihkan sheet staging:",e)}finally{t.completed()}}Office.onReady(()=>{Office.actions.associate("cleanupStagingSheets",n)});
+//# sourceMappingURL=commands-CzS471ZV.js.map
