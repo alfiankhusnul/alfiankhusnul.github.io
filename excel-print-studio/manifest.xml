@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Excel Print Studio — Office Add-in Manifest (XML)
+  Target: Excel desktop (Windows/Mac) dan Excel for the web
+  Requirement set minimum: ExcelApi 1.9 (pageLayout), DialogApi 1.1
+  Izin: ReadWriteDocument (diperlukan untuk membuat staging sheet)
+-->
+<OfficeApp
+  xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+  xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+  xsi:type="TaskPaneApp">
+
+  <!-- === Identitas === -->
+  <Id>a1b2c3d4-e5f6-7890-abcd-ef1234567890</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>Excel Print Studio</ProviderName>
+  <DefaultLocale>id-id</DefaultLocale>
+
+  <DisplayName DefaultValue="Excel Print Studio" />
+  <Description DefaultValue="Susun beberapa range Excel menjadi halaman cetak, atur tata letak per halaman, dan ekspor sebagai satu PDF." />
+
+  <!-- === Icon default === -->
+  <IconUrl DefaultValue="https://localhost:3000/assets/icon-64.png" />
+  <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/icon-128.png" />
+  <SupportUrl DefaultValue="https://localhost:3000" />
+
+  <!-- === Hosting === -->
+  <AppDomains>
+    <AppDomain>https://localhost:3000</AppDomain>
+  </AppDomains>
+
+  <!-- === Target: hanya Excel === -->
+  <Hosts>
+    <Host Name="Workbook" />
+  </Hosts>
+
+  <!-- === Requirement sets === -->
+  <Requirements>
+    <Sets DefaultMinVersion="1.9">
+      <Set Name="ExcelApi" MinVersion="1.9" />
+    </Sets>
+  </Requirements>
+
+  <!-- === Izin & Default Settings === -->
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://localhost:3000/taskpane.html" />
+  </DefaultSettings>
+  <Permissions>ReadWriteDocument</Permissions>
+
+  <!-- === Kustomisasi ribbon (VersionOverrides) === -->
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+
+    <Hosts>
+      <Host xsi:type="Workbook">
+
+        <DesktopFormFactor>
+          <!-- Function file harus berada sebelum ExtensionPoint -->
+          <FunctionFile resid="CommandsUrl" />
+
+          <!-- === Custom ribbon tab === -->
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <CustomTab id="PrintStudioTab">
+
+              <!-- Grup Cetak -->
+              <Group id="PrintStudioGroup">
+                <Label resid="GroupLabel" />
+                <Icon>
+                  <bt:Image size="16" resid="Icon16" />
+                  <bt:Image size="32" resid="Icon32" />
+                  <bt:Image size="80" resid="Icon80" />
+                </Icon>
+
+                <!-- Tombol: buka task pane -->
+                <Control xsi:type="Button" id="OpenTaskpaneBtn">
+                  <Label resid="TaskpaneBtnLabel" />
+                  <Supertip>
+                    <Title resid="TaskpaneBtnLabel" />
+                    <Description resid="TaskpaneBtnTip" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon16" />
+                    <bt:Image size="32" resid="Icon32" />
+                    <bt:Image size="80" resid="Icon80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>PrintStudioPane</TaskpaneId>
+                    <SourceLocation resid="TaskpaneUrl" />
+                  </Action>
+                </Control>
+              </Group>
+
+              <!-- Grup Utilitas -->
+              <Group id="PrintStudioUtilGroup">
+                <Label resid="UtilGroupLabel" />
+                <Icon>
+                  <bt:Image size="16" resid="Icon16" />
+                  <bt:Image size="32" resid="Icon32" />
+                  <bt:Image size="80" resid="Icon80" />
+                </Icon>
+
+                <!-- Tombol: bersihkan staging -->
+                <Control xsi:type="Button" id="CleanupBtn">
+                  <Label resid="CleanupBtnLabel" />
+                  <Supertip>
+                    <Title resid="CleanupBtnLabel" />
+                    <Description resid="CleanupBtnTip" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon16" />
+                    <bt:Image size="32" resid="Icon32" />
+                    <bt:Image size="80" resid="Icon80" />
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>cleanupStagingSheets</FunctionName>
+                  </Action>
+                </Control>
+              </Group>
+
+              <Label resid="TabLabel" />
+            </CustomTab>
+          </ExtensionPoint>
+
+        </DesktopFormFactor>
+
+      </Host>
+    </Hosts>
+
+    <!-- === Resources === -->
+    <Resources>
+      <bt:Images>
+        <bt:Image id="Icon16" DefaultValue="https://localhost:3000/assets/icon-16.png" />
+        <bt:Image id="Icon32" DefaultValue="https://localhost:3000/assets/icon-32.png" />
+        <bt:Image id="Icon64" DefaultValue="https://localhost:3000/assets/icon-64.png" />
+        <bt:Image id="Icon80" DefaultValue="https://localhost:3000/assets/icon-80.png" />
+        <bt:Image id="Icon128" DefaultValue="https://localhost:3000/assets/icon-128.png" />
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="TaskpaneUrl" DefaultValue="https://localhost:3000/taskpane.html" />
+        <bt:Url id="CommandsUrl" DefaultValue="https://localhost:3000/commands.html" />
+        <bt:Url id="DialogUrl" DefaultValue="https://localhost:3000/dialog.html" />
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="TabLabel" DefaultValue="Print Studio" />
+        <bt:String id="GroupLabel" DefaultValue="Cetak" />
+        <bt:String id="UtilGroupLabel" DefaultValue="Utilitas" />
+        <bt:String id="TaskpaneBtnLabel" DefaultValue="Buka Print Studio" />
+        <bt:String id="CleanupBtnLabel" DefaultValue="Bersihkan Staging" />
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="TaskpaneBtnTip" DefaultValue="Buka panel Excel Print Studio untuk menyusun halaman cetak dan mengekspor PDF." />
+        <bt:String id="CleanupBtnTip" DefaultValue="Hapus sheet staging sisa dari sesi sebelumnya yang gagal." />
+      </bt:LongStrings>
+    </Resources>
+
+  </VersionOverrides>
+</OfficeApp>
